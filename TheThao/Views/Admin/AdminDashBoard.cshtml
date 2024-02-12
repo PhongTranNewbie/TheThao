@@ -1,0 +1,39 @@
+﻿@model IEnumerable<TheThao.Models.User>
+@{
+    ViewData["Title"] = "Admin Dashboard";
+}
+
+<h1>Admin Dashboard</h1>
+
+@if (Model.Any())
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Tên</th>
+                <th>Ngày Sinh</th>
+                <th>Địa Chỉ</th>
+                <th>Email</th>
+                <th>Số Điện Thoại</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var customer in Model)
+            {
+                <tr>
+                    <td>@customer.Id</td>
+                    <td>@customer.Ten</td>
+                    <td>@customer.NgayThangNamSinh</td>
+                    <td>@customer.DiaChi</td>
+                    <td>@customer.Email</td>
+                    <td>@customer.Phone</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <p>No customers available.</p>
+}
