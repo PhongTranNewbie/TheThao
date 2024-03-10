@@ -1,5 +1,4 @@
-﻿using TheThao.Data;
-using TheThao.Models;
+﻿using TheThao.Models;
 
 namespace TheThao.Services
 {

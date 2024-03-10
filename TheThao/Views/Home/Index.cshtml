@@ -1,0 +1,31 @@
+﻿@{
+    Layout = "Client";
+}
+@{
+    var products = ViewBag.Products as List<TheThao.Models.SanPham>; // Ép kiểu ViewBag.Products thành danh sách sản phẩm
+}
+<div class="row">
+    @if (products != null && products.Any())
+    {
+        foreach (var product in products)
+        {
+            <div class="col-md-4">
+                <div class="product-item">
+                    <a href="@Url.Action("ChiTietSanPham", "SanPhams", new { id = product.Id })">
+                        <img src="@Url.Content(product.HinhAnh)" alt="Product Image" class="img-fluid">
+                        <h4 class="mt-2">@product.Name</h4>
+
+                    </a>
+                    <p>@product.ChiTiet</p>
+                    <p>@product.Gia</p>
+                    <button class="btn btn-primary">Add to Cart</button>
+                </div>
+            </div>
+        }
+    }
+    else
+    {
+        <p>No products available.</p>
+    }
+</div>
+

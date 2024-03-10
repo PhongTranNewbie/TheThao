@@ -1,36 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-using Microsoft.EntityFrameworkCore;
 
-namespace TheThao.Models
+namespace TheThao.Models;
+
+public partial class NhaCungCap
 {
-    [Table("NhaCungCap")]
-    public partial class NhaCungCap
-    {
-        public NhaCungCap()
-        {
-            NhapHangs = new HashSet<NhapHang>();
-        }
+    public int Id { get; set; }
 
-        [Key]
-        public int Id { get; set; }
-        [StringLength(255)]
-        [Unicode(false)]
-        public string? TenNhaCungCap { get; set; }
-        [StringLength(255)]
-        [Unicode(false)]
-        public string? DiaChi { get; set; }
-        [Column("SDT")]
-        [StringLength(20)]
-        [Unicode(false)]
-        public string? Sdt { get; set; }
-        [StringLength(255)]
-        [Unicode(false)]
-        public string? Email { get; set; }
+    public string? TenNhaCungCap { get; set; }
 
-        [InverseProperty(nameof(NhapHang.MaNhaCungCapNavigation))]
-        public virtual ICollection<NhapHang> NhapHangs { get; set; }
-    }
+    public string? DiaChi { get; set; }
+
+    public string? Sdt { get; set; }
+
+    public string? Email { get; set; }
+
+    public virtual ICollection<ChiTietNhapHang> ChiTietNhapHangs { get; } = new List<ChiTietNhapHang>();
 }

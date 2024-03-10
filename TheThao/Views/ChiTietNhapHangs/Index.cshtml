@@ -1,0 +1,74 @@
+﻿@model IEnumerable<TheThao.Models.ChiTietNhapHang>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Index</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.SoLuongNhap)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Gia)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.TongTien)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.MaNhaCungCapNavigation)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.MaNhapHangNavigation)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.MaSanPhamNavigation)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.SoLuongNhap)
+            </td>
+                <td>
+                    @string.Format("{0:N0}", item.Gia)
+                </td>
+                <td>
+                    @string.Format("{0:N0}", item.TongTien)
+                </td>
+
+            <td>
+                @Html.DisplayFor(modelItem => item.MaNhaCungCapNavigation.TenNhaCungCap)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.MaNhapHangNavigation.NgayNhapHang)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.MaSanPhamNavigation.Name)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
+<li class="sidebar-item">
+    <a class="sidebar-link" href="/Admin/AdminDashBoard" aria-expanded="false">
+        <span>
+            <i class="ti ti-layout-dashboard"></i>
+        </span>
+        <span class="hide-menu">Dashboard</span>
+    </a>
+</li>

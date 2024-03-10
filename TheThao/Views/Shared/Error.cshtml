@@ -1,0 +1,22 @@
+﻿@model Microsoft.AspNetCore.Diagnostics.ExceptionHandlerFeature
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Error</title>
+</head>
+<body>
+    <h1>Error</h1>
+    <p>Sorry, an error occurred while processing your request.</p>
+
+    @if (Model != null)
+    {
+        <p>@Model.Error.Message</p>
+        <p>@Model.Error.StackTrace</p>
+    }
+
+    <p>Please try again later or contact support if the problem persists.</p>
+</body>
+</html>

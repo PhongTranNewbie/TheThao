@@ -1,0 +1,103 @@
+﻿@model IEnumerable<TheThao.Models.SanPham>
+
+@{
+    Layout = "Client";
+
+}
+
+<h1>Index</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table id="table-body" class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Name)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ChiTiet)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Gia)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.HinhAnh)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.TheLoai)
+            </th>
+            <th>
+                So Luong <!-- New column for quantity -->
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ChiTiet)
+                </td>
+                <td class="gia-value">
+                    @Html.DisplayFor(modelItem => @item.Gia)
+                </td>
+                <td class="image-column1">
+                    <img class="product-image1" src="@item.HinhAnh" alt="Product Image" />
+                </td>
+
+                <td>
+                    @Html.DisplayFor(modelItem => item.TheLoai.Id)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.SoLuong) <!-- Display the quantity -->
+                </td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                    <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                    <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    <script>
+        // Hàm để định dạng số với dấu chấm hàng nghìn
+        function formatNumberWithCommas(number) {
+            return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+        }
+
+        // Gọi hàm formatNumericColumns khi trang đã được tải
+        $(document).ready(function () {
+            // Lặp qua từng hàng trong bảng
+            $('#table-body tr').each(function () {
+                // Lấy giá trị của cột số và loại bỏ phần thập phân ".00"
+                var giaValue = $(this).find('.gia-value').text();
+                giaValue = giaValue.replace('.00', '');
+                // Định dạng số với dấu chấm hàng nghìn
+                giaValue = formatNumberWithCommas(giaValue);
+                // Gán lại giá trị đã định dạng vào cột số
+                $(this).find('.gia-value').text(giaValue);
+            });
+        });
+    </script>
+}
+<li class="sidebar-item">
+    <a class="sidebar-link" href="/Admin/AdminDashBoard" aria-expanded="false">
+        <span>
+            <i class="ti ti-layout-dashboard"></i>
+        </span>
+        <span class="hide-menu">Dashboard</span>
+    </a>
+</li>

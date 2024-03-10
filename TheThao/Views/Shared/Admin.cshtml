@@ -1,0 +1,93 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sporting Goods Store</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="~/css/style.css" />
+    <link rel="stylesheet" href="~/css/site.css" />
+    <link rel="stylesheet" href="~/css/bootstrap.min.css" />
+</head>
+<body>
+
+    <nav class="navbar navbar-dark bg-primary navbar-expand-xl">
+        <a class="navbar-brand" href="/Home/Index"><h2 class="text-white display-6">Sporting Store</h2></a>
+        <button class="navbar-toggler py-2 px-3" type="button" data-toggle="collapse" data-target="#navbarCollapse">
+            <span class="fa fa-bars text-white"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item active">
+                    <a class="nav-link" href="/Home/Index">Home</a>
+                </li>
+                <!-- Dropdown Menu for Categories -->
+                <li class="nav-item dropdown" id="categoriesDropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Categories
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdown" id="categoriesMenu">
+                        <!-- Categories will be populated here -->
+                    </div>
+                </li>
+                <li class="nav-item active">
+                    <a class="nav-link" href="/SanPhams/Index">Sản Phẩm</a>
+                </li>
+
+
+
+            </ul>
+        </div>
+    </nav>
+
+
+
+
+
+
+    <!-- Header -->
+    <!-- Main Content -->
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+            </div>
+        </div>
+    </div>
+
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <!-- Bootstrap JavaScript -->
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
+    <!-- Custom Script -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/lib/easing/easing.min.js"></script>
+    <script src="~/lib/waypoints/waypoints.min.js"></script>
+    <script src="~/lib/lightbox/js/lightbox.min.js"></script>
+    <script src="~/lib/owlcarousel/owl.carousel.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            // Call the API endpoint to get categories
+            $.get("/api/categories", function (categories) {
+                // Populate dropdown menu with categories
+                var dropdown = $("#categoriesMenu");
+                categories.forEach(function (category) {
+                    dropdown.append(`<a class="dropdown-item" href="/Home/Category?theLoaiId=${category.id}" data-category-id="${category.id}">${category.tenLoaiSanPham}</a>`);
+                });
+            });
+
+            // Handle click event on dropdown items
+            $("#categoriesMenu").on("click", ".dropdown-item", function (e) {
+                e.preventDefault(); // Prevent default action of anchor tag
+                var categoryId = $(this).data("category-id");
+                var url = $(this).attr("href");
+                // Redirect to the selected category page
+                window.location.href = url;
+            });
+        });
+    </script>
+    @RenderBody()
+    @RenderSection("Scripts", required: false)
+</body>
+</html>

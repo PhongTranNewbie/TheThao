@@ -1,5 +1,7 @@
 ﻿@model TheThao.Models.User
-
+@{
+    Layout = "Client";
+}
 <h2>Complete Profile</h2>
 <form asp-action="Profile" method="post">
     <div class="form-group">
@@ -29,5 +31,7 @@
     </div>
     <div class="form-group">
         <button type="submit" class="btn btn-primary">Save</button>
+        <a href="/Home/Index" class="btn btn-secondary">Trang chủ</a>
+    </div>
     </div>
 </form>

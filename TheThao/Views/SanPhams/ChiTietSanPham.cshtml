@@ -1,0 +1,31 @@
+﻿@{
+    var product = ViewBag.SanPham as TheThao.Models.SanPham;
+}
+
+<!-- Thêm các tài nguyên CSS cần thiết -->
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+
+<div class="container">
+    <h1>Details</h1>
+    <div class="product-detail-container">
+        <div class="product-image">
+            <img src="@Url.Content(product.HinhAnh)" alt="Product Image">
+        </div>
+        <div class="product-description">
+            <div class="product-category">@product.TheLoai</div>
+            <h1 class="product-title">@product.Name</h1>
+            <div class="text-dark fs-5 fw-bold mb-0">@product.Gia</div>
+            <p>@product.ChiTiet</p>
+            <button class="btn border border-secondary rounded-pill px-3 text-primary">Add to Cart</button>
+        </div>
+    </div>
+    <div>
+        <a asp-action="Edit" asp-route-id="@product?.Id">Edit</a> |
+        <a asp-action="Index">Back to List</a>
+    </div>
+</div>
+
+<!-- Thêm các tài nguyên JavaScript cần thiết -->
+@section Scripts {
+    <script src="your-additional-script.js"></script>
+}
