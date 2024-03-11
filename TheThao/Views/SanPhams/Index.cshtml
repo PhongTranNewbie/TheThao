@@ -1,8 +1,7 @@
 ﻿@model IEnumerable<TheThao.Models.SanPham>
 
 @{
-    Layout = "Client";
-
+    Layout = "ExAdm";
 }
 
 <h1>Index</h1>
@@ -47,9 +46,10 @@
                 <td class="gia-value">
                     @Html.DisplayFor(modelItem => @item.Gia)
                 </td>
-                <td class="image-column1">
-                    <img class="product-image1" src="@item.HinhAnh" alt="Product Image" />
+                <td >
+                    <img  src="@item.HinhAnh" alt="Product Image" style="max-width: 100px; max-height: 100px;" />
                 </td>
+
 
                 <td>
                     @Html.DisplayFor(modelItem => item.TheLoai.Id)
