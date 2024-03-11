@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Authentication.Google;
+﻿
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.EntityFrameworkCore;
 using TheThao.Services;
@@ -41,11 +41,7 @@ internal class Program
         // Add session middleware
         app.UseSession(); // Kích hoạt session trong pipeline middleware
 
-        app.MapGet("/signin-google", async (HttpContext context) =>
-        {
-            // Redirect to the Google authentication handler
-            await context.ChallengeAsync(GoogleDefaults.AuthenticationScheme);
-        });
+
 
         app.MapControllerRoute(
             name: "default",

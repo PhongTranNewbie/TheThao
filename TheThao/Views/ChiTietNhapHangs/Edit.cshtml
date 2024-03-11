@@ -56,5 +56,28 @@
 </div>
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script>
+        // Function to format number with dot as thousand separator
+        function formatNumberWithDot(x) {
+            return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+        }
+
+        // Function to calculate total price based on quantity and price
+        function calculateTotalPrice() {
+            var quantity = document.getElementById("SoLuongNhap").value;
+            var price = document.getElementById("Gia").value;
+            var totalPrice = parseInt(quantity) * parseFloat(price);
+
+            // Format total price with dot separator
+            var formattedTotalPrice = formatNumberWithDot(totalPrice);
+
+            document.getElementById("TongTien").value = formattedTotalPrice; // Set total price with dot separator
+
+        }
+
+        // Call calculateTotalPrice when quantity or price changes
+        document.getElementById("SoLuongNhap").addEventListener("input", calculateTotalPrice);
+        document.getElementById("Gia").addEventListener("input", calculateTotalPrice);
+    </script>
 }
+

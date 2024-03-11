@@ -88,7 +88,7 @@ namespace TheThao.Controllers
             }
             ViewData["MaNhaCungCap"] = new SelectList(_context.NhaCungCaps, "Id", "TenNhaCungCap", chiTietNhapHang.MaNhaCungCap);
             ViewData["MaNhapHang"] = new SelectList(_context.NhapHangs, "Id", "Id", chiTietNhapHang.MaNhapHang);
-            ViewData["MaSanPham"] = new SelectList(_context.SanPhams, "Id", "TenSanPham", chiTietNhapHang.MaSanPham);
+            ViewData["MaSanPham"] = new SelectList(_context.SanPhams, "Id", "Name", chiTietNhapHang.MaSanPham);
             return View(chiTietNhapHang);
         }
 

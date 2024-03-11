@@ -159,6 +159,11 @@ namespace TheThao.Controllers
             ViewBag.SanPham = _context.SanPhams.FirstOrDefault(e => e.Id == id);
             return View();
         }
+        public IActionResult LoaiSanPham()
+        {
+            return View();
+        }
+
     }
 
    
