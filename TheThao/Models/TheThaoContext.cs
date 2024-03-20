@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Identity.Client;
 
 namespace TheThao.Models;
 
@@ -15,7 +16,9 @@ public partial class TheThaoContext : DbContext
     {
     }
 
-
+    
+    public DbSet<Purchase> Purchases { get; set; }
+    public virtual DbSet<ChiTietDonHang> ChiTietDonHangs { get; set; }
 
     public virtual DbSet<ChiTietGioHang> ChiTietGioHangs { get; set; }
 
@@ -51,18 +54,37 @@ public partial class TheThaoContext : DbContext
     {
         
 
+        modelBuilder.Entity<ChiTietDonHang>(entity =>
+        {
+            entity.ToTable("ChiTietDonHang");
+
+            entity.Property(e => e.Id).ValueGeneratedNever();
+
+            entity.HasOne(d => d.MaDonHangNavigation).WithMany(p => p.ChiTietDonHangs)
+                .HasForeignKey(d => d.MaDonHang)
+                .HasConstraintName("FK_ChiTietDonHang_DonHang");
+
+            entity.HasOne(d => d.MaSanPhamNavigation).WithMany(p => p.ChiTietDonHangs)
+                .HasForeignKey(d => d.MaSanPham)
+                .HasConstraintName("FK_ChiTietDonHang_SanPham");
+        });
+
         modelBuilder.Entity<ChiTietGioHang>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PK__ChiTietG__3214EC071459AEE0");
 
             entity.ToTable("ChiTietGioHang");
 
+            entity.Property(e => e.Gia).HasColumnType("decimal(12, 0)");
+
             entity.HasOne(d => d.IdGioHangNavigation).WithMany(p => p.ChiTietGioHangs)
                 .HasForeignKey(d => d.IdGioHang)
+                .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("FK__ChiTietGi__IdGio__5070F446");
 
             entity.HasOne(d => d.IdSanPhamNavigation).WithMany(p => p.ChiTietGioHangs)
                 .HasForeignKey(d => d.IdSanPham)
+                .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("FK__ChiTietGi__IdSan__4F7CD00D");
         });
 
@@ -74,6 +96,7 @@ public partial class TheThaoContext : DbContext
 
             entity.HasOne(d => d.MaSanPhamNavigation).WithMany(p => p.ChiTietHinhAnhs)
                 .HasForeignKey(d => d.MaSanPham)
+                .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("FK_ChiTietHinhAnh_SanPham");
         });
 
@@ -81,23 +104,22 @@ public partial class TheThaoContext : DbContext
         {
             entity.ToTable("ChiTietNhapHang");
 
-            entity.Property(e => e.Gia)
-                .HasMaxLength(10)
-                .IsFixedLength();
-            entity.Property(e => e.SoLuongNhap)
-                .HasMaxLength(10)
-                .IsFixedLength();
+            entity.Property(e => e.Gia).HasColumnType("decimal(12, 0)");
+            entity.Property(e => e.TongTien).HasColumnType("decimal(12, 0)");
 
             entity.HasOne(d => d.MaNhaCungCapNavigation).WithMany(p => p.ChiTietNhapHangs)
                 .HasForeignKey(d => d.MaNhaCungCap)
+                .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("FK_ChiTietNhapHang_NhaCungCap");
 
             entity.HasOne(d => d.MaNhapHangNavigation).WithMany(p => p.ChiTietNhapHangs)
                 .HasForeignKey(d => d.MaNhapHang)
+                .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("FK_ChiTietNhapHang_NhapHang");
 
             entity.HasOne(d => d.MaSanPhamNavigation).WithMany(p => p.ChiTietNhapHangs)
                 .HasForeignKey(d => d.MaSanPham)
+                .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("FK_ChiTietNhapHang_SanPham");
         });
 
@@ -118,6 +140,7 @@ public partial class TheThaoContext : DbContext
                 .HasMaxLength(255)
                 .IsUnicode(false);
             entity.Property(e => e.Ngay).HasColumnType("date");
+            entity.Property(e => e.TongTien).HasColumnType("decimal(12, 0)");
             entity.Property(e => e.TrangThai)
                 .HasMaxLength(255)
                 .IsUnicode(false);
@@ -143,6 +166,7 @@ public partial class TheThaoContext : DbContext
             entity.Property(e => e.MaGiaoDichUser)
                 .HasMaxLength(255)
                 .IsUnicode(false);
+            entity.Property(e => e.NgayTao).HasColumnType("date");
 
             entity.HasOne(d => d.MaDonHangNavigation).WithMany(p => p.GioHangs)
                 .HasForeignKey(d => d.MaDonHang)
@@ -189,6 +213,8 @@ public partial class TheThaoContext : DbContext
 
             entity.ToTable("NhapHang");
 
+            entity.Property(e => e.NgayNhapHang).HasColumnType("date");
+
             entity.HasOne(d => d.User).WithMany(p => p.NhapHangs)
                 .HasForeignKey(d => d.UserId)
                 .HasConstraintName("FK__NhapHang__UserId__54CB950F");
@@ -200,9 +226,13 @@ public partial class TheThaoContext : DbContext
 
             entity.ToTable("SanPham");
 
-            entity.Property(e => e.ChiTiet).HasMaxLength(500);
+            entity.Property(e => e.ChiTiet).HasMaxLength(800);
+            entity.Property(e => e.Gia).HasColumnType("decimal(12, 0)");
             entity.Property(e => e.HinhAnh).HasMaxLength(500);
             entity.Property(e => e.Name).HasMaxLength(255);
+            entity.Property(e => e.TrangThai)
+                .HasMaxLength(50)
+                .IsFixedLength();
 
             entity.HasOne(d => d.TheLoai).WithMany(p => p.SanPhams)
                 .HasForeignKey(d => d.TheLoaiId)
@@ -219,6 +249,7 @@ public partial class TheThaoContext : DbContext
                 .HasMaxLength(255)
                 .IsUnicode(false);
             entity.Property(e => e.Ngay).HasColumnType("date");
+            entity.Property(e => e.TongTien).HasColumnType("decimal(12, 0)");
 
             entity.HasOne(d => d.User).WithMany(p => p.Shippings)
                 .HasForeignKey(d => d.UserId)
@@ -231,13 +262,19 @@ public partial class TheThaoContext : DbContext
 
             entity.ToTable("ThanhToan");
 
+            entity.HasIndex(e => e.MaDonHang, "Unique_dh").IsUnique();
+
             entity.Property(e => e.Ngay).HasColumnType("date");
             entity.Property(e => e.PhuongPhapThanhToan)
                 .HasMaxLength(255)
                 .IsUnicode(false);
+            entity.Property(e => e.TongTien).HasColumnType("decimal(12, 0)");
+            entity.Property(e => e.TrangThai)
+                .HasMaxLength(255)
+                .IsUnicode(false);
 
-            entity.HasOne(d => d.MaGioHangNavigation).WithMany(p => p.ThanhToans)
-                .HasForeignKey(d => d.MaGioHang)
+            entity.HasOne(d => d.MaDonHangNavigation).WithOne(p => p.ThanhToan)
+                .HasForeignKey<ThanhToan>(d => d.MaDonHang)
                 .HasConstraintName("FK__ThanhToan__MaGio__3C69FB99");
 
             entity.HasOne(d => d.User).WithMany(p => p.ThanhToans)

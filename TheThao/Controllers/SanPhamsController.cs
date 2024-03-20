@@ -43,7 +43,7 @@ namespace TheThao.Controllers
         // GET: SanPhams/Create
         public IActionResult Create()
         {
-            ViewData["TheLoaiId"] = new SelectList(_context.LoaiSanPhams, "Id", "Id");
+            ViewData["TheLoaiId"] = new SelectList(_context.LoaiSanPhams, "Id", "TenLoaiSanPham");
             return View();
         }
 
@@ -157,6 +157,7 @@ namespace TheThao.Controllers
         public IActionResult ChiTietSanPham(int id)
         {
             ViewBag.SanPham = _context.SanPhams.FirstOrDefault(e => e.Id == id);
+            ViewBag.ChiTietHinhAnhs = _context.ChiTietHinhAnhs.ToList();
             return View();
         }
         public IActionResult LoaiSanPham()

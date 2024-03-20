@@ -23,13 +23,13 @@ public partial class User
 
     public string? Role { get; set; }
 
-    public virtual ICollection<DonHang> DonHangs { get; } = new List<DonHang>();
+    public virtual ICollection<DonHang> DonHangs { get; set; } = new List<DonHang>();
 
-    public virtual ICollection<GioHang> GioHangs { get; } = new List<GioHang>();
+    public virtual ICollection<GioHang> GioHangs { get; set; } = new List<GioHang>();
 
-    public virtual ICollection<NhapHang> NhapHangs { get; } = new List<NhapHang>();
+    public virtual ICollection<NhapHang> NhapHangs { get; set; } = new List<NhapHang>();
 
-    public virtual ICollection<Shipping> Shippings { get; } = new List<Shipping>();
+    public virtual ICollection<Shipping> Shippings { get; set; } = new List<Shipping>();
 
-    public virtual ICollection<ThanhToan> ThanhToans { get; } = new List<ThanhToan>();
+    public virtual ICollection<ThanhToan> ThanhToans { get; set; } = new List<ThanhToan>();
 }

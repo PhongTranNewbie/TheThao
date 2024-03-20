@@ -9,40 +9,53 @@ namespace TheThao.Controllers
     public class LoginController : Controller
         {
             private readonly TheThaoContext _context;
+        private IHttpContextAccessor _httpContextAccessor;
 
-            public LoginController(TheThaoContext context)
-            {
-                _context = context;
-            }
+        public LoginController(TheThaoContext context, IHttpContextAccessor httpContextAccessor)
+        {
+            _context = context;
+            _httpContextAccessor = httpContextAccessor;
+        }
 
-            [HttpGet]
+        [HttpGet]
             public IActionResult Login()
             {
                 return View();
             }
 
             [HttpPost]
-            public IActionResult Login(User model)
+        // Trong phương thức Login của LoginController
+        public IActionResult Login(User model)
+        {
+            if (ModelState.IsValid)
             {
-                if (ModelState.IsValid)
+                var user = _context.Users.FirstOrDefault(u => u.Username == model.Username && u.Password == model.Password);
+                if (user != null)
                 {
-                    var user = _context.Users.FirstOrDefault(u => u.Username == model.Username && u.Password == model.Password);
-                    if (user != null)
-                    {
-                        // Đăng nhập thành công, tạo session hoặc lưu thông tin vào cookie
-                        HttpContext.Session.SetString("UserId", user.Id.ToString());
+                    // Đăng nhập thành công, lấy UserId
+                    HttpContext.Session.SetString("UserId", user.Id.ToString());
+
+                    // Tạo một instance của CartController
+                    var cartController = new CartController(_context, _httpContextAccessor);
+
+                    // Lấy UserId từ session
+                    var userId = HttpContext.Session.GetString("UserId");
+                   
+
                     ViewBag.IsLoggedIn = true;
                     return RedirectToAction("Profile");
-                    }
-                    else
-                    {
-                        ModelState.AddModelError("", "Invalid username or password");
-                    }
                 }
-                return View(model);
+                else
+                {
+                    ModelState.AddModelError("", "Invalid username or password");
+                }
             }
+            return View(model);
+        }
 
-            [HttpGet]
+
+
+        [HttpGet]
             public IActionResult Register()
             {
                 return View();

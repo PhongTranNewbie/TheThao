@@ -573,3 +573,50 @@
     display: block !important;
 }
 
+#circleImages {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+}
+
+.main-image {
+    margin-right: 20px;
+}
+
+.thumbnail-images {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+}
+
+.thumbnail {
+    width: 50px; /* Độ rộng của hình ảnh thu nhỏ */
+    height: auto; /* Chiều cao được điều chỉnh tự động */
+    margin-bottom: 10px; /* Khoảng cách giữa các hình ảnh thu nhỏ */
+    cursor: pointer;
+}
+.custom-carousel-control {
+    background-color: rgba(255, 255, 255, 0.5); /* Example background color */
+    border: none; /* Example border */
+    border-radius: 50%; /* Example border radius */
+    /* Add more custom styles as needed */
+}
+
+    .custom-carousel-control:hover {
+        /* Add custom hover styles if desired */
+    }
+.my-custom-button {
+    background-color: #007bff; /* Màu xanh của Bootstrap mặc định */
+    border-color: #007bff; /* Màu viền */
+}
+
+    .my-custom-button:hover {
+        background-color: #0056b3; /* Màu xanh nhạt khi di chuột qua */
+        border-color: #0056b3; /* Màu viền */
+    }
+
+    .my-custom-button:focus {
+        outline: none; /* Loại bỏ đường viền khi được focus */
+        box-shadow: none; /* Loại bỏ đổ bóng khi được focus */
+    }

@@ -1,0 +1,39 @@
+﻿@model ShoppingCartViewModel
+<h1>Shopping Cart</h1>
+<h2 class="text-success bg-dark">@(ViewBag.CartMessage)</h2>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Sản phẩm</th>
+            <th>Số lượng</th>
+            <th>Giá</th>
+            <th>Tổng tiền</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.CartItems)
+        {
+            <tr>
+                <td>@item.SanPham.Name</td>
+                <td>
+                    @item.SanPham.Gia
+                </td>
+                <td>@item.Quantity</td>
+                <td>@((item.SanPham.Gia * item.Quantity)?.ToString("C"))</td>
+                <input type="hidden" value="@item.SanPham.Id" />
+                <td>
+                  <a asp-controller="Cart" asp-action="RemoveItem" asp-route-id="@item.SanPham.Id" class="btn btn-danger">Xóa</a>
+                </td>
+            </tr>
+        }
+
+       <tr>
+           <td></td>
+            <td></td>
+            <td></td>
+            <td>Tổng giá: </td>
+            <td>@Model.TotalPrice?.ToString("C")</td>
+            <td></td>
+       </tr>
+    </tbody>
+</table>

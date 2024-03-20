@@ -13,13 +13,13 @@ public partial class GioHang
 
     public int? MaDonHang { get; set; }
 
+    public DateTime? NgayTao { get; set; }
+
     public int? UserId { get; set; }
 
-    public virtual ICollection<ChiTietGioHang> ChiTietGioHangs { get; } = new List<ChiTietGioHang>();
+    public virtual ICollection<ChiTietGioHang> ChiTietGioHangs { get; set; } = new List<ChiTietGioHang>();
 
     public virtual DonHang? MaDonHangNavigation { get; set; }
-
-    public virtual ICollection<ThanhToan> ThanhToans { get; } = new List<ThanhToan>();
 
     public virtual User? User { get; set; }
 }

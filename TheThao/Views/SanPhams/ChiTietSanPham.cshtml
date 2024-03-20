@@ -1,32 +1,59 @@
 ﻿@{
     var product = ViewBag.SanPham as TheThao.Models.SanPham;
+    var images = ViewBag.ChiTietHinhAnhs as List<TheThao.Models.ChiTietHinhAnh>;
     Layout = "Client";
 }
-
-<!-- Thêm các tài nguyên CSS cần thiết -->
-<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-
+<html>
+<head>
+    <link rel="stylesheet" href="http://localhost:5098/css/styles.css" />
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link href="~/lib/lightbox/css/lightbox.min.css" rel="stylesheet">
+    <link href="~/lib/owlcarousel/assets/owl.carousel.min.css" rel="stylesheet">
+</head>
+</html>
+<input type="hidden" value="@product.Id"/>
 <div class="container">
-    <h1>Details</h1>
     <div class="product-detail-container">
-        <div class="product-image">
-            <img src="@Url.Content(product.HinhAnh)" alt="Product Image">
+        <div class="row">
+            <div class="product-gallery">
+                <div class="thumbnail-images">
+                    @if (images != null && images.Any(image => image.MaSanPham == product.Id))
+                    {
+                        @foreach (var image in images.Where(image => image.MaSanPham == product.Id))
+                        {
+                            <img class="thumbnail" src="@Url.Content(image.HinhAnh)" alt="Product Image" onclick="changeMainImage('@Url.Content(image.HinhAnh)')" />
+                        }
+                    }
+                    else
+                    {
+                        <p>No additional images available.</p>
+                    }
+                </div>
+            </div>
+
+            <div>
+                <div class="product-image">
+                    <img id="main-product-image" src="@Url.Content(product.HinhAnh)" alt="Product Image">
+                </div>
+            </div>
+            <div>
+                <p>@product.Name</p>    
+                <p>@product.ChiTiet</p>
+                <p>Còn @product.SoLuong</p>
+
+                <p>Giá: @string.Format("{0:N0}", product.Gia)</p>
+
+                <a class="btn btn-primary" asp-action="AddToCart" asp-controller="Cart" asp-route-id="@product.Id">Add to Cart</a>
+            </div>
         </div>
-        <div class="product-description">
-            <div class="product-category">@product.TheLoai</div>
-            <h1 class="product-title">@product.Name</h1>
-            <div class="text-dark fs-5 fw-bold mb-0">@product.Gia</div>
-            <p>@product.ChiTiet</p>
-            <button class="btn border border-secondary rounded-pill px-3 text-primary">Add to Cart</button>
-        </div>
-    </div>
-    <div>
-        <a asp-action="Edit" asp-route-id="@product?.Id">Edit</a> |
-        <a asp-action="Index">Back to List</a>
     </div>
 </div>
 
-<!-- Thêm các tài nguyên JavaScript cần thiết -->
 @section Scripts {
-    <script src="your-additional-script.js"></script>
+    <script>
+        function changeMainImage(imageUrl) {
+            $("#main-product-image").attr("src", imageUrl);
+        }
+    </script>
 }
+

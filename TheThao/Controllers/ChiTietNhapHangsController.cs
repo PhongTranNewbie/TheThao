@@ -65,6 +65,22 @@ namespace TheThao.Controllers
             {
                 _context.Add(chiTietNhapHang);
                 await _context.SaveChangesAsync();
+
+                // Tìm sản phẩm tương ứng trong cơ sở dữ liệu
+                var product = await _context.SanPhams.FindAsync(chiTietNhapHang.MaSanPham);
+
+                // Cập nhật số lượng sản phẩm
+                product.SoLuong += chiTietNhapHang.SoLuongNhap;
+
+                // Tính toán giá mới của sản phẩm (có thể thay đổi tùy thuộc vào yêu cầu của bạn)
+                decimal newPrice = (decimal)(chiTietNhapHang.Gia * 1.23m); // Tăng giá 23%
+
+                // Cập nhật giá mới của sản phẩm
+                product.Gia = (decimal)newPrice;
+
+                // Lưu các thay đổi vào cơ sở dữ liệu
+                await _context.SaveChangesAsync();
+
                 return RedirectToAction(nameof(Index));
             }
             ViewData["MaNhaCungCap"] = new SelectList(_context.NhaCungCaps, "Id", "TenNhaCungCap", chiTietNhapHang.MaNhaCungCap);
@@ -72,6 +88,7 @@ namespace TheThao.Controllers
             ViewData["MaSanPham"] = new SelectList(_context.SanPhams, "Id", "TenSanPham", chiTietNhapHang.MaSanPham);
             return View(chiTietNhapHang);
         }
+
 
         // GET: ChiTietNhapHangs/Edit/5
         public async Task<IActionResult> Edit(int? id)

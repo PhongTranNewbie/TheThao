@@ -9,5 +9,5 @@ public partial class LoaiSanPham
 
     public string? TenLoaiSanPham { get; set; }
 
-    public virtual ICollection<SanPham> SanPhams { get; } = new List<SanPham>();
+    public virtual ICollection<SanPham> SanPhams { get; set; } = new List<SanPham>();
 }
