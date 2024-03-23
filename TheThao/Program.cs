@@ -22,19 +22,8 @@ internal class Program
         builder.Services.AddSession(); // Thêm dịch vụ session vào trong ConfigureServices
         builder.Services.AddHttpContextAccessor();
         builder.Services.AddScoped<ICustomerService, CustomerService>();
-        
-  /*      builder.Services.AddAuthentication(options =>
-        {
-            options.DefaultAuthenticateScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-            options.DefaultSignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-            options.DefaultChallengeScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-        })
-    .AddCookie(options =>
-    {
-        options.LoginPath = "/login/Login"; // Đường dẫn đến trang đăng nhập
-        options.LogoutPath = "/Login/Logout"; // Đường dẫn đến trang đăng xuất
-    });
-  */
+        builder.Services.AddScoped<IProductService, ProductService>();
+        builder.Services.AddHostedService<PriceUpdateService>();
         var app = builder.Build();
 
 

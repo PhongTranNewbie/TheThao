@@ -71,4 +71,46 @@ public class CartController : Controller
         
         return RedirectToAction("ViewCart");
     }
+    public IActionResult IncreaseQuantity(int id)
+    {
+        var cartItems = HttpContext.Session.Get<List<ShoppingCartItem>>("Cart") ?? new List<ShoppingCartItem>();
+        var itemToIncrease = cartItems.FirstOrDefault(item => item.SanPham.Id == id);
+        if (itemToIncrease != null)
+        {
+            ++itemToIncrease.Quantity;
+        }
+        HttpContext.Session.Set("Cart", cartItems);
+        return RedirectToAction("ViewCart");
+    }
+
+    public IActionResult DecreaseQuantity(int id)
+    {
+        var cartItems = HttpContext.Session.Get<List<ShoppingCartItem>>("Cart") ?? new List<ShoppingCartItem>();
+        var itemToDecrease = cartItems.FirstOrDefault(item => item.SanPham.Id == id);
+        if (itemToDecrease != null)
+        {
+            if (itemToDecrease.Quantity > 1)
+            {
+                --itemToDecrease.Quantity;
+            }
+            else
+            {
+                // Remove the item from the cart if its quantity is 1
+                cartItems.Remove(itemToDecrease);
+            }
+            if (cartItems.Count == 0) 
+            {
+                HttpContext.Session.Remove("ViewCart");    
+            }
+        }
+        HttpContext.Session.Set("Cart", cartItems);
+        return RedirectToAction("ViewCart");
+    }
+    public IActionResult ClearCart()
+    {
+        HttpContext.Session.Remove("Cart");
+        return RedirectToAction("ViewCart");
+    }
+
+
 }

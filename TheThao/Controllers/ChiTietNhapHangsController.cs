@@ -6,22 +6,25 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using TheThao.Models;
+using TheThao.Services;
 
 namespace TheThao.Controllers
 {
     public class ChiTietNhapHangsController : Controller
     {
         private readonly TheThaoContext _context;
-
-        public ChiTietNhapHangsController(TheThaoContext context)
+        private readonly IProductService _productService;
+        public ChiTietNhapHangsController(TheThaoContext context, IProductService productService)
         {
             _context = context;
+            _productService = productService;
         }
 
         // GET: ChiTietNhapHangs
         public async Task<IActionResult> Index()
         {
             var theThaoContext = _context.ChiTietNhapHangs.Include(c => c.MaNhaCungCapNavigation).Include(c => c.MaNhapHangNavigation).Include(c => c.MaSanPhamNavigation);
+            _productService.UpdateProductPrices();
             return View(await theThaoContext.ToListAsync());
         }
 
@@ -64,19 +67,15 @@ namespace TheThao.Controllers
             if (ModelState.IsValid)
             {
                 _context.Add(chiTietNhapHang);
+                _productService.UpdateProductPrices();
+                var product = _context.SanPhams.FirstOrDefault(p => p.Id == chiTietNhapHang.MaSanPham);
+                var sl = product.SoLuong;
+                sl += chiTietNhapHang.SoLuongNhap;
+                product.SoLuong = sl;
                 await _context.SaveChangesAsync();
 
                 // Tìm sản phẩm tương ứng trong cơ sở dữ liệu
-                var product = await _context.SanPhams.FindAsync(chiTietNhapHang.MaSanPham);
 
-                // Cập nhật số lượng sản phẩm
-                product.SoLuong += chiTietNhapHang.SoLuongNhap;
-
-                // Tính toán giá mới của sản phẩm (có thể thay đổi tùy thuộc vào yêu cầu của bạn)
-                decimal newPrice = (decimal)(chiTietNhapHang.Gia * 1.23m); // Tăng giá 23%
-
-                // Cập nhật giá mới của sản phẩm
-                product.Gia = (decimal)newPrice;
 
                 // Lưu các thay đổi vào cơ sở dữ liệu
                 await _context.SaveChangesAsync();
@@ -127,6 +126,7 @@ namespace TheThao.Controllers
                 {
                     _context.Update(chiTietNhapHang);
                     await _context.SaveChangesAsync();
+                    _productService.UpdateProductPrices();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -184,6 +184,7 @@ namespace TheThao.Controllers
             }
             
             await _context.SaveChangesAsync();
+            _productService.UpdateProductPrices();
             return RedirectToAction(nameof(Index));
         }
 

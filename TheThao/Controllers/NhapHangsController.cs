@@ -60,9 +60,17 @@ namespace TheThao.Controllers
         {
             if (ModelState.IsValid)
             {
-                _context.Add(nhapHang);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                var userIdString = HttpContext.Session.GetString("UserId");
+                if (!string.IsNullOrEmpty(userIdString))
+                {
+                    if (int.TryParse(userIdString, out int userId))
+                    {
+                        nhapHang.UserId = userId;
+                        _context.Add(nhapHang);
+                        await _context.SaveChangesAsync();
+                        return RedirectToAction(nameof(Index));
+                    }
+                }
             }
             ViewData["UserId"] = new SelectList(_context.Users, "Id", "Id", nhapHang.UserId);
             return View(nhapHang);

@@ -2,22 +2,25 @@
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using TheThao.Models;
+using TheThao.Services;
 
 namespace TheThao.Controllers
 {
     public class SanPhamsController : Controller
     {
         private readonly TheThaoContext _context;
-
-        public SanPhamsController(TheThaoContext context)
+        private readonly IProductService _productService;
+        public SanPhamsController(TheThaoContext context, IProductService productService)
         {
             _context = context;
+            _productService = productService;
         }
 
         // GET: SanPhams
         public async Task<IActionResult> Index()
         {
             var theThaoContext = _context.SanPhams.Include(s => s.TheLoai);
+            _productService.UpdateProductPrices();
             return View(await theThaoContext.ToListAsync());
         }
 
@@ -56,7 +59,9 @@ namespace TheThao.Controllers
         {
             
                 _context.Add(sanPham);
-                await _context.SaveChangesAsync();
+            _productService.UpdateProductPrices();
+            await _context.SaveChangesAsync();
+
                 return RedirectToAction(nameof(Index));
             
         }
@@ -91,6 +96,7 @@ namespace TheThao.Controllers
                 try
                 {
                     _context.Update(sanPham);
+                    _productService.UpdateProductPrices();
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)

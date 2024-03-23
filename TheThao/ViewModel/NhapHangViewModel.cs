@@ -15,8 +15,7 @@ namespace TheThao.ViewModels
         [Display(Name = "Ngày Nhập")]
         public DateTime? NgayNhap { get; set; }
 
-        [Display(Name = "Mã Nhà Cung Cấp")]
-        public int? MaNhaCungCap { get; set; }
+
 
         [Display(Name = "User Id")]
         public int? UserId { get; set; }

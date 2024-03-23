@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Identity.Client;
 
 namespace TheThao.Models;
 
@@ -17,14 +16,20 @@ public partial class TheThaoContext : DbContext
     }
 
     
-    public DbSet<Purchase> Purchases { get; set; }
+
+    public virtual DbSet<BinhLuan> BinhLuans { get; set; }
+
     public virtual DbSet<ChiTietDonHang> ChiTietDonHangs { get; set; }
 
     public virtual DbSet<ChiTietGioHang> ChiTietGioHangs { get; set; }
 
     public virtual DbSet<ChiTietHinhAnh> ChiTietHinhAnhs { get; set; }
 
+    public virtual DbSet<ChiTietKhuyenMai> ChiTietKhuyenMais { get; set; }
+
     public virtual DbSet<ChiTietNhapHang> ChiTietNhapHangs { get; set; }
+
+    public virtual DbSet<ChiTietPhanTram> ChiTietPhanTrams { get; set; }
 
     public virtual DbSet<Circle> Circles { get; set; }
 
@@ -32,11 +37,15 @@ public partial class TheThaoContext : DbContext
 
     public virtual DbSet<GioHang> GioHangs { get; set; }
 
+    public virtual DbSet<KhuyenMai> KhuyenMais { get; set; }
+
     public virtual DbSet<LoaiSanPham> LoaiSanPhams { get; set; }
 
     public virtual DbSet<NhaCungCap> NhaCungCaps { get; set; }
 
     public virtual DbSet<NhapHang> NhapHangs { get; set; }
+
+    public virtual DbSet<PhanTramGiaCa> PhanTramGiaCas { get; set; }
 
     public virtual DbSet<SanPham> SanPhams { get; set; }
 
@@ -53,6 +62,27 @@ public partial class TheThaoContext : DbContext
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         
+
+        modelBuilder.Entity<BinhLuan>(entity =>
+        {
+            entity.ToTable("BinhLuan");
+
+            entity.Property(e => e.BinhLuan1)
+                .HasColumnType("text")
+                .HasColumnName("BinhLuan");
+            entity.Property(e => e.NgayCuoiCapNhat).HasColumnType("datetime");
+            entity.Property(e => e.NgayTao).HasColumnType("datetime");
+
+            entity.HasOne(d => d.MaSanPhamNavigation).WithMany(p => p.BinhLuans)
+                .HasForeignKey(d => d.MaSanPham)
+                .OnDelete(DeleteBehavior.Cascade)
+                .HasConstraintName("FK_BinhLuan_SanPham");
+
+            entity.HasOne(d => d.User).WithMany(p => p.BinhLuans)
+                .HasForeignKey(d => d.UserId)
+                .OnDelete(DeleteBehavior.Cascade)
+                .HasConstraintName("FK_BinhLuan_Users");
+        });
 
         modelBuilder.Entity<ChiTietDonHang>(entity =>
         {
@@ -100,6 +130,26 @@ public partial class TheThaoContext : DbContext
                 .HasConstraintName("FK_ChiTietHinhAnh_SanPham");
         });
 
+        modelBuilder.Entity<ChiTietKhuyenMai>(entity =>
+        {
+            entity.ToTable("ChiTietKhuyenMai");
+
+            entity.Property(e => e.Id).ValueGeneratedNever();
+            entity.Property(e => e.MaKm).HasColumnName("MaKM");
+            entity.Property(e => e.NgayBatDau).HasColumnType("datetime");
+            entity.Property(e => e.NgayKetThuc).HasColumnType("datetime");
+
+            entity.HasOne(d => d.MaKmNavigation).WithMany(p => p.ChiTietKhuyenMais)
+                .HasForeignKey(d => d.MaKm)
+                .OnDelete(DeleteBehavior.Cascade)
+                .HasConstraintName("FK_ChiTietKhuyenMai_KhuyenMai");
+
+            entity.HasOne(d => d.MaSanPhamNavigation).WithMany(p => p.ChiTietKhuyenMais)
+                .HasForeignKey(d => d.MaSanPham)
+                .OnDelete(DeleteBehavior.Cascade)
+                .HasConstraintName("FK_ChiTietKhuyenMai_SanPham");
+        });
+
         modelBuilder.Entity<ChiTietNhapHang>(entity =>
         {
             entity.ToTable("ChiTietNhapHang");
@@ -121,6 +171,23 @@ public partial class TheThaoContext : DbContext
                 .HasForeignKey(d => d.MaSanPham)
                 .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("FK_ChiTietNhapHang_SanPham");
+        });
+
+        modelBuilder.Entity<ChiTietPhanTram>(entity =>
+        {
+            entity.ToTable("ChiTietPhanTram");
+
+            entity.Property(e => e.NgayBatDau).HasColumnType("date");
+            entity.Property(e => e.NgayKetThuc).HasColumnType("date");
+
+            entity.HasOne(d => d.MaPhanTramNavigation).WithMany(p => p.ChiTietPhanTrams)
+                .HasForeignKey(d => d.MaPhanTram)
+                .OnDelete(DeleteBehavior.Cascade)
+                .HasConstraintName("FK_ChiTietPhanTram_PhanTramGiaCa");
+
+            entity.HasOne(d => d.MaSanPhamNavigation).WithMany(p => p.ChiTietPhanTrams)
+                .HasForeignKey(d => d.MaSanPham)
+                .HasConstraintName("FK_ChiTietPhanTram_SanPham");
         });
 
         modelBuilder.Entity<Circle>(entity =>
@@ -177,6 +244,14 @@ public partial class TheThaoContext : DbContext
                 .HasConstraintName("FK_GioHang_Users");
         });
 
+        modelBuilder.Entity<KhuyenMai>(entity =>
+        {
+            entity.ToTable("KhuyenMai");
+
+            entity.Property(e => e.Id).ValueGeneratedNever();
+            entity.Property(e => e.TenKm).HasColumnName("TenKM");
+        });
+
         modelBuilder.Entity<LoaiSanPham>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PK__LoaiSanP__3214EC075426E094");
@@ -218,6 +293,13 @@ public partial class TheThaoContext : DbContext
             entity.HasOne(d => d.User).WithMany(p => p.NhapHangs)
                 .HasForeignKey(d => d.UserId)
                 .HasConstraintName("FK__NhapHang__UserId__54CB950F");
+        });
+
+        modelBuilder.Entity<PhanTramGiaCa>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK_PhanTramGiaCa_1");
+
+            entity.ToTable("PhanTramGiaCa");
         });
 
         modelBuilder.Entity<SanPham>(entity =>
@@ -275,7 +357,7 @@ public partial class TheThaoContext : DbContext
 
             entity.HasOne(d => d.MaDonHangNavigation).WithOne(p => p.ThanhToan)
                 .HasForeignKey<ThanhToan>(d => d.MaDonHang)
-                .HasConstraintName("FK__ThanhToan__MaGio__3C69FB99");
+                .HasConstraintName("FK_ThanhToan_DonHang");
 
             entity.HasOne(d => d.User).WithMany(p => p.ThanhToans)
                 .HasForeignKey(d => d.UserId)

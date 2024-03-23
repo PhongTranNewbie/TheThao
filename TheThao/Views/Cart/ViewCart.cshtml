@@ -15,25 +15,32 @@
         {
             <tr>
                 <td>@item.SanPham.Name</td>
+                <td>@item.SanPham.Gia</td>
                 <td>
-                    @item.SanPham.Gia
+                    <div class="btn-group btn-group-sm" role="group" aria-label="Basic example">
+                        <button type="button" class="btn btn-outline-secondary border" onclick="location.href='@Url.Action("DecreaseQuantity", "Cart", new { id = item.SanPham.Id })'"><i class="bi bi-dash"></i></button>
+                        <button type="button" class="btn btn-outline-secondary border disabled">@item.Quantity</button>
+                        <button type="button" class="btn btn-outline-secondary border" onclick="location.href='@Url.Action("IncreaseQuantity", "Cart", new { id = item.SanPham.Id })'"><i class="bi bi-plus"></i></button>
+                    </div>
                 </td>
-                <td>@item.Quantity</td>
-                <td>@((item.SanPham.Gia * item.Quantity)?.ToString("C"))</td>
+
+                <td>@((item.SanPham.Gia * item.Quantity)?.ToString("C0"))</td>
                 <input type="hidden" value="@item.SanPham.Id" />
                 <td>
-                  <a asp-controller="Cart" asp-action="RemoveItem" asp-route-id="@item.SanPham.Id" class="btn btn-danger">Xóa</a>
+                    <a asp-controller="Cart" asp-action="RemoveItem" asp-route-id="@item.SanPham.Id" class="btn btn-danger">Xóa</a>
                 </td>
             </tr>
         }
-
-       <tr>
-           <td></td>
+        <tr>
+            <td></td>
             <td></td>
             <td></td>
             <td>Tổng giá: </td>
-            <td>@Model.TotalPrice?.ToString("C")</td>
+            <td>@Model.TotalPrice?.ToString("C0")</td>
             <td></td>
-       </tr>
+        </tr>
+        <div class="text-right">
+            <a asp-action="ClearCart" class="btn btn-danger">Xóa hết giỏ hàng</a>
+        </div>
     </tbody>
 </table>
