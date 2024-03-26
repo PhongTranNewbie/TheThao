@@ -69,7 +69,7 @@
                     <form asp-controller="Cart" asp-action="AddToCart" method="post">
                         <input type="hidden" name="productId" value="@product.Id" />
                         <input type="hidden" name="quantity" value="1" /> <!-- Số lượng mặc định -->
-                        <button type="submit" class="btn btn-primary">Add to Cart</button>
+                        <button type="submit" class="btn btn-primary" asp-action="AddToCart" asp-controller="Cart" asp-route-id="@product.Id">Add to Cart</button>
                     </form>
 
 

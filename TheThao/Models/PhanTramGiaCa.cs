@@ -9,5 +9,9 @@ public partial class PhanTramGiaCa
 
     public int PhanTram { get; set; }
 
+    public int? UserId { get; set; }
+
     public virtual ICollection<ChiTietPhanTram> ChiTietPhanTrams { get; set; } = new List<ChiTietPhanTram>();
+
+    public virtual User? User { get; set; }
 }

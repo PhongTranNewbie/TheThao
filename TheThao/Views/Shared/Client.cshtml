@@ -7,6 +7,7 @@
     <title>Sporting Goods Store</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="~/css/style.css" />
+    <link rel="stylesheet" href="/wwwroot/css/style.css" />
     <link rel="stylesheet" href="~/css/site.css" />
     <link rel="stylesheet" href="~/css/bootstrap.min.css" />
     <!-- Icon Font Stylesheet -->
@@ -40,27 +41,35 @@
                         <!-- Categories will be populated here -->
                     </div>
                 </li>
-                <li class="nav-item active">
+            </ul>
+            <ul class="navbar-nav ml-auto login-cart-container">
+                <li class="nav-item active" style="margin-right: 10px;">
+                    <!-- Khoảng cách giữa Logout và Login -->
                     @if (HttpContextAccessor.HttpContext.Session.GetString("UserId") != null)
                     {
                         <!-- Hiển thị liên kết Logout -->
-                        <a asp-controller="Login" asp-action="Logout" class="sidebar-link text-dark">Logout</a>
+                        <a asp-controller="Login" asp-action="Logout" class="sidebar-link text-dark nav-link">
+                            <img src="/img/log-out.svg" alt="Logout" class="logout-icon">
+                        </a>
                     }
                     else
                     {
                         <!-- Hiển thị liên kết Login -->
-                        <a class="sidebar-link text-dark" asp-controller="Login" asp-action="Login">Login</a>
+                        <a class="sidebar-link text-dark nav-link" asp-controller="Login" asp-action="Login">
+                            <img src="/img/log-in.svg" alt="Login" class="login-icon">
+                        </a>
                     }
                 </li>
-                <ul class="d-flex nvarbar-nav">
-                    <li class="nav-item">
-                        <a class="nav-link" asp-area="" asp-controller="Cart" asp-action="ViewCart">Cart</a>
-                    </li>
-                </ul>
-
-
-
+                <li class="nav-item" style="margin-right: 10px;">
+                    <!-- Khoảng cách giữa Login và Cart -->
+                    <a class="nav-link" asp-area="" asp-controller="Cart" asp-action="ViewCart">
+                        <img src="/img/shopping-cart.svg" alt="Cart" class="cart-icon">
+                    </a>
+                </li>
             </ul>
+
+
+
         </div>
     </nav>
 

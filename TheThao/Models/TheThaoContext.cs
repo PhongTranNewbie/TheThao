@@ -250,6 +250,10 @@ public partial class TheThaoContext : DbContext
 
             entity.Property(e => e.Id).ValueGeneratedNever();
             entity.Property(e => e.TenKm).HasColumnName("TenKM");
+
+            entity.HasOne(d => d.User).WithMany(p => p.KhuyenMais)
+                .HasForeignKey(d => d.UserId)
+                .HasConstraintName("FK_KhuyenMai_Users");
         });
 
         modelBuilder.Entity<LoaiSanPham>(entity =>
@@ -300,6 +304,10 @@ public partial class TheThaoContext : DbContext
             entity.HasKey(e => e.Id).HasName("PK_PhanTramGiaCa_1");
 
             entity.ToTable("PhanTramGiaCa");
+
+            entity.HasOne(d => d.User).WithMany(p => p.PhanTramGiaCas)
+                .HasForeignKey(d => d.UserId)
+                .HasConstraintName("FK_PhanTramGiaCa_Users");
         });
 
         modelBuilder.Entity<SanPham>(entity =>

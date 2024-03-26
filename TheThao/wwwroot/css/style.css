@@ -620,3 +620,11 @@
         outline: none; /* Loại bỏ đường viền khi được focus */
         box-shadow: none; /* Loại bỏ đổ bóng khi được focus */
     }
+.login-cart-container {
+    display: flex;
+    align-items: center; /* Căn giữa theo chiều dọc */
+}
+
+    .login-cart-container a {
+        margin-left: 10px; /* Khoảng cách giữa các biểu tượng */
+    }

@@ -59,28 +59,48 @@
     var productCount = 1; // Biến này sẽ được sử dụng để tạo chỉ số duy nhất cho mỗi sản phẩm
 
     function addProduct() {
+        // Tăng chỉ số duy nhất cho sản phẩm tiếp theo
+        productCount++;
+
         var detailsDiv = document.getElementById("details");
         var productDiv = document.createElement("div");
         productDiv.className = "product";
 
         // Thêm chỉ số duy nhất vào id của mỗi phần tử
         productDiv.innerHTML = `
-                    <label for="MaSanPham${productCount}">Mã Sản Phẩm:</label>
-                    <select id="MaSanPham${productCount}" name="ChiTietNhapHangs[${productCount - 1}].MaSanPham" class="form-control">
-    @foreach (var item in ViewBag.DanhSachSanPham)
+              <label for="MaSanPham${productCount}">Mã Sản Phẩm:</label>
+              <select id="MaSanPham${productCount}" name="ChiTietNhapHangs[${productCount - 1}].MaSanPham" class="form-control">
+    @foreach (var item in ViewBag.MaSanPham)
     {
-                                    <option value="@item.Value">@item.Text</option>
+                              <option value="@item.Value">@item.Text</option>
     }
-                    </select>
-                    <label for="SoLuong${productCount}">Số Lượng:</label>
-                    <input type="number" id="SoLuong${productCount}" name="ChiTietNhapHangs[${productCount - 1}].SoLuongNhap" class="form-control">
-                    <label for="Gia${productCount}">Giá:</label>
-                    <input type="number" id="Gia${productCount}" name="ChiTietNhapHangs[${productCount - 1}].Gia" class="form-control">
-                `;
+          </select>
+          <select id="MaNhaCungCap${productCount}" name="ChiTietNhapHangs[${productCount - 1}].MaNhaCungCap" class="form-control">
+    @foreach (var item in ViewBag.MaNhaCungCap)
+    {
+                                <option value="@item.Value">@item.Text</option>
+    }
+                </select>
+
+                <label for="SoLuong${productCount}">Số Lượng:</label>
+                <input type="number" id="SoLuong${productCount}" name="ChiTietNhapHangs[${productCount - 1}].SoLuongNhap" class="form-control">
+                <label for="Gia${productCount}">Giá:</label>
+                <input type="number" id="Gia${productCount}" name="ChiTietNhapHangs[${productCount - 1}].Gia" class="form-control">
+              `;
         detailsDiv.appendChild(productDiv);
 
-        productCount++; // Tăng chỉ số duy nhất cho sản phẩm tiếp theo
+        // Log dữ liệu của sản phẩm mới vào console để kiểm tra
+        console.log("Dữ liệu của sản phẩm mới:");
+        console.log({
+            index: productCount - 1,
+            MaSanPham: document.getElementById(`MaSanPham${productCount}`).value,
+            MaNhaCungCap: document.getElementById(`MaNhaCungCap${productCount}`).value,
+            SoLuongNhap: document.getElementById(`SoLuong${productCount}`).value,
+            Gia: document.getElementById(`Gia${productCount}`).value
+        });
     }
+
+
 </script>
 
 

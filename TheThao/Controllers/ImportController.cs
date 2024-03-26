@@ -24,8 +24,9 @@ namespace TheThao.Controllers
             ViewData["MaSanPham"] = new SelectList(_context.SanPhams, "Id", "Name");
             ViewData["MaNhapHang"] = new SelectList(_context.NhapHangs, "Id", "Id");
             ViewData["MaNhaCungCap"] = new SelectList(_context.NhaCungCaps, "Id", "TenNhaCungCap");
-
+            
             ViewBag.DanhSachSanPham = new SelectList(_context.SanPhams, "Id", "Name");
+
             return View();
         }
 
@@ -67,11 +68,12 @@ namespace TheThao.Controllers
                         TongTien = chiTiet.SoLuongNhap * chiTiet.Gia, // Tính tổng tiền
                         MaNhapHang = nhapHang.Id
                     };
-                    
+
                     _context.Add(chiTietNhapHang);
+                    _context.SaveChanges();
                 }
                 _productService.UpdateProductPrices();
-                _context.SaveChanges();
+
 
                 return RedirectToAction(nameof(Index));
             }
