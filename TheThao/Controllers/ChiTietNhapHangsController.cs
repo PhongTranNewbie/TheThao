@@ -78,7 +78,7 @@ namespace TheThao.Controllers
 
 
                 // Lưu các thay đổi vào cơ sở dữ liệu
-                await _context.SaveChangesAsync();
+                
 
                 return RedirectToAction(nameof(Index));
             }

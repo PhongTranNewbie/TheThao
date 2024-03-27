@@ -24,6 +24,7 @@ internal class Program
         builder.Services.AddScoped<ICustomerService, CustomerService>();
         builder.Services.AddScoped<IProductService, ProductService>();
         builder.Services.AddHostedService<PriceUpdateService>();
+        builder.Services.AddScoped<IPromotionService, PromotionService>();
         var app = builder.Build();
 
 

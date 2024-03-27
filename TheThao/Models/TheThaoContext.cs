@@ -142,7 +142,7 @@ public partial class TheThaoContext : DbContext
             entity.HasOne(d => d.MaKmNavigation).WithMany(p => p.ChiTietKhuyenMais)
                 .HasForeignKey(d => d.MaKm)
                 .OnDelete(DeleteBehavior.Cascade)
-                .HasConstraintName("FK_ChiTietKhuyenMai_KhuyenMai");
+                .HasConstraintName("FK_ChiTietKhuyenMai_KhuyenMai1");
 
             entity.HasOne(d => d.MaSanPhamNavigation).WithMany(p => p.ChiTietKhuyenMais)
                 .HasForeignKey(d => d.MaSanPham)

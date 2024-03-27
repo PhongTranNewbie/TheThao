@@ -70,12 +70,18 @@ namespace TheThao.Controllers
                     };
 
                     _context.Add(chiTietNhapHang);
+                    _productService.UpdateProductPrices();
+                    var product = _context.SanPhams.FirstOrDefault(p => p.Id == chiTietNhapHang.MaSanPham);
+                    var sl = product.SoLuong;
+                    sl += chiTietNhapHang.SoLuongNhap;
+                    product.SoLuong = sl;
+                    
                     _context.SaveChanges();
                 }
                 _productService.UpdateProductPrices();
 
 
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction("Index", "ChiTietNhapHangs");
             }
             return View(model);
         }

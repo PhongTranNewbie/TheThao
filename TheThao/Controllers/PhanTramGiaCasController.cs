@@ -55,7 +55,7 @@ namespace TheThao.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,PhanTram")] PhanTramGiaCa Pt)
+        public async Task<IActionResult> Create([Bind("Id,PhanTram,UserId")] PhanTramGiaCa Pt)
         {
             
                 _context.Add(Pt);
@@ -85,7 +85,7 @@ namespace TheThao.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,PhanTram")] PhanTramGiaCa Pt)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,PhanTram,UserId")] PhanTramGiaCa Pt)
         {
             if (id != Pt.Id)
             {

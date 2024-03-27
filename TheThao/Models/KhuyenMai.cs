@@ -7,7 +7,7 @@ public partial class KhuyenMai
 {
     public int Id { get; set; }
 
-    public int? TenKm { get; set; }
+    public string? TenKm { get; set; }
 
     public int? PhanTramKhuyenMai { get; set; }
 

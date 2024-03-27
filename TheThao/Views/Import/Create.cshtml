@@ -2,6 +2,7 @@
 @inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
 @{
     var userId = HttpContextAccessor.HttpContext.Session.GetString("UserId");
+    Layout = "ExAdm";
 }
 <h1>Tạo mới nhập hàng</h1>
 

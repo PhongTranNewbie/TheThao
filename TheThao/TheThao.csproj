@@ -45,6 +45,16 @@
 
   <ItemGroup>
     <None Include="..\.editorconfig" Link=".editorconfig" />
+    <None Include="Views\ChiTietKhuyenMais\Create.cshtml" />
+    <None Include="Views\ChiTietKhuyenMais\Delete.cshtml" />
+    <None Include="Views\ChiTietKhuyenMais\Details.cshtml" />
+    <None Include="Views\ChiTietKhuyenMais\Edit.cshtml" />
+    <None Include="Views\ChiTietKhuyenMais\Index.cshtml" />
+    <None Include="Views\KhuyenMais\Create.cshtml" />
+    <None Include="Views\KhuyenMais\Delete.cshtml" />
+    <None Include="Views\KhuyenMais\Details.cshtml" />
+    <None Include="Views\KhuyenMais\Edit.cshtml" />
+    <None Include="Views\KhuyenMais\Index.cshtml" />
     <None Include="wwwroot\assets\css\icons\tabler-icons\fonts\tabler-icons.eot" />
     <None Include="wwwroot\assets\css\icons\tabler-icons\fonts\tabler-icons.svg" />
     <None Include="wwwroot\assets\css\icons\tabler-icons\fonts\tabler-icons.ttf" />
