@@ -182,7 +182,6 @@ public partial class TheThaoContext : DbContext
             entity.Property(e => e.Id)
                 .HasMaxLength(255)
                 .IsUnicode(false);
-            entity.Property(e => e.Ngay).HasColumnType("date");
             entity.Property(e => e.NgayTao).HasColumnType("date");
 
             entity.HasOne(d => d.User).WithMany(p => p.DonHangs)

@@ -9,8 +9,6 @@ public partial class DonHang
 
     public DateTime? NgayTao { get; set; }
 
-    public DateTime? Ngay { get; set; }
-
     public int? TrangThai { get; set; }
 
     public int? UserId { get; set; }
