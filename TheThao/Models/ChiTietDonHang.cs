@@ -9,7 +9,11 @@ public partial class ChiTietDonHang
 
     public int? MaSanPham { get; set; }
 
-    public int? MaDonHang { get; set; }
+    public string? MaDonHang { get; set; }
+
+    public decimal? Gia { get; set; }
+
+    public int? SoLuong { get; set; }
 
     public virtual DonHang? MaDonHangNavigation { get; set; }
 

@@ -52,11 +52,8 @@ namespace TheThao.Services
                 throw new Exception("Error updating cart item on server");
             }
             // Update cart locally after successful update on server
-            var cartItem = _cart.ChiTietGioHangs.FirstOrDefault(c => c.Id == itemId);
-            if (cartItem != null)
-            {
-                cartItem.Quantity = quantity;
-            }
+            
+            
         }
 
         private string GetUserIdFromSession()

@@ -9,11 +9,11 @@ public partial class KhuyenMai
 
     public string? TenKm { get; set; }
 
-    public int? PhanTramKhuyenMai { get; set; }
+    public int PhanTramKhuyenMai { get; set; }
 
-    public int? UserId { get; set; }
+    public int UserId { get; set; }
 
     public virtual ICollection<ChiTietKhuyenMai> ChiTietKhuyenMais { get; set; } = new List<ChiTietKhuyenMai>();
 
-    public virtual User? User { get; set; }
+    public virtual User User { get; set; } = null!;
 }

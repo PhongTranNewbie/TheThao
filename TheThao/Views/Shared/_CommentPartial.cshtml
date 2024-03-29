@@ -1,0 +1,59 @@
+﻿@using Microsoft.EntityFrameworkCore
+@using Microsoft.IdentityModel.Tokens
+@model TheThao.Models.BinhLuanViewModel
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
+<table style ="width: 100%; border: 1px solid black">
+    <tr>
+        <td>
+            @Model.NgayTao.ToString()
+
+        </td>
+    </tr>
+    <tr>
+        <td>
+            @if (Model.UserId !=null)
+            {
+                // Lấy tên từ cơ sở dữ liệu dựa trên UserId
+                var users = ViewData["Users"] as List<User>; // Ép kiểu ViewData["Users"] sang List<User>
+                var user = users.FirstOrDefault(u => u.Id == Model.UserId);
+                if (user != null)
+                {
+                    @user.Ten
+                }
+                else
+                {
+                    <span class="text-muted">Not available</span>
+                }
+            }
+            else
+            {
+                <span class="text-muted">Not available</span>
+            }
+        </td>
+    </tr>
+    <tr>
+        <td>
+        @Model.BinhLuan1
+        </td>
+    </tr>
+    <tr>
+        <td>
+            @{
+                int rate = Model.Rate ?? 0; // Use 0 if Model.Rate is null
+            }
+
+            @for (int i = 0; i < rate; i++)
+            {
+                <span class="glyphicon glyphicon-star"></span>
+            }
+
+            @for (int i = rate; i < 5; i++)
+            {
+                <span class="glyphicon glyphicon-star-empty"></span>
+            }
+
+        </td>
+    </tr>
+</table>

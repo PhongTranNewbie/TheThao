@@ -119,5 +119,11 @@ namespace TheThao.Controllers
         {
             return (_context.ChiTietHinhAnhs?.Any(e => e.Id == id)).GetValueOrDefault();
         }
+        public bool HasPromotion(int productId)
+        {
+            // Kiểm tra xem có bất kỳ chi tiết khuyến mãi nào cho sản phẩm không
+            return _context.ChiTietKhuyenMais.Any(ctkm => ctkm.MaSanPham == productId);
+        }
+
     }
 }

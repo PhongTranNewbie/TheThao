@@ -67,7 +67,7 @@ namespace TheThao.Controllers
             if (ModelState.IsValid)
             {
                 _context.Add(chiTietNhapHang);
-                _productService.UpdateProductPrices();
+                
                 var product = _context.SanPhams.FirstOrDefault(p => p.Id == chiTietNhapHang.MaSanPham);
                 var sl = product.SoLuong;
                 sl += chiTietNhapHang.SoLuongNhap;
@@ -78,8 +78,8 @@ namespace TheThao.Controllers
 
 
                 // Lưu các thay đổi vào cơ sở dữ liệu
-                
 
+                _productService.UpdateProductPrices();
                 return RedirectToAction(nameof(Index));
             }
             ViewData["MaNhaCungCap"] = new SelectList(_context.NhaCungCaps, "Id", "TenNhaCungCap", chiTietNhapHang.MaNhaCungCap);

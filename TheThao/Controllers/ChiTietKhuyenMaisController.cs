@@ -51,7 +51,7 @@ namespace TheThao.Controllers
         public IActionResult Create()
         {
             ViewData["MaSanPham"] = new SelectList(_context.SanPhams, "Id", "Name");
-            ViewData["MaKM"] = new SelectList(_context.KhuyenMais, "Id", "TenKM");
+            ViewBag.MaKM = new SelectList(_context.KhuyenMais, "Id", "TenKm");
             return View();
         }
 
@@ -68,12 +68,10 @@ namespace TheThao.Controllers
            
             
 
-            // Lưu các thay đổi vào cơ sở dữ liệu
-                    int maSanPham = (int)phanTram.MaSanPham;
-            int maPhanTram = (int)phanTram.MaKm;
+            
 
             // Gọi phương thức ApplyPromotionAsync để áp dụng khuyến mãi cho sản phẩm
-             _promotionService.ApplyPromotionAsync(maSanPham, maPhanTram);
+             _promotionService.ApplyPromotionAsync();
 
             return RedirectToAction(nameof(Index));
 

@@ -2,7 +2,7 @@
 {
     public interface IPromotionService
     {
-        Task ApplyPromotionAsync(int productId, int percentDiscount);
+        Task ApplyPromotionAsync();
     }
 
 }

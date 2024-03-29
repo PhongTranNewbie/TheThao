@@ -15,7 +15,5 @@ public partial class Shipping
 
     public int? UserId { get; set; }
 
-    public virtual ICollection<DonHang> DonHangs { get; set; } = new List<DonHang>();
-
     public virtual User? User { get; set; }
 }

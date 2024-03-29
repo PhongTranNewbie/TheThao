@@ -162,16 +162,51 @@ namespace TheThao.Controllers
         }
         public IActionResult ChiTietSanPham(int id)
         {
+            var users = _context.Users.ToList();
+
+            // Truyền dữ liệu sang view
+            ViewData["Users"] = users;
             ViewBag.SanPham = _context.SanPhams.FirstOrDefault(e => e.Id == id);
             ViewBag.ChiTietHinhAnhs = _context.ChiTietHinhAnhs.ToList();
-            return View();
+            var listOfCommentViewModels = _context.BinhLuans
+                .Where(b => b.MaSanPham == id) // Thay vì b.Id == id, sử dụng b.MaSanPham == id để lấy tất cả bình luận cho sản phẩm này
+                .Select(a => new BinhLuanViewModel
+                {
+                    Id = a.Id,
+                    MaSanPham = a.MaSanPham,
+                    UserId = a.UserId,
+                    BinhLuan1 = a.BinhLuan1,
+                    NgayTao = a.NgayTao,
+                    NgayCuoiCapNhat = a.NgayCuoiCapNhat,
+                    Rate = a.Rate
+                })
+                .ToList();
+            return View(listOfCommentViewModels);
         }
-        public IActionResult LoaiSanPham()
+
+
+
+        [HttpPost]
+        public ActionResult AddComment(int id, int rate, string productComment)
         {
-            return View();
+            BinhLuan bl = new BinhLuan();
+            bl.MaSanPham = id; // Sử dụng id được truyền từ form
+            bl.BinhLuan1 = productComment;
+            bl.NgayTao = DateTime.Now;
+            bl.Rate = rate;
+            var userIdString = HttpContext.Session.GetString("UserId");
+            if (!string.IsNullOrEmpty(userIdString) && int.TryParse(userIdString, out int userId))
+            {
+                bl.UserId = userId;
+            }
+            _context.BinhLuans.Add(bl);
+            _context.SaveChanges();
+            return RedirectToAction("ChiTietSanPham", new { id = id });
         }
+
+
 
     }
 
-   
+
 }

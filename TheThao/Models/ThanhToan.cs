@@ -19,7 +19,5 @@ public partial class ThanhToan
 
     public int? MaDonHang { get; set; }
 
-    public virtual DonHang? MaDonHangNavigation { get; set; }
-
     public virtual User? User { get; set; }
 }

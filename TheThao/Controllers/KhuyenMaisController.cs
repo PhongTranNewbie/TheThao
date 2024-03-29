@@ -57,12 +57,23 @@ namespace TheThao.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,TenKm,PhanTramKhuyenMai,UserId")] KhuyenMai Pt)
         {
+            // Lấy UserId từ Session
+            var userIdString = HttpContext.Session.GetString("AdminId");
+            if (userIdString != null)
+            {
+                if (int.TryParse(userIdString, out int userId))
+                {
+                    Pt.UserId = userId;
+                    _context.Add(Pt);
+                    await _context.SaveChangesAsync();
+                    return RedirectToAction(nameof(Index));
+                }
+            }
 
-            _context.Add(Pt);
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
-
+            // Nếu không lấy được UserId từ Session hoặc không thể chuyển đổi thành số nguyên, quay lại trang Create với dữ liệu hiện tại
+            return View(Pt);
         }
+
 
         // GET: NhaCungCaps/Edit/5
         public async Task<IActionResult> Edit(int? id)

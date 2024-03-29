@@ -17,7 +17,6 @@ public partial class GioHang
 
     public int? UserId { get; set; }
 
-    public virtual ICollection<ChiTietGioHang> ChiTietGioHangs { get; set; } = new List<ChiTietGioHang>();
 
     public virtual DonHang? MaDonHangNavigation { get; set; }
 

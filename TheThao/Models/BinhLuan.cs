@@ -17,6 +17,8 @@ public partial class BinhLuan
 
     public DateTime? NgayCuoiCapNhat { get; set; }
 
+    public int? Rate { get; set; }
+
     public virtual SanPham? MaSanPhamNavigation { get; set; }
 
     public virtual User? User { get; set; }

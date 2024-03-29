@@ -18,45 +18,47 @@ namespace TheThao.Services
         public void UpdateProductPrices()
         {
             var products = _context.SanPhams
-                .Include(p => p.ChiTietPhanTrams)
-                .ThenInclude(ctpt => ctpt.MaPhanTramNavigation); // Eager loading
+              .Include(p => p.ChiTietPhanTrams)
+              .ThenInclude(ctpt => ctpt.MaPhanTramNavigation) // Include latest percentage discount
+              .Include(p => p.ChiTietNhapHangs)
+              .ThenInclude(ctnh => ctnh.MaNhapHangNavigation)
+              .Include(p => p.ChiTietKhuyenMais)
+              .ThenInclude(ctkm => ctkm.MaKmNavigation)// Include latest purchase price
+              .ToList(); // Load all products into memory
 
             foreach (var product in products)
             {
-                // Get the ChiTietPhanTram with the newest NgayBatDau
-                var latestChiTietPhanTram = product.ChiTietPhanTrams
-                    .OrderByDescending(ctpt => ctpt.NgayBatDau)
-                    .FirstOrDefault();
+                // Lấy phần trăm giảm giá mới nhất
+                var latestPercentage = product.ChiTietPhanTrams
+                  .OrderByDescending(ctpt => ctpt.Id)
+                  .FirstOrDefault()?.MaPhanTramNavigation?.PhanTram ?? 0;
+                // Lấy phần trăm khuyến mãi mới nhất
+                var latestPromotionPercentage = product.ChiTietKhuyenMais
+                    .OrderByDescending(ctkm => ctkm.Id)
+                    .FirstOrDefault()?.MaKmNavigation?.PhanTramKhuyenMai ?? 0; // Mặc định là 1 nếu không có khuyến mãi
 
-                if (latestChiTietPhanTram != null)
+                // Lấy giá nhập hàng mới nhất
+                var latestPurchasePrice = product.ChiTietNhapHangs
+                  .OrderByDescending(ctnh => ctnh.Id)
+                  .FirstOrDefault()?.Gia;
+
+                // Cập nhật giá mới cho sản phẩm
+                if (latestPurchasePrice.HasValue)
                 {
-                    var latestPercentage = latestChiTietPhanTram.MaPhanTramNavigation?.PhanTram;
+                    var newPrice = latestPurchasePrice * (1 + (decimal)latestPercentage / 100) * (1 - (decimal)latestPromotionPercentage / 100);
 
-                    if (latestPercentage.HasValue)
-                    {
-                        // Use conditional logic to handle missing purchase history or null Gia values
-                        var latestPurchasePrice = product.ChiTietNhapHangs
-                            .OrderByDescending(ctnh => ctnh.MaNhapHangNavigation?.NgayNhapHang)
-                            .Select(ctnh => ctnh.Gia) // Get Gia values, even if null
-                            .FirstOrDefault();
-
-                        if (latestPurchasePrice.HasValue)
-                        {
-                            var newPrice = latestPurchasePrice.Value * (1 + (decimal)latestPercentage / 100);
-                            product.Gia = newPrice;
-                        }
-                        else
-                        {
-                            // Handle the case where there's no purchase history for the product
-                            // (e.g., set a default price, log a warning, etc.)
-                            Console.WriteLine($"Warning: No purchase history found for product {product.Id}");
-                        }
-                    }
+                    // Cập nhật giá mới cho sản phẩm
+                    product.Gia = newPrice;
                 }
+
             }
 
             _context.SaveChanges();
         }
+
+       
+        
+
 
 
     }

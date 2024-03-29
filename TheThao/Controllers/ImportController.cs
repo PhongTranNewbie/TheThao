@@ -70,7 +70,7 @@ namespace TheThao.Controllers
                     };
 
                     _context.Add(chiTietNhapHang);
-                    _productService.UpdateProductPrices();
+                   
                     var product = _context.SanPhams.FirstOrDefault(p => p.Id == chiTietNhapHang.MaSanPham);
                     var sl = product.SoLuong;
                     sl += chiTietNhapHang.SoLuongNhap;
