@@ -2,64 +2,58 @@
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using TheThao.Models;
+using TheThao.Services;
 
-namespace TheThao.Services
+public class ProductService : IProductService
 {
-    public class ProductService : IProductService
+    private readonly TheThaoContext _context;
+
+    public ProductService(TheThaoContext context)
     {
-        private readonly TheThaoContext _context;
+        _context = context;
+    }
 
-        public ProductService(TheThaoContext context)
+    public void UpdateProductPrices()
+    {
+        var products = _context.SanPhams
+            .Include(p => p.ChiTietPhanTrams)
+            .ThenInclude(ctpt => ctpt.MaPhanTramNavigation) // Include latest percentage discount
+            .Include(p => p.ChiTietNhapHangs)
+            .ThenInclude(ctnh => ctnh.MaNhapHangNavigation)
+            .Include(p => p.ChiTietKhuyenMais)
+            .ThenInclude(ctkm => ctkm.MaKmNavigation) // Include latest promotion
+            .ToList(); // Load all products into memory
+
+        foreach (var product in products)
         {
-            _context = context;
-        }
+            // Lấy phần trăm giảm giá mới nhất
+            var latestPercentage = product.ChiTietPhanTrams
+                .OrderByDescending(ctpt => ctpt.Id)
+                .FirstOrDefault()?.MaPhanTramNavigation?.PhanTram ?? 0;
 
+            // Lấy khuyến mãi hiện tại (nếu có và chưa hết hạn)
+            var latestPromotion = product.ChiTietKhuyenMais
+                .Where(ctkm => ctkm.NgayKetThuc >= DateTime.Now)
+                .OrderByDescending(ctkm => ctkm.Id)
+                .FirstOrDefault()?.MaKmNavigation?.PhanTramKhuyenMai ?? 0;
 
-        public void UpdateProductPrices()
-        {
-            var products = _context.SanPhams
-              .Include(p => p.ChiTietPhanTrams)
-              .ThenInclude(ctpt => ctpt.MaPhanTramNavigation) // Include latest percentage discount
-              .Include(p => p.ChiTietNhapHangs)
-              .ThenInclude(ctnh => ctnh.MaNhapHangNavigation)
-              .Include(p => p.ChiTietKhuyenMais)
-              .ThenInclude(ctkm => ctkm.MaKmNavigation)// Include latest purchase price
-              .ToList(); // Load all products into memory
+            // Lấy giá nhập hàng mới nhất
+            var latestPurchasePrice = product.ChiTietNhapHangs
+                .OrderByDescending(ctnh => ctnh.Id)
+                .FirstOrDefault()?.Gia;
 
-            foreach (var product in products)
+            // Nếu có giá nhập hàng và có khuyến mãi mới
+            if (latestPurchasePrice.HasValue && latestPromotion >= 0)
             {
-                // Lấy phần trăm giảm giá mới nhất
-                var latestPercentage = product.ChiTietPhanTrams
-                  .OrderByDescending(ctpt => ctpt.Id)
-                  .FirstOrDefault()?.MaPhanTramNavigation?.PhanTram ?? 0;
-                // Lấy phần trăm khuyến mãi mới nhất
-                var latestPromotionPercentage = product.ChiTietKhuyenMais
-                    .OrderByDescending(ctkm => ctkm.Id)
-                    .FirstOrDefault()?.MaKmNavigation?.PhanTramKhuyenMai ?? 0; // Mặc định là 1 nếu không có khuyến mãi
+                var newPrice = latestPurchasePrice * (1 + (decimal)latestPercentage / 100) * (1 - (decimal)latestPromotion / 100);
 
-                // Lấy giá nhập hàng mới nhất
-                var latestPurchasePrice = product.ChiTietNhapHangs
-                  .OrderByDescending(ctnh => ctnh.Id)
-                  .FirstOrDefault()?.Gia;
-
-                // Cập nhật giá mới cho sản phẩm
-                if (latestPurchasePrice.HasValue)
-                {
-                    var newPrice = latestPurchasePrice * (1 + (decimal)latestPercentage / 100) * (1 - (decimal)latestPromotionPercentage / 100);
-
-                    // Cập nhật giá mới cho sản phẩm
-                    product.Gia = newPrice;
-                }
-
+                // Áp dụng giá mới và cập nhật GiaTruocKhiGiamGia
+                product.Gia = newPrice;
+                product.GiaTruocKhiGiamGia = latestPurchasePrice * (1 + (decimal)latestPercentage / 100);
             }
-
-            _context.SaveChanges();
         }
 
-       
-        
-
-
-
+        // Lưu các thay đổi vào cơ sở dữ liệu
+        _context.SaveChanges();
     }
 }

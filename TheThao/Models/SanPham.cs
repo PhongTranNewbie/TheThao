@@ -13,6 +13,8 @@ public partial class SanPham
 
     public decimal? Gia { get; set; }
 
+    public decimal? GiaTruocKhiGiamGia { get; set; }
+
     public string? HinhAnh { get; set; }
 
     public int? SoLuong { get; set; }

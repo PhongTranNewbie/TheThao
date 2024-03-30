@@ -57,11 +57,19 @@ namespace TheThao.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,PhanTram,UserId")] PhanTramGiaCa Pt)
         {
+            var userIdString = HttpContext.Session.GetString("AdminId");
+            if (!string.IsNullOrEmpty(userIdString))
+            {
+                if (int.TryParse(userIdString, out int userId))
+                {
+                    Pt.UserId = userId;
+                    _context.Add(Pt);
+                    await _context.SaveChangesAsync();
+                    return RedirectToAction(nameof(Index));
+                }
+            }
             
-                _context.Add(Pt);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            
+            return View(Pt);
         }
 
         // GET: NhaCungCaps/Edit/5

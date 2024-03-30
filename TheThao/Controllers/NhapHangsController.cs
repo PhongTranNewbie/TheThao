@@ -60,7 +60,7 @@ namespace TheThao.Controllers
         {
             if (ModelState.IsValid)
             {
-                var userIdString = HttpContext.Session.GetString("UserId");
+                var userIdString = HttpContext.Session.GetString("AdminId");
                 if (!string.IsNullOrEmpty(userIdString))
                 {
                     if (int.TryParse(userIdString, out int userId))

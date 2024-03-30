@@ -2,7 +2,7 @@
 {
     public interface IPromotionService
     {
-        Task ApplyPromotionAsync();
+        void ApplyPromotion();
     }
 
 }

@@ -66,15 +66,16 @@
                         <h5 class="mt-2" >@product.Name</h5>
                     </a>
 
-                    <p>Giá: @string.Format("{0:N0}", product.Gia)</p>
-
                     @if (isPromotionActive)
                     {
-                        <p class="text-danger">Khuyến mãi đang diễn ra!</p>
+                        // Hiển thị giá trước khi giảm giá và giá sau khi giảm giá
+                        <p>Giá trước khi giảm giá: @string.Format("{0:N0}", product.GiaTruocKhiGiamGia)</p>
+                        <p>Giá sau khi giảm giá: @string.Format("{0:N0}", product.Gia)</p>
                     }
                     else
                     {
-                        <p>Sản phẩm này không có khuyến mãi.</p>
+                        // Hiển thị giá khi không có khuyến mãi
+                        <p>Giá: @string.Format("{0:N0}", product.Gia)</p>
                     }
 
                     <form asp-controller="Cart" asp-action="AddToCart" method="post">
