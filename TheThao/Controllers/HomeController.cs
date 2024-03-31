@@ -124,6 +124,9 @@ namespace TheThao.Controllers
             // Kiểm tra xem có bất kỳ chi tiết khuyến mãi nào cho sản phẩm không
             return _context.ChiTietKhuyenMais.Any(ctkm => ctkm.MaSanPham == productId);
         }
-
+        public IActionResult CheckoutSuccess()
+        {
+            return View();
+        }
     }
 }

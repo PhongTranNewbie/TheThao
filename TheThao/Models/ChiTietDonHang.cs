@@ -11,9 +11,9 @@ public partial class ChiTietDonHang
 
     public string? MaDonHang { get; set; }
 
-    public decimal? Gia { get; set; }
+    public decimal Gia { get; set; }
 
-    public int? SoLuong { get; set; }
+    public int SoLuong { get; set; }
 
     public virtual DonHang? MaDonHangNavigation { get; set; }
 

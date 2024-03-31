@@ -1,18 +1,20 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using TheThao.Models;
+using TheThao.Services;
+using TheThao.ViewModels;
 
 namespace TheThao.Controllers
 {
     public class CheckoutController : Controller
     {
         private readonly TheThaoContext _context;
+        private readonly IEmailSender _emailSender;
 
-        public CheckoutController(TheThaoContext context)
+        public CheckoutController(TheThaoContext context, IEmailSender emailSender)
         {
             _context = context;
-            
-
+            _emailSender = emailSender;
         }
         public async Task<IActionResult> Checkout()
         {
@@ -33,20 +35,19 @@ namespace TheThao.Controllers
                 }
                 else
                 {
-                    // Tạo mã đơn hàng mới
                     var orderCode = Guid.NewGuid().ToString();
 
                     // Tạo một đơn hàng mới
                     var orderItem = new DonHang();
-                   orderItem.Id = orderCode;
+                    orderItem.Id = orderCode;
                     orderItem.UserId = userId;
                     orderItem.TrangThai = 1;
-                    orderItem.NgayTao = DateTime.Now;
+                    orderItem.NgayTao = DateTime.UtcNow;
                     _context.Add(orderItem);
-                    await _context.SaveChangesAsync();
-                    
+                    await _context.SaveChangesAsync(); // Lưu đơn hàng vào cơ sở dữ liệu
+
                     var cartItems = HttpContext.Session.Get<List<ShoppingCartItem>>("Cart") ?? new List<ShoppingCartItem>();
-                    foreach(var cart in cartItems)
+                    foreach (var cart in cartItems)
                     {
                         var orderdetails = new ChiTietDonHang();
                         orderdetails.MaSanPham = cart.SanPham.Id;
@@ -54,12 +55,27 @@ namespace TheThao.Controllers
                         orderdetails.Gia = cart.SanPham.Gia;
                         orderdetails.SoLuong = cart.Quantity;
                         _context.Add(orderdetails);
-                        _context.SaveChangesAsync();
-
                     }
-                    TempData["success"] = "Checkout thành công, vui lòng chờ duyệt đơn hàng";
-                    // Return view checkout với đối tượng đơn hàng
-                    return RedirectToAction("ViewCart", "Cart");
+
+                    await _context.SaveChangesAsync(); // Lưu các chi tiết đơn hàng vào cơ sở dữ liệu
+                    await _emailSender.SendEmailAsync(user.Email, "Đơn hàng mới", $"Đơn hàng của bạn có mã {orderCode} đã được tạo thành công.");
+                    HttpContext.Session.Remove("Cart");
+                    // Tính tổng tiền
+                    decimal tongTien = _context.ChiTietDonHangs
+                        .Where(ct => ct.MaDonHang == orderCode)
+                        .Sum(ct => ct.Gia * ct.SoLuong);
+
+                    var viewModel = new CheckoutSuccessViewModel
+                    {
+                        DonHang = orderItem,
+                        ChiTietDonHangs = _context.ChiTietDonHangs
+                            .Include(ct => ct.MaSanPhamNavigation)
+                            .Where(ct => ct.MaDonHang == orderCode)
+                            .ToList(),
+                        TongTien = tongTien // Gán giá trị tổng tiền vào ViewModel
+                    };
+
+                    return View(viewModel);
 
                 }
             }

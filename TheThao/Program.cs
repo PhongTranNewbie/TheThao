@@ -1,5 +1,4 @@
-﻿
-using Microsoft.AspNetCore.Authentication;
+﻿using Microsoft.AspNetCore.Authentication;
 using Microsoft.EntityFrameworkCore;
 using TheThao.Services;
 using TheThao.Models;
@@ -14,7 +13,7 @@ internal class Program
 
         // Add services to the container.
         builder.Services.AddControllersWithViews();
-        
+
         builder.Services.AddDbContext<TheThaoContext>(options =>
             options.UseSqlServer(configuration.GetConnectionString("DefaultConnection")));
 
@@ -25,6 +24,10 @@ internal class Program
         builder.Services.AddScoped<IProductService, ProductService>();
         builder.Services.AddHostedService<PriceUpdateService>();
         builder.Services.AddScoped<IPromotionService, PromotionService>();
+
+        // Đăng ký dịch vụ EmailSender
+        builder.Services.AddTransient<IEmailSender, EmailSender>();
+
         var app = builder.Build();
 
 
@@ -41,8 +44,6 @@ internal class Program
 
         // Add session middleware
         app.UseSession(); // Kích hoạt session trong pipeline middleware
-
-
 
         app.MapControllerRoute(
             name: "default",

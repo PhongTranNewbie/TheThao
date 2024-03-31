@@ -45,19 +45,19 @@ namespace TheThao.Services
                 // Cập nhật giá mới cho sản phẩm
                 if (latestPurchasePrice.HasValue)
                 {
-                    var newPrice = latestPurchasePrice * (1 + (decimal)latestPercentage / 100) * (1 - (decimal)latestPromotionPercentage / 100);
+                    var newPrice = latestPurchasePrice.Value * (1 + (decimal)latestPercentage / 100) * (1 - (decimal)latestPromotionPercentage / 100);
 
                     // Cập nhật giá mới cho sản phẩm
                     product.Gia = newPrice;
                 }
-
             }
 
             _context.SaveChanges();
         }
 
-       
-        
+
+
+
 
 
 
