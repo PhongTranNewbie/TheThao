@@ -1,0 +1,67 @@
+﻿@model IEnumerable<TheThao.Models.DonHang>
+
+@{
+    Layout = "ExAdm";
+}
+
+<h1>Index</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table id="table-body" class="table">
+    <thead>
+        <tr>
+            <th>
+                Id
+            </th>
+            <th>
+                Ngày Tạo
+            </th>
+            <th>
+                Trạng Thái
+            </th>
+            <th>
+                User Id
+            </th>
+            <th>
+                Chi Tiết Đơn Hàng
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var donHang in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => donHang.Id)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => donHang.NgayTao)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => donHang.TrangThai)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => donHang.UserId)
+                </td>
+                <td>
+                    <a asp-controller="DonHangs" asp-action="Details" asp-route-id="@donHang.Id" class="btn-details">Details</a>
+
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $('.btn-details').click(function (e) {
+                e.preventDefault(); // Ngăn chặn hành động mặc định của nút
+                var url = $(this).attr('href'); // Lấy đường dẫn từ thuộc tính href
+                window.location.href = url; // Chuyển hướng đến đường dẫn
+            });
+        });
+    </script>
+}

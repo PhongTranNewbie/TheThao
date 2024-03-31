@@ -1,0 +1,34 @@
+﻿@model TheThao.ViewModels.CheckoutSuccessViewModel
+<h1>Bạn đã đặt hàng thành công!</h1>
+<h1>Chi Tiết Đơn Hàng</h1>
+
+<p>Thông tin đơn hàng:</p>
+<p>Id: @Model.DonHang.Id</p>
+<p>Ngày Tạo: @Model.DonHang.NgayTao</p>
+
+
+<h2>Danh sách Sản Phẩm</h2>
+@if (Model.ChiTietDonHangs != null && Model.ChiTietDonHangs.Any())
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Sản Phẩm</th>
+                <th>Giá</th>
+                <th>Số Lượng</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var chiTiet in Model.ChiTietDonHangs)
+            {
+                <tr>
+                    <td>@chiTiet.MaSanPhamNavigation.Name</td>
+                    <td>@chiTiet.Gia</td>
+                    <td>@chiTiet.SoLuong</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+<p>Tổng Tiền: @Model.TongTien</p>

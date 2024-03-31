@@ -34,7 +34,7 @@
                     </div>
                 </td>
 
-                <td>@((item.SanPham.Gia * item.Quantity)?.ToString("C0"))</td>
+                <td>@((item.SanPham.Gia * item.Quantity).ToString("C0"))</td>
                 <input type="hidden" value="@item.SanPham.Id" />
                 <td>
                     <a asp-controller="Cart" asp-action="RemoveItem" asp-route-id="@item.SanPham.Id" class="btn btn-danger">Xóa</a>
