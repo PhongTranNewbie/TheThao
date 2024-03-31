@@ -125,5 +125,38 @@ namespace TheThao.Controllers
             return _context.ChiTietKhuyenMais.Any(ctkm => ctkm.MaSanPham == productId);
         }
 
+
+        public ActionResult Search(string keyword, string priceRange)
+        {
+            IQueryable<SanPham> products = _context.SanPhams;
+
+            // Kiểm tra xem người dùng đã chọn phân khúc giá hay chưa
+            if (!string.IsNullOrEmpty(priceRange))
+            {
+                // Tách phân khúc giá thành giá tối thiểu và tối đa
+                var priceSegments = priceRange.Split('-');
+                var minPrice = Convert.ToDecimal(priceSegments[0]); // Chuyển đổi sang decimal
+                var maxPrice = priceSegments.Length == 2 ? Convert.ToDecimal(priceSegments[1]) : 999999999999; // Set a reasonable maximum value
+
+                // Lọc sản phẩm theo phân khúc giá
+                products = products.Where(p => p.Gia >= minPrice && p.Gia <= maxPrice);
+            }
+
+            // Tìm kiếm sản phẩm dựa trên từ khóa (nếu có)
+            if (!string.IsNullOrEmpty(keyword))
+            {
+                products = products.Where(p => p.Name.Contains(keyword));
+            }
+
+            var productList = products.ToList();
+            var circles = _context.Circles.ToList();
+            ViewBag.CircleImages = circles;
+            // Trả về view kết quả tìm kiếm
+            return View("SearchResults", productList);
+        }
+
+
+
+
     }
 }

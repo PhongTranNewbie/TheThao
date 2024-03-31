@@ -41,12 +41,14 @@ public class CartController : Controller
     [HttpGet]
     public IActionResult ViewCart()
     {
+
         var cartItems = HttpContext.Session.Get<List<ShoppingCartItem>>("Cart") ?? new List<ShoppingCartItem>();
         var cartViewModel = new ShoppingCartViewModel
         {
             CartItems = cartItems,
             TotalPrice = cartItems.Sum(item => item.SanPham.Gia * item.Quantity)
         };
+        ViewBag.SanPham = _context.SanPhams.ToList();
         ViewBag.CartMessage = TempData["CartMessage"];
         return View(cartViewModel);
     }
