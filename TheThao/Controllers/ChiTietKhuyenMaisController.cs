@@ -26,6 +26,8 @@ namespace TheThao.Controllers
         public async Task<IActionResult> Index()
         {
             var theThaoContext = _context.ChiTietKhuyenMais.Include(c => c.MaKmNavigation).Include(c => c.MaSanPhamNavigation);
+
+            _productService.UpdateProductPrices();
             return View(await theThaoContext.ToListAsync());
         }
 
@@ -64,17 +66,11 @@ namespace TheThao.Controllers
         {
 
             _context.Add(phanTram);
-            await _context.SaveChangesAsync();
-           
-            
-
-            
-
             // Gọi phương thức ApplyPromotionAsync để áp dụng khuyến mãi cho sản phẩm
-             _promotionService.ApplyPromotionAsync();
-
+            
+            await _context.SaveChangesAsync();
+            _productService.UpdateProductPrices();
             return RedirectToAction(nameof(Index));
-
         }
 
         // GET: NhaCungCaps/Edit/5
@@ -114,7 +110,7 @@ namespace TheThao.Controllers
                 {
                     _context.Update(phanTram);
                     await _context.SaveChangesAsync();
-                    _productService.UpdateProductPrices();
+                    _promotionService.ApplyPromotion();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -169,7 +165,7 @@ namespace TheThao.Controllers
             }
 
             await _context.SaveChangesAsync();
-            _productService.UpdateProductPrices();
+            _promotionService.ApplyPromotion();
             return RedirectToAction(nameof(Index));
         }
 

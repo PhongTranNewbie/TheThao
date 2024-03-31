@@ -55,9 +55,9 @@ namespace TheThao.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name,ChiTiet,Gia,HinhAnh,SoLuong,TheLoaiId")] SanPham sanPham)
+        public async Task<IActionResult> Create([Bind("Id,Name,ChiTiet,Gia,GiaTruocKhiGiamGia,HinhAnh,SoLuong,TheLoaiId")] SanPham sanPham)
         {
-            
+           
                 _context.Add(sanPham);
             _productService.UpdateProductPrices();
             await _context.SaveChangesAsync();
@@ -88,7 +88,7 @@ namespace TheThao.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,ChiTiet,Gia,HinhAnh,TheLoaiId")] SanPham sanPham)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,ChiTiet,Gia,GiaTruocKhiGiamGia,HinhAnh,SoLuong,TheLoaiId")] SanPham sanPham)
         {
             if (ModelState.IsValid)
             {

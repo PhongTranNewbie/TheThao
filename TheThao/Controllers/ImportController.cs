@@ -36,16 +36,16 @@ namespace TheThao.Controllers
         public IActionResult Create(NhapHangViewModel model)
         {
             int? userId = null;
-            var userIdString = HttpContext.Session.GetString("UserId");
+            var userIdString = HttpContext.Session.GetString("AdminId");
             if (!string.IsNullOrEmpty(userIdString))
             {
-                int parsedUserId;
-                if (int.TryParse(userIdString, out parsedUserId))
+                if (int.TryParse(userIdString, out int parsedUserId))
                 {
                     userId = parsedUserId;
                 }
             }
-                if (ModelState.IsValid)
+
+            if (ModelState.IsValid)
             {
                 var nhapHang = new NhapHang
                 {
@@ -70,21 +70,23 @@ namespace TheThao.Controllers
                     };
 
                     _context.Add(chiTietNhapHang);
-                   
-                    var product = _context.SanPhams.FirstOrDefault(p => p.Id == chiTietNhapHang.MaSanPham);
-                    var sl = product.SoLuong;
-                    sl += chiTietNhapHang.SoLuongNhap;
-                    product.SoLuong = sl;
-                    
-                    _context.SaveChanges();
-                }
-                _productService.UpdateProductPrices();
 
+                    var product = _context.SanPhams.FirstOrDefault(p => p.Id == chiTietNhapHang.MaSanPham);
+                    if (product != null)
+                    {
+                        product.SoLuong += chiTietNhapHang.SoLuongNhap;
+                        _context.SaveChanges();
+                    }
+                }
+
+                _productService.UpdateProductPrices();
 
                 return RedirectToAction("Index", "ChiTietNhapHangs");
             }
+
             return View(model);
         }
+
 
 
 

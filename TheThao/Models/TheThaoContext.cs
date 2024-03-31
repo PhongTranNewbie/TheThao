@@ -263,6 +263,7 @@ public partial class TheThaoContext : DbContext
 
             entity.Property(e => e.ChiTiet).HasMaxLength(800);
             entity.Property(e => e.Gia).HasColumnType("decimal(12, 0)");
+            entity.Property(e => e.GiaTruocKhiGiamGia).HasColumnType("decimal(12, 0)");
             entity.Property(e => e.HinhAnh).HasMaxLength(500);
             entity.Property(e => e.Name).HasMaxLength(255);
             entity.Property(e => e.TrangThai)
