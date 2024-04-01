@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
 using TheThao.Models;
@@ -51,10 +52,60 @@ namespace TheThao.Controllers
                 ChiTietDonHangs = chiTietDonHangs,
                 TongTien = tongTien
             };
-
+            ViewBag.User = _context.Users.ToList();
             // Trả về view và truyền view model
             return View(viewModel);
         }
+        // GET: DonHangs/Edit/id
+        // GET: DonHangs/Edit/id
+        public IActionResult Edit(string id)
+        {
+            var donHang = _context.DonHangs
+                                    .Include(d => d.ChiTietDonHangs)
+                                    .ThenInclude(ctdh => ctdh.MaSanPhamNavigation)
+                                    .FirstOrDefault(d => d.Id == id);
+
+            if (donHang == null)
+            {
+                return NotFound();
+            }
+
+            // Calculate total price
+            decimal tongTien = donHang.ChiTietDonHangs.Sum(ctdh => ctdh.Gia * ctdh.SoLuong);
+
+            ViewBag.TongTien = tongTien; // Pass total price to view
+
+            return View(donHang);
+        }
+
+        // POST: DonHangs/Edit
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Edit(DonHang donHang)
+        {
+            if (!ModelState.IsValid)
+            {
+                // If the model is not valid, return the edit view with model errors
+                return View(donHang);
+            }
+
+            var existingDonHang = _context.DonHangs.FirstOrDefault(d => d.Id == donHang.Id);
+
+            if (existingDonHang == null)
+            {
+                return NotFound();
+            }
+
+            // Update order status
+            existingDonHang.TrangThai = donHang.TrangThai;
+
+            _context.SaveChanges();
+
+            return RedirectToAction("Details", new { id = donHang.Id });
+        }
+
+
+
 
 
 

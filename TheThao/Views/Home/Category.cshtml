@@ -1,22 +1,101 @@
 ﻿@{
-    var products = ViewBag.Products as List<TheThao.Models.SanPham>; // Ép kiểu ViewBag.Products thành danh sách sản phẩm
-}
-@{
+    var products = ViewBag.Products as List<TheThao.Models.SanPham>;
     Layout = "Client";
+    var circles = ViewBag.CircleImages as List<TheThao.Models.Circle>;
+    var searchUrl = Url.Action("Search", "Home");// Ép kiểu ViewBag.Products thành danh sách sản phẩm
 }
+<div class="container py-5">
+    <div class="row g-5 align-items-center">
+        <div class="col-md-12 col-lg-7">
+            <h4 class="mb-3 text-secondary">Dụng cụ thể thao</h4>
+            <h1 class="mb-5 display-3 text-primary">Chất lượng và đáng tin cậy</h1>
+            <div class="position-relative mx-auto">
+                <form method="get" action="@Url.Action("Search", "Home")">
+                    <!-- Điều hướng đến action "Search" trong controller "SanPhams" -->
+                    <input name="keyword" class="form-control border-2 border-secondary w-75 py-3 px-4 rounded-pill" type="text" placeholder="Search">
+                    <button type="submit" class="btn btn-primary border-2 border-secondary py-3 px-4 position-absolute rounded-pill text-white h-100" style="top: 0; right: 25%;">Submit Now</button>
+                </form>
+            </div>
+            <div class="col-md-12 col-lg-5 order-first order-lg-last">
+                <div class="position-relative mx-auto mb-4">
+                    <form method="get" action="@Url.Action("Category", "Home")">
+                        <input name="keyword" class="form-control border-2 border-secondary w-75 py-3 px-4 rounded-pill" type="text" placeholder="Search">
+                        <select id="priceRangeDropdown" name="priceRange" class="form-select border-2 border-secondary py-3 px-4 position-absolute rounded-pill text-white h-100" style="top: 0; right: 0;">
+                            <option class="dropdown-item active" value="">Select Price Range</option>
+                            <option class="dropdown-item active" value="0-100000">Dưới 100k</option>
+                            <option class="dropdown-item active" value="100000-500000">100k - 500k</option>
+                            <option class="dropdown-item active" value="500000-1000000">500k - 1 triệu</option>
+                            <option class="dropdown-item active" value="1000000-2000000">1 triệu - 2 triệu</option>
+                            <option class="dropdown-item active" value="2000000-3000000">2 triệu - 3 triệu</option>
+                            <option class="dropdown-item active" value="3000000">Trên 3 triệu</option>
+                        </select>
+                       
+                    </form>
+
+                </div>
+            </div>
+
+        </div>
+        <div class="col-md-12 col-lg-5 order-first order-lg-last">
+            <div id="advertisementCarousel" class="carousel slide" data-bs-ride="carousel">
+                <div class="carousel-inner">
+                    @foreach (var circle in circles)
+                    {
+                        @if (circle.IsVisible == true)
+                        {
+                            <div class="carousel-item @(circle == circles.FirstOrDefault(c => c.IsVisible == true) ? "active" : "")">
+                                <img src="@circle.HinhAnh" class="d-block w-100" alt="Circle Image">
+                            </div>
+                        }
+                    }
+                </div>
+
+
+                <button class="carousel-control-prev" type="button" data-bs-target="#advertisementCarousel" data-bs-slide="prev">
+                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Previous</span>
+                </button>
+                <button class="carousel-control-next" type="button" data-bs-target="#advertisementCarousel" data-bs-slide="next">
+                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Next</span>
+                </button>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+</div>
 <div class="row">
     <!-- Hiển thị danh sách các dụng cụ -->
     @if (products != null && products.Any())
     {
         foreach (var product in products)
         {
+            var promotionService = new PromotionService(new TheThaoContext());
+            var isPromotionActive = promotionService.HasPromotion(product.Id);
             <div class="col-md-4">
                 <div class="product-item">
                     <img src="@Url.Content(product.HinhAnh)" alt="Product Image" class="img-fluid">
                     <h4 class="mt-2"><a asp-action="ChiTietSanPham" asp-controller="SanPhams" asp-route-Id="@product.Id">@product.Name</a></h4>
-                    <p>@product.ChiTiet</p>
-                    <p>@product.Gia</p>
-                    <button class="btn btn-primary">Add to Cart</button>
+
+
+                    @if (isPromotionActive)
+                    {
+                        // Hiển thị giá trước khi giảm giá và giá sau khi giảm giá
+                        <p>Giá trước khi giảm giá: @string.Format("{0:N0}", product.GiaTruocKhiGiamGia)</p>
+                        <p>Giá sau khi giảm giá: @string.Format("{0:N0}", product.Gia)</p>
+                    }
+                    else
+                    {
+                        // Hiển thị giá khi không có khuyến mãi
+                        <p>Giá: @string.Format("{0:N0}", product.Gia)</p>
+                    }
+                    <form asp-controller="Cart" asp-action="AddToCart" method="post">
+                        <input type="hidden" name="productId" value="@product.Id" />
+                        <input type="hidden" name="quantity" value="1" /> <!-- Số lượng mặc định -->
+                        <button type="submit" class="btn btn-primary" asp-action="AddToCart" asp-controller="Cart" asp-route-id="@product.Id">Thêm vào giỏ hàng</button>
+                    </form>
                 </div>
 
             </div>
@@ -28,3 +107,24 @@
     }
 </div>
 
+@section Scripts
+{
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            var priceRangeDropdown = document.getElementById("priceRangeDropdown");
+            if (priceRangeDropdown) {
+                priceRangeDropdown.addEventListener("change", function () {
+                    var selectedPriceRange = this.value;
+                    var currentUrl = window.location.href;
+                    var updatedUrl;
+                    if (currentUrl.includes("priceRange=")) {
+                        updatedUrl = currentUrl.replace(/priceRange=[^&]*/, "priceRange=" + selectedPriceRange);
+                    } else {
+                        updatedUrl = currentUrl + (currentUrl.includes("?") ? "&" : "?") + "priceRange=" + selectedPriceRange;
+                    }
+                    window.location.href = updatedUrl;
+                });
+            }
+        });
+    </script>
+}

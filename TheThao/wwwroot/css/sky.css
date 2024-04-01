@@ -1,0 +1,93 @@
+﻿.custom-row {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.custom-product-image {
+    flex: 0 0 50%;
+    padding: 0px;
+    height: 100%;
+    width: 500px;
+}
+
+    .custom-product-image img {
+        width: 100%;
+        height: auto;
+    }
+
+.custom-main-image {
+    margin-right: 20px;
+}
+
+.custom-thumbnail-images {
+    display: flex;
+    flex-wrap: nowrap;
+    flex-direction: column;
+    align-items: flex-end;
+    object-fit: none;
+    object-position: center;
+}
+
+.custom-thumbnail {
+    height: 100px;
+    width: 100px;
+    margin-bottom: 20px; /* Khoảng cách giữa các hình ảnh thu nhỏ */
+    cursor: pointer;
+}
+
+.custom-product-detail-container {
+    height: 600px;
+    width: 520px;
+    display: flex;
+    margin-top: 50px;
+}
+
+.custom-product-gallery {
+    flex: 0 0 50%;
+    padding: 0px;
+    height: 100%;
+    width: 100px;
+    overflow-y: auto;
+}
+
+.custom-product-gallery-thumbnails {
+    overflow-x: auto; /* Cho phép cuộn ngang nếu cần */
+    white-space: nowrap; /* Ngăn chặn các hình ảnh nhỏ xuống hàng */
+}
+
+.custom-product-detail-gallery-item {
+    cursor: pointer; /* Biến con trỏ thành bàn tay khi di chuột qua hình ảnh nhỏ */
+}
+
+    .custom-product-detail-gallery-item img {
+        max-width: 100%; /* Đảm bảo hình ảnh nhỏ không vượt quá kích thước của cha */
+    }
+
+.custom-product-gallery .swiper-container {
+    max-height: 100%; /* Đặt chiều cao tối đa cho container của các ảnh nhỏ */
+    overflow-y: auto; /* Cho phép cuộn dọc nếu có quá nhiều ảnh */
+}
+
+.custom-product-gallery .swiper-wrapper {
+    display: flex;
+    flex-direction: column; /* Hiển thị các ảnh nhỏ theo chiều dọc */
+    align-items: flex-start; /* Canh chỉnh các ảnh nhỏ về phía trên */
+    margin-right: -30px;
+}
+
+.custom-product-gallery .swiper-slide {
+    width: 100%; /* Đảm bảo rằng các ảnh nhỏ chiếm toàn bộ chiều rộng của container */
+    margin-bottom: 20px; /* Khoảng cách giữa các ảnh nhỏ */
+}
+
+    .custom-product-gallery .swiper-slide img {
+        width: 70px; /* Đảm bảo ảnh nhỏ không vượt quá kích thước của cha */
+        height: 70px; /* Duy trì tỷ lệ khung hình */
+    }
+
+.custom-main-product-image {
+    width: 445px;
+    height: 445px;
+    object-fit: cover; /* Đảm bảo ảnh chính được căn chỉnh đúng tỷ lệ */
+}

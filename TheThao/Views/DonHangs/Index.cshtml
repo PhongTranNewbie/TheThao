@@ -46,10 +46,11 @@
                     @Html.DisplayFor(modelItem => donHang.UserId)
                 </td>
                 <td>
-                    <a asp-controller="DonHangs" asp-action="Details" asp-route-id="@donHang.Id" class="btn-details">Details</a>
-
+                    <a asp-controller="DonHangs" asp-action="Details" asp-route-id="@donHang.Id" class="btn-details">Details</a>|
+                    <a asp-action="Edit" asp-route-id="@donHang.Id">Edit</a>
                 </td>
             </tr>
+
         }
     </tbody>
 </table>

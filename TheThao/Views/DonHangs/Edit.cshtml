@@ -1,0 +1,35 @@
+﻿@model TheThao.Models.DonHang
+
+@{
+    Layout = "ExAdm";
+}
+
+@if (Model != null)
+{
+    <div>
+        <h2>Order Details</h2>
+        <p>Order ID: @Model.Id</p>
+        <!-- Display other order details as needed -->
+    </div>
+
+    <div>
+        <h3>Update Order Status</h3>
+        <form asp-action="Edit" method="post">
+            <input type="hidden" name="id" value="@Model.Id" />
+            <label for="trangThai">Select Status:</label>
+            <select name="trangThai" class="form-control">
+                <option value="1" selected="@(Model.TrangThai == 1 ? "selected" : null)">Đang chờ xác nhận</option>
+                <option value="2" selected="@(Model.TrangThai == 2 ? "selected" : null)">Đang giao hàng</option>
+                <option value="3" selected="@(Model.TrangThai == 3 ? "selected" : null)">Đã thanh toán</option>
+                <option value="4" selected="@(Model.TrangThai == 4 ? "selected" : null)">Đã thanh toán và chờ giao hàng</option>
+                <option value="5" selected="@(Model.TrangThai == 5 ? "selected" : null)">Đã hủy</option>
+            </select>
+
+            <button type="submit" class="btn btn-primary">Update Status</button>
+        </form>
+    </div>
+}
+else
+{
+    <p>Không tìm thấy đơn hàng.</p>
+}

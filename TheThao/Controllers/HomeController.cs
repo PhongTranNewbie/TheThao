@@ -21,15 +21,37 @@ namespace TheThao.Controllers
             ViewBag.IsLoggedIn = false;
             var circles = _context.Circles.ToList();
             ViewBag.CircleImages = circles;
-            return View();
-        }
-        public IActionResult Category(int theLoaiId)
-        {
             
-            var products = _context.SanPhams.Where(p => p.TheLoaiId == theLoaiId).ToList();
-            ViewBag.Products = products;
             return View();
         }
+        public IActionResult Category(int theLoaiId, string priceRange)
+        {
+            IQueryable<SanPham> productsQuery = _context.SanPhams.Where(p => p.TheLoaiId == theLoaiId);
+
+            if (!string.IsNullOrEmpty(priceRange))
+            {
+                var priceRanges = priceRange.Split('-').Select(int.Parse).ToArray();
+                if (priceRanges.Length == 2)
+                {
+                    // Tách phân khúc giá thành giá tối thiểu và tối đa
+                    var priceSegments = priceRange.Split('-');
+                    var minPrice = Convert.ToDecimal(priceSegments[0]); // Chuyển đổi sang decimal
+                    var maxPrice = priceSegments.Length == 2 ? Convert.ToDecimal(priceSegments[1]) : 999999999999; // Set a reasonable maximum value
+
+                    // Lọc sản phẩm theo phân khúc giá
+                    productsQuery = productsQuery.Where(p => p.Gia >= minPrice && p.Gia <= maxPrice);
+                }
+            }
+
+            var products = productsQuery.ToList();
+            ViewBag.Products = products;
+
+            var circles = _context.Circles.ToList();
+            ViewBag.CircleImages = circles;
+
+            return View();
+        }
+
         public IActionResult GetCircleImages()
         {
             var circles = _context.Circles.ToList();
@@ -124,10 +146,10 @@ namespace TheThao.Controllers
             // Kiểm tra xem có bất kỳ chi tiết khuyến mãi nào cho sản phẩm không
             return _context.ChiTietKhuyenMais.Any(ctkm => ctkm.MaSanPham == productId);
         }
-<<<<<<< HEAD
 
 
-        public ActionResult Search(string keyword, string priceRange)
+
+        public ActionResult Search(string keyword, string priceRange, string status)
         {
             IQueryable<SanPham> products = _context.SanPhams;
 
@@ -149,6 +171,12 @@ namespace TheThao.Controllers
                 products = products.Where(p => p.Name.Contains(keyword));
             }
 
+            // Kiểm tra xem người dùng đã chọn trạng thái sản phẩm hay chưa
+            if (!string.IsNullOrEmpty(status))
+            {
+                products = products.Where(p => p.TrangThai == status);
+            }
+
             var productList = products.ToList();
             var circles = _context.Circles.ToList();
             ViewBag.CircleImages = circles;
@@ -159,11 +187,12 @@ namespace TheThao.Controllers
 
 
 
-=======
+
+
         public IActionResult CheckoutSuccess()
         {
             return View();
         }
->>>>>>> 61b8cba49140d41b3634d448e1c3243066efdc53
+
     }
 }

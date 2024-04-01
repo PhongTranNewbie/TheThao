@@ -3,6 +3,44 @@
     var circles = ViewBag.CircleImages as List<TheThao.Models.Circle>;
     var searchUrl = Url.Action("Search", "Home");
 }
+<style>
+    .product-grid {
+        display: flex;
+        flex-wrap: wrap;
+        /* Ensures divs wrap to the next line */
+    }
+    /* Màu chữ của các mục trong dropdown */
+    .dropdown-item {
+        color: black;
+        cursor: pointer; /* Đổi màu chữ thành màu xanh */
+    }
+
+    .btn-danger.dropdown-toggle {
+        background-color: dodgerblue; /* Màu nền là màu xanh */
+        color: white; /* Màu chữ là trắng */
+        cursor: pointer;
+    }
+    /* Màu nền của dropdown menu */
+    .dropdown-menu {
+        background-color: #f8f9fa; /* Đổi màu nền thành màu xám nhạt */
+    }
+
+</style>
+<script>
+    document.getElementById("priceRangeDropdown").addEventListener("change", function () {
+        var selectedPriceRange = this.value;
+        var keyword = document.querySelector('input[name="keyword"]').value;
+        var searchUrlWithParams = "@searchUrl" + "?keyword=" + keyword + "&priceRange=" + selectedPriceRange;
+        window.location.href = searchUrlWithParams;
+
+        // Lấy giá trị của option đã chọn
+        var selectedOption = this.options[this.selectedIndex].value;
+
+        // Cập nhật giá trị của ô select
+        this.value = selectedOption;
+    });
+</script>
+
 <div class="container py-5">
     <div class="row g-5 align-items-center">
         <div class="col-md-12 col-lg-7">
@@ -18,7 +56,7 @@
             <div class="col-md-12 col-lg-5 order-first order-lg-last">
                 <div class="position-relative mx-auto mb-4">
                     <select id="priceRangeDropdown" class="form-select border-2 border-secondary py-3 px-4 position-absolute rounded-pill text-white h-100" style="top: 0; right: 0;">
-                        <option class="dropdown-item active" value="">Select Price Range</option>
+                        <option class="dropdown-item active" value="" selected>Tìm kiếm theo giá</option>
                         <option class="dropdown-item active" value="0-100000">Dưới 100k</option>
                         <option class="dropdown-item active" value="100000-500000">100k - 500k</option>
                         <option class="dropdown-item active" value="500000-1000000">500k - 1 triệu</option>
@@ -28,6 +66,7 @@
                     </select>
                 </div>
             </div>
+
         </div>
         <div class="col-md-12 col-lg-5 order-first order-lg-last">
             <div id="advertisementCarousel" class="carousel slide" data-bs-ride="carousel">
@@ -57,6 +96,18 @@
         </div>
     </div>
 </div>
+<div class="btn-group" style="position: relative; top: 0; right: 0;">
+    <button type="button" class="btn btn-danger dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        Lựa chọn trạng thái
+    </button>
+    <div class="dropdown-menu">
+        <a class="dropdown-item" value="">Tất cả</a>
+        <a class="dropdown-item" value="Hết hàng">Hết hàng</a>
+        <a class="dropdown-item" value="Bán chạy">Bán chạy</a>
+        <a class="dropdown-item" value="Còn hàng">Còn hàng</a>
+        <a class="dropdown-item" value="Mới">Mới</a>
+    </div>
+</div>
 <div class="row">
     @if (Model != null && Model.Any())
     {
@@ -64,8 +115,9 @@
         {
             var promotionService = new PromotionService(new TheThaoContext());
             var isPromotionActive = promotionService.HasPromotion(product.Id);
+            var promotionDetail = await promotionService.GetPromotionDetails(product.Id);
 
-            <div class="col-md-4">
+            <div class="col-md-4 product-grid">
                 <div class="product-item">
                     <a href="@Url.Action("ChiTietSanPham", "SanPhams", new { id = product.Id })">
                         <img src="@Url.Content(product.HinhAnh)" alt="Product Image" class="img-fluid">
@@ -74,7 +126,8 @@
 
                     @if (isPromotionActive)
                     {
-                        // Hiển thị giá trước khi giảm giá và giá sau khi giảm giá
+                        // Hiển thị phần trăm giảm giá
+                        <p>Giảm: @promotionDetail.PhanTramKhuyenMai%</p>
                         <p>Giá trước khi giảm giá: @string.Format("{0:N0}", product.GiaTruocKhiGiamGia)</p>
                         <p>Giá sau khi giảm giá: @string.Format("{0:N0}", product.Gia)</p>
                     }
@@ -87,10 +140,11 @@
                     <form asp-controller="Cart" asp-action="AddToCart" method="post">
                         <input type="hidden" name="productId" value="@product.Id" />
                         <input type="hidden" name="quantity" value="1" /> <!-- Số lượng mặc định -->
-                        <button type="submit" class="btn btn-primary" asp-action="AddToCart" asp-controller="Cart" asp-route-id="@product.Id">Add to Cart</button>
+                        <button type="submit" class="btn btn-primary" asp-action="AddToCart" asp-controller="Cart" asp-route-id="@product.Id">Thêm vào giỏ hàng</button>
                     </form>
                 </div>
             </div>
+
         }
     }
     else
@@ -101,18 +155,44 @@
 @section Scripts
 {
     <script>
-        // Đảm bảo rằng mã sẽ được thực thi sau khi phần HTML đã được tải
         document.addEventListener("DOMContentLoaded", function () {
-            // Kiểm tra sự tồn tại của phần tử "priceRangeDropdown"
             var priceRangeDropdown = document.getElementById("priceRangeDropdown");
             if (priceRangeDropdown) {
                 priceRangeDropdown.addEventListener("change", function () {
                     var selectedPriceRange = this.value;
-                    var keyword = document.querySelector('input[name="keyword"]').value;
-                    var searchUrlWithParams = "@searchUrl" + "?keyword=" + keyword + "&priceRange=" + selectedPriceRange;
-                    window.location.href = searchUrlWithParams;
+                    var currentUrl = window.location.href;
+                    var updatedUrl;
+                    if (currentUrl.includes("priceRange=")) {
+                        updatedUrl = currentUrl.replace(/priceRange=[^&]*/, "priceRange=" + selectedPriceRange);
+                    } else {
+                        updatedUrl = currentUrl + (currentUrl.includes("?") ? "&" : "?") + "priceRange=" + selectedPriceRange;
+                    }
+                    window.location.href = updatedUrl;
                 });
             }
         });
+       
+        var dropdownItems = document.querySelectorAll(".dropdown-menu .dropdown-item");
+
+        // Lặp qua từng mục và thêm sự kiện click
+        dropdownItems.forEach(function (item) {
+            item.addEventListener("click", function () {
+                // Lấy giá trị của mục đã chọn
+                var selectedStatus = this.getAttribute("value");
+
+                // Lấy giá trị từ các phần tử khác (nếu cần)
+                var keyword = document.querySelector('input[name="keyword"]').value;
+                var priceRange = document.getElementById("priceRangeDropdown").value; // Lấy giá trị của dropdown Price Range (nếu cần)
+
+                // Xây dựng URL tìm kiếm với các tham số đã chọn
+                var searchUrlWithParams = "@searchUrl" + "?keyword=" + keyword + "&status=" + selectedStatus + "&priceRange=" + priceRange;
+
+                // Chuyển hướng tới URL tìm kiếm mới
+                window.location.href = searchUrlWithParams;
+            });
+        });
+
     </script>
 }
+
+
