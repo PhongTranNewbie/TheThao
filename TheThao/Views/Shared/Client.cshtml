@@ -43,6 +43,13 @@
                 </li>
             </ul>
             <ul class="navbar-nav ml-auto login-cart-container">
+                <li class="nav-item active">
+                    @if (HttpContextAccessor.HttpContext.Session.GetString("UserId") != null)
+                    {
+                        <!-- Hiển thị liên kết đến controller "Danh sách đơn hàng" -->
+                        <a class="nav-link" asp-controller="Order" asp-action="ListOrders" >Danh sách đơn hàng</a>
+                    }
+                </li>
                 <li class="nav-item active" style="margin-right: 10px;">
                     <!-- Khoảng cách giữa Logout và Login -->
                     @if (HttpContextAccessor.HttpContext.Session.GetString("UserId") != null)
@@ -128,3 +135,15 @@
     @RenderSection("Scripts", required: false)
 </body>
 </html>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $('.btn-details').click(function (e) {
+                e.preventDefault(); // Ngăn chặn hành động mặc định của nút
+                var url = $(this).attr('href'); // Lấy đường dẫn từ thuộc tính href
+                window.location.href = url; // Chuyển hướng đến đường dẫn
+            });
+        });
+    </script>
+}

@@ -1,0 +1,41 @@
+﻿@model TheThao.ViewModels.ChiTietDonHangViewModel
+
+
+<h1>Chi Tiết Đơn Hàng</h1>
+
+<p>Id: @Model.DonHang.Id</p>
+<p>Ngày Tạo: @Model.DonHang.NgayTao</p>
+<p>Trạng Thái: @Model.DonHang.TrangThai</p>
+<p>User Id: @Model.DonHang.UserId</p>
+
+<h2>Danh sách Sản Phẩm</h2>
+@if (Model.ChiTietDonHangs != null && Model.ChiTietDonHangs.Any())
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Sản Phẩm</th>
+                <th>Giá</th>
+                <th>Số Lượng</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var chiTiet in Model.ChiTietDonHangs)
+            {
+                <tr>
+                    <td>@chiTiet.MaSanPhamNavigation.Name</td>
+                    <td>@chiTiet.Gia</td>
+                    <td>@chiTiet.SoLuong</td>
+                </tr>
+            }
+        </tbody>
+        <p>Tổng tiền: @Model.TongTien</p>
+    </table>
+}
+else
+{
+    <p>Không có chi tiết đơn hàng phù hợp.</p>
+}
+
+
+

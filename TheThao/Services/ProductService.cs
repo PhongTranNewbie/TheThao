@@ -45,20 +45,15 @@ public class ProductService : IProductService
             // Nếu có giá nhập hàng và có khuyến mãi mới
             if (latestPurchasePrice.HasValue && latestPromotion >= 0)
             {
-<<<<<<< HEAD
-                // Lấy phần trăm giảm giá mới nhất
-                var latestPercentage = product.ChiTietPhanTrams
-                  .OrderByDescending(ctpt => ctpt.Id)
-                  .FirstOrDefault()?.MaPhanTramNavigation?.PhanTram ?? 0;
+
+                
+                
                 // Lấy phần trăm khuyến mãi mới nhất
                 var latestPromotionPercentage = product.ChiTietKhuyenMais
                     .OrderByDescending(ctkm => ctkm.Id)
                     .FirstOrDefault()?.MaKmNavigation?.PhanTramKhuyenMai ?? 0; // Mặc định là 1 nếu không có khuyến mãi
 
-                // Lấy giá nhập hàng mới nhất
-                var latestPurchasePrice = product.ChiTietNhapHangs
-                  .OrderByDescending(ctnh => ctnh.Id)
-                  .FirstOrDefault()?.Gia;
+               
 
                 // Cập nhật giá mới cho sản phẩm
                 if (latestPurchasePrice.HasValue)
@@ -67,27 +62,25 @@ public class ProductService : IProductService
 
                     // Cập nhật giá mới cho sản phẩm
                     product.Gia = newPrice;
+                    product.GiaTruocKhiGiamGia = latestPurchasePrice * (1 + (decimal)latestPercentage / 100);
                 }
-=======
-                var newPrice = latestPurchasePrice * (1 + (decimal)latestPercentage / 100) * (1 - (decimal)latestPromotion / 100);
 
-                // Áp dụng giá mới và cập nhật GiaTruocKhiGiamGia
-                product.Gia = newPrice;
-                product.GiaTruocKhiGiamGia = latestPurchasePrice * (1 + (decimal)latestPercentage / 100);
->>>>>>> c88631bb773d8e4803d95af212c869e9c41c7762
+               
+               
+
             }
         }
 
-<<<<<<< HEAD
 
 
 
 
 
 
-=======
+
+
         // Lưu các thay đổi vào cơ sở dữ liệu
         _context.SaveChanges();
->>>>>>> c88631bb773d8e4803d95af212c869e9c41c7762
+
     }
 }
