@@ -56,4 +56,19 @@ public class PromotionService : IPromotionService
         // Kiểm tra xem có bất kỳ chi tiết khuyến mãi nào cho sản phẩm không
         return _context.ChiTietKhuyenMais.Any(ctkm => ctkm.MaSanPham == productId);
     }
+
+    public async Task<PromotionDetail> GetPromotionDetails(int productId)
+    {
+        // Lấy chi tiết khuyến mãi cho sản phẩm dựa trên productId
+        var promotionDetail = await _context.ChiTietKhuyenMais
+            .Where(p => p.MaSanPham == productId)
+            .Select(p => new PromotionDetail
+            {
+                PhanTramKhuyenMai = p.MaKmNavigation.PhanTramKhuyenMai
+                // Các trường khác của PromotionDetail nếu cần
+            })
+            .FirstOrDefaultAsync();
+
+        return promotionDetail;
+    }
 }

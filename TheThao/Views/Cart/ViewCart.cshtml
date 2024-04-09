@@ -1,10 +1,13 @@
 ﻿@model ShoppingCartViewModel
-<h1>Shopping Cart</h1>
-<h2 class="text-success bg-dark">@(ViewBag.CartMessage)</h2>
+@{
+    var sp = ViewBag.SanPham as List<TheThao.Models.SanPham>;
+}
+<h1>Giỏ hàng</h1>
 <table class="table">
     <thead>
         <tr>
             <th>Sản phẩm</th>
+            <th>Hình ảnh</th>
             <th>Số lượng</th>
             <th>Giá</th>
             <th>Tổng tiền</th>
@@ -15,7 +18,12 @@
         {
             <tr>
                 <td>@item.SanPham.Name</td>
-                
+                <td>
+                @foreach (var image in sp.Where(image => image.Id == item.SanPham.Id))
+                {
+                    <img class="thumbnail" src="@Url.Content(image.HinhAnh)" alt="Product Image" onclick="changeMainImage('@Url.Content(image.HinhAnh)')" />
+                }
+                </td>
                 <td>@item.SanPham.Gia</td>
                 <td>
                     <div class="btn-group btn-group-sm" role="group" aria-label="Basic example">

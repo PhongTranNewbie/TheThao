@@ -2,17 +2,11 @@
 @{
     var product = ViewBag.SanPham as TheThao.Models.SanPham;
     var images = ViewBag.ChiTietHinhAnhs as List<TheThao.Models.ChiTietHinhAnh>;
-    Layout = "Client";
 }
 <html>
 <head>
     <link rel="stylesheet" href="http://localhost:5098/css/styles.css" />
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <link href="~/lib/lightbox/css/lightbox.min.css" rel="stylesheet">
-    <link href="~/lib/owlcarousel/assets/owl.carousel.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="~/css/style.css" />
 
     <script type="text/javascript">
         function CRateOut(rate) {
@@ -49,15 +43,15 @@
 </html>
 <input type="hidden" value="@product.Id"/>
 <div class="container">
-    <div class="product-detail-container">
+    <div class="custom-product-detail-container">
         <div class="row">
-            <div class="product-gallery">
-                <div class="thumbnail-images">
+            <div class="custom-product-gallery">
+                <div class="custom-thumbnail-images">
                     @if (images != null && images.Any(image => image.MaSanPham == product.Id))
                     {
                         @foreach (var image in images.Where(image => image.MaSanPham == product.Id))
                         {
-                            <img class="thumbnail" src="@Url.Content(image.HinhAnh)" alt="Product Image" onclick="changeMainImage('@Url.Content(image.HinhAnh)')" />
+                            <img class="custom-thumbnail" src="@Url.Content(image.HinhAnh)" alt="Product Image" onclick="changeMainImage('@Url.Content(image.HinhAnh)')" />
                         }
                     }
                     else
@@ -68,7 +62,7 @@
             </div>
 
             <div>
-                <div class="product-image">
+                <div class="custom-product-image">
                     <img id="main-product-image" src="@Url.Content(product.HinhAnh)" alt="Product Image">
                 </div>
             </div>
@@ -79,7 +73,7 @@
 
                 <p>Giá: @string.Format("{0:N0}", product.Gia)</p>
 
-                <a class="btn btn-primary" asp-action="AddToCart" asp-controller="Cart" asp-route-id="@product.Id">Add to Cart</a>
+                <a class="btn btn-primary" asp-action="AddToCart" asp-controller="Cart" asp-route-id="@product.Id">Thêm vào giỏ hàng</a>
             </div>
         </div>
     </div>

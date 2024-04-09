@@ -17,6 +17,8 @@ public partial class TheThaoContext : DbContext
 
     public virtual DbSet<BinhLuan> BinhLuans { get; set; }
 
+    public virtual DbSet<Blog> Blogs { get; set; }
+
     public virtual DbSet<ChiTietDonHang> ChiTietDonHangs { get; set; }
 
     public virtual DbSet<ChiTietHinhAnh> ChiTietHinhAnhs { get; set; }
@@ -50,7 +52,8 @@ public partial class TheThaoContext : DbContext
     public virtual DbSet<User> Users { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        => optionsBuilder.UseSqlServer("Server=NGHIA\\SQLEXPRESS;Database=TheThao;trusted_connection=yes;Encrypt=True;TrustServerCertificate=True;");
+#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
+        => optionsBuilder.UseSqlServer("Server=MSI\\SQLSEVER2022DEV;Database=TheThao;trusted_connection=yes;Encrypt=True;TrustServerCertificate=True;");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -73,6 +76,15 @@ public partial class TheThaoContext : DbContext
                 .HasForeignKey(d => d.UserId)
                 .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("FK_BinhLuan_Users");
+        });
+
+        modelBuilder.Entity<Blog>(entity =>
+        {
+            entity.ToTable("Blog");
+
+            entity.HasOne(d => d.User).WithMany(p => p.Blogs)
+                .HasForeignKey(d => d.UserId)
+                .HasConstraintName("FK_Blog_Users");
         });
 
         modelBuilder.Entity<ChiTietDonHang>(entity =>
@@ -261,7 +273,6 @@ public partial class TheThaoContext : DbContext
 
             entity.ToTable("SanPham");
 
-            entity.Property(e => e.ChiTiet).HasMaxLength(800);
             entity.Property(e => e.Gia).HasColumnType("decimal(12, 0)");
             entity.Property(e => e.GiaTruocKhiGiamGia).HasColumnType("decimal(12, 0)");
             entity.Property(e => e.HinhAnh).HasMaxLength(500);
@@ -300,14 +311,18 @@ public partial class TheThaoContext : DbContext
 
             entity.HasIndex(e => e.MaDonHang, "Unique_dh").IsUnique();
 
+            entity.Property(e => e.MaDonHang)
+                .HasMaxLength(255)
+                .IsUnicode(false);
             entity.Property(e => e.Ngay).HasColumnType("date");
             entity.Property(e => e.PhuongPhapThanhToan)
                 .HasMaxLength(255)
                 .IsUnicode(false);
             entity.Property(e => e.TongTien).HasColumnType("decimal(12, 0)");
-            entity.Property(e => e.TrangThai)
-                .HasMaxLength(255)
-                .IsUnicode(false);
+
+            entity.HasOne(d => d.MaDonHangNavigation).WithOne(p => p.ThanhToan)
+                .HasForeignKey<ThanhToan>(d => d.MaDonHang)
+                .HasConstraintName("FK_ThanhToan_DonHang");
 
             entity.HasOne(d => d.User).WithMany(p => p.ThanhToans)
                 .HasForeignKey(d => d.UserId)

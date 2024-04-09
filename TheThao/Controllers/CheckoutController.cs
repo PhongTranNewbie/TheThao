@@ -20,7 +20,7 @@ namespace TheThao.Controllers
         {
             // Lấy userId từ Session
             var userIdString = HttpContext.Session.GetString("UserId");
-
+            var userIdStringAd = _context.Users.FirstOrDefault(u => u.Role == "admin");
             // Kiểm tra xem userId có giá trị không và có thể chuyển đổi thành int không
             if (!string.IsNullOrEmpty(userIdString) && int.TryParse(userIdString, out int userId))
             {
@@ -59,6 +59,11 @@ namespace TheThao.Controllers
 
                     await _context.SaveChangesAsync(); // Lưu các chi tiết đơn hàng vào cơ sở dữ liệu
                     await _emailSender.SendEmailAsync(user.Email, "Đơn hàng mới", $"Đơn hàng của bạn có mã {orderCode} đã được tạo thành công.");
+                    if(userIdStringAd!=null)
+                    {
+                        await _emailSender.SendEmailAsync(user.Email, "Đơn hàng mới", $"Đơn hàng mới có mã {orderCode}");
+                    }
+                    
                     HttpContext.Session.Remove("Cart");
                     // Tính tổng tiền
                     decimal tongTien = _context.ChiTietDonHangs

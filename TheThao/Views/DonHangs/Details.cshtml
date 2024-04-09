@@ -1,42 +1,49 @@
-﻿@model TheThao.ViewModels.ChiTietDonHangViewModel
+﻿    @model TheThao.ViewModels.ChiTietDonHangViewModel
 
-@{
-    Layout = "ExAdm";
-}
+    @{
+        Layout = "ExAdm";
+        var user = ViewBag.User as List<TheThao.Models.User>;
+    }
 
-<h1>Chi Tiết Đơn Hàng</h1>
+    <h1>Chi Tiết Đơn Hàng</h1>
 
-<p>Id: @Model.DonHang.Id</p>
-<p>Ngày Tạo: @Model.DonHang.NgayTao</p>
-<p>Trạng Thái: @Model.DonHang.TrangThai</p>
-<p>User Id: @Model.DonHang.UserId</p>
-
-<h2>Danh sách Sản Phẩm</h2>
-@if (Model.ChiTietDonHangs != null && Model.ChiTietDonHangs.Any())
-{
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Sản Phẩm</th>
-                <th>Giá</th>
-                <th>Số Lượng</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var chiTiet in Model.ChiTietDonHangs)
+    <p>Id: @Model.DonHang.Id</p>
+    <p>Ngày Tạo: @Model.DonHang.NgayTao</p>
+    <p>Trạng Thái: @Model.DonHang.TrangThai</p>
+    @foreach(var i in user)
+        {
+            if(i.Id==Model.DonHang.UserId)
             {
-                <tr>
-                    <td>@chiTiet.MaSanPhamNavigation.Name</td>
-                    <td>@chiTiet.Gia</td>
-                    <td>@chiTiet.SoLuong</td>
-                </tr>
+                <p>Khách hàng: @i.Ten</p>
             }
-        </tbody>
-        <p>Tổng tiền: @Model.TongTien</p>
-    </table>
-}
-else
-{
-    <p>Không có chi tiết đơn hàng phù hợp.</p>
-}
+        }
+
+    <h2>Danh sách Sản Phẩm</h2>
+    @if (Model.ChiTietDonHangs != null && Model.ChiTietDonHangs.Any())
+    {
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Sản Phẩm</th>
+                    <th>Giá</th>
+                    <th>Số Lượng</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var chiTiet in Model.ChiTietDonHangs)
+                {
+                    <tr>
+                        <td>@chiTiet.MaSanPhamNavigation.Name</td>
+                        <td>@chiTiet.Gia</td>
+                        <td>@chiTiet.SoLuong</td>
+                    </tr>
+                }
+            </tbody>
+            <p>Tổng tiền: @Model.TongTien</p>
+        </table>
+    }
+    else
+    {
+        <p>Không có chi tiết đơn hàng phù hợp.</p>
+    }
 

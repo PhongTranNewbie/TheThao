@@ -46,6 +46,7 @@ namespace TheThao.Controllers
         // GET: SanPhams/Create
         public IActionResult Create()
         {
+
             ViewData["TheLoaiId"] = new SelectList(_context.LoaiSanPhams, "Id", "TenLoaiSanPham");
             return View();
         }
@@ -55,7 +56,7 @@ namespace TheThao.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name,ChiTiet,Gia,GiaTruocKhiGiamGia,HinhAnh,SoLuong,TheLoaiId")] SanPham sanPham)
+        public async Task<IActionResult> Create([Bind("Id,Name,ChiTiet,Gia,GiaTruocKhiGiamGia,HinhAnh,SoLuong,TheLoaiId,SoLuongDaBan,TrangThai")] SanPham sanPham)
         {
            
                 _context.Add(sanPham);
@@ -79,6 +80,17 @@ namespace TheThao.Controllers
             {
                 return NotFound();
             }
+
+            // Tạo danh sách trạng thái cho dropdown
+            var statusList = new List<SelectListItem>
+    {
+        new SelectListItem { Value = "Hết hàng", Text = "Hết hàng" },
+        new SelectListItem { Value = "Bán chạy", Text = "Bán chạy" },
+        new SelectListItem { Value = "Còn hàng", Text = "Còn hàng" },
+        new SelectListItem { Value = "Mới", Text = "Mới" }
+    };
+            ViewData["StatusList"] = new SelectList(statusList, "Value", "Text", sanPham.TrangThai);
+
             ViewData["TheLoaiId"] = new SelectList(_context.LoaiSanPhams, "Id", "Id", sanPham.TheLoaiId);
             return View(sanPham);
         }
@@ -88,11 +100,10 @@ namespace TheThao.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,ChiTiet,Gia,GiaTruocKhiGiamGia,HinhAnh,SoLuong,TheLoaiId")] SanPham sanPham)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,ChiTiet,Gia,GiaTruocKhiGiamGia,HinhAnh,SoLuong,TheLoaiId,SoLuongDaBan,TrangThai")] SanPham sanPham)
         {
             if (ModelState.IsValid)
             {
-
                 try
                 {
                     _context.Update(sanPham);
@@ -112,9 +123,24 @@ namespace TheThao.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
+
+            // Nếu ModelState không hợp lệ, cần truyền danh sách loại sản phẩm vào view để hiển thị lại dropdown
             ViewData["TheLoaiId"] = new SelectList(_context.LoaiSanPhams, "Id", "Id", sanPham.TheLoaiId);
+
+            // Tương tự, truyền danh sách trạng thái vào view để hiển thị lại dropdown
+            var statusList = new List<SelectListItem>
+    {
+        new SelectListItem { Value = "Hết hàng", Text = "Hết hàng" },
+        new SelectListItem { Value = "Bán chạy", Text = "Bán chạy" },
+        new SelectListItem { Value = "Còn hàng", Text = "Còn hàng" },
+        new SelectListItem { Value = "Mới", Text = "Mới" }
+    };
+            ViewData["StatusList"] = new SelectList(statusList, "Value", "Text", sanPham.TrangThai);
+
             return View(sanPham);
         }
+
+
 
 
 

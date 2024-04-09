@@ -15,5 +15,7 @@ public partial class DonHang
 
     public virtual ICollection<ChiTietDonHang> ChiTietDonHangs { get; set; } = new List<ChiTietDonHang>();
 
+    public virtual ThanhToan? ThanhToan { get; set; }
+
     public virtual User? User { get; set; }
 }

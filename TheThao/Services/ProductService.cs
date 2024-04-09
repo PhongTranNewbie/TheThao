@@ -46,14 +46,15 @@ public class ProductService : IProductService
             if (latestPurchasePrice.HasValue && latestPromotion >= 0)
             {
 
-                
+                // Lấy phần trăm giảm giá mới nhất
                 
                 // Lấy phần trăm khuyến mãi mới nhất
                 var latestPromotionPercentage = product.ChiTietKhuyenMais
                     .OrderByDescending(ctkm => ctkm.Id)
                     .FirstOrDefault()?.MaKmNavigation?.PhanTramKhuyenMai ?? 0; // Mặc định là 1 nếu không có khuyến mãi
 
-               
+                // Lấy giá nhập hàng mới nhất
+                
 
                 // Cập nhật giá mới cho sản phẩm
                 if (latestPurchasePrice.HasValue)
@@ -66,7 +67,7 @@ public class ProductService : IProductService
                 }
 
                
-               
+                
 
             }
         }
@@ -79,7 +80,7 @@ public class ProductService : IProductService
 
 
 
-        // Lưu các thay đổi vào cơ sở dữ liệu
+
         _context.SaveChanges();
 
     }

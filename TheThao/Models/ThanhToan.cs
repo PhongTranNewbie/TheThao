@@ -13,11 +13,11 @@ public partial class ThanhToan
 
     public int? UserId { get; set; }
 
-    public string? TrangThai { get; set; }
-
     public decimal? TongTien { get; set; }
 
-    public int? MaDonHang { get; set; }
+    public string? MaDonHang { get; set; }
+
+    public virtual DonHang? MaDonHangNavigation { get; set; }
 
     public virtual User? User { get; set; }
 }

@@ -25,6 +25,8 @@ public partial class User
 
     public virtual ICollection<BinhLuan> BinhLuans { get; set; } = new List<BinhLuan>();
 
+    public virtual ICollection<Blog> Blogs { get; set; } = new List<Blog>();
+
     public virtual ICollection<DonHang> DonHangs { get; set; } = new List<DonHang>();
 
     public virtual ICollection<KhuyenMai> KhuyenMais { get; set; } = new List<KhuyenMai>();

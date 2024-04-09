@@ -13,20 +13,23 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.Name)
+                Tên sản phẩm
             </th>
 
             <th>
-                @Html.DisplayNameFor(model => model.Gia)
+                Giá
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.HinhAnh)
+                Hình ảnh
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.TheLoai)
+                Thể loại
             </th>
             <th>
-                So Luong <!-- New column for quantity -->
+                Trạng thái
+            </th>
+            <th>
+                Số lượng <!-- New column for quantity -->
             </th>
             <th></th>
         </tr>
@@ -49,6 +52,9 @@
 
                 <td>
                     @Html.DisplayFor(modelItem => item.TheLoai.TenLoaiSanPham)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.TrangThai)
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.SoLuong) <!-- Display the quantity -->
