@@ -43,9 +43,10 @@ namespace TheThao.Controllers
                    
 
                     ViewBag.IsLoggedIn = true;
-                    return RedirectToAction("Profile");
-                }
-                else
+					return RedirectToAction("Index", "Home");
+
+				}
+				else
                 {
                     ModelState.AddModelError("", "Invalid username or password");
                 }
@@ -95,10 +96,13 @@ namespace TheThao.Controllers
                     var user = _context.Users.FirstOrDefault(u => u.Id == int.Parse(userId));
                     if (user != null)
                     {
+                        var circles = _context.Circles.ToList();
+                        ViewBag.CircleImages = circles;
                         return View(user);
                     }
                 }
-                return RedirectToAction("Login");
+            
+            return RedirectToAction("Login");
             }
 
             [HttpPost]
@@ -131,9 +135,9 @@ namespace TheThao.Controllers
             HttpContext.Session.Clear();
             ViewBag.IsLoggedIn = false;
 
-            return RedirectToAction("Login"); // Redirect to home or any other page after logout
-        }
+			return RedirectToAction("Index", "Home");
+		}
 
 
-    }
+	}
 }

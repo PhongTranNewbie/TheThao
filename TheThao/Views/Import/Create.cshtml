@@ -11,30 +11,9 @@
         <!-- Dòng chi tiết nhập hàng mặc định -->
         <label for="NgayNhap">Ngày Nhập:</label>
         <input type="date" id="NgayNhap" name="NgayNhap">
-        <div class="form-row detail-row">
-            <div class="form-group col-md-3">
-                <label asp-for="ChiTietNhapHangs[0].MaSanPham" class="control-label"></label>
-                <select asp-for="ChiTietNhapHangs[0].MaSanPham" class="form-control" asp-items="ViewBag.MaSanPham"></select>
-                <span asp-validation-for="ChiTietNhapHangs[0].MaSanPham" class="text-danger"></span>
-            </div>
-            <div class="form-group col-md-3">
-                <label asp-for="ChiTietNhapHangs[0].MaNhaCungCap" class="control-label"></label>
-                <select asp-for="ChiTietNhapHangs[0].MaNhaCungCap" class="form-control" asp-items="ViewBag.MaNhaCungCap"></select>
-                <span asp-validation-for="ChiTietNhapHangs[0].MaNhaCungCap" class="text-danger"></span>
-            </div>
-            <div class="form-group col-md-2">
-                <label asp-for="ChiTietNhapHangs[0].SoLuongNhap" class="control-label"></label>
-                <input asp-for="ChiTietNhapHangs[0].SoLuongNhap" class="form-control quantity-input" />
-                <span asp-validation-for="ChiTietNhapHangs[0].SoLuongNhap" class="text-danger"></span>
-            </div>
-            <div class="form-group col-md-2">
-                <label asp-for="ChiTietNhapHangs[0].Gia" class="control-label"></label>
-                <input asp-for="ChiTietNhapHangs[0].Gia" class="form-control price-input" />
-                <span asp-validation-for="ChiTietNhapHangs[0].Gia" class="text-danger"></span>
-            </div>
-            <p>User ID: @userId</p>
-        </div>
+
     </div>
+
     <input type="hidden" id="DanhSachChiTietJson" name="DanhSachChiTietJson" />
     <button type="button" onclick="addProduct()" class="btn btn-primary">Thêm Sản Phẩm</button>
     <button type="submit" class="btn btn-success">Hoàn Thành Đơn Hàng</button>
@@ -57,7 +36,7 @@
 
 
 <script>
-    var productCount = 1; // Biến này sẽ được sử dụng để tạo chỉ số duy nhất cho mỗi sản phẩm
+    var productCount = 0; // Biến này sẽ được sử dụng để tạo chỉ số duy nhất cho mỗi sản phẩm
 
     function addProduct() {
         // Tăng chỉ số duy nhất cho sản phẩm tiếp theo
@@ -76,6 +55,7 @@
                               <option value="@item.Value">@item.Text</option>
     }
           </select>
+                  <label for="MaNhaCungCap${productCount}">Nhà cung cấp:</label>
           <select id="MaNhaCungCap${productCount}" name="ChiTietNhapHangs[${productCount - 1}].MaNhaCungCap" class="form-control">
     @foreach (var item in ViewBag.MaNhaCungCap)
     {

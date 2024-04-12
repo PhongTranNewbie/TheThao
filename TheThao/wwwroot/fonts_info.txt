@@ -1,0 +1,14 @@
+List of Fonts used in template 
+
+Convergence	http://www.google.com/webfonts/specimen/Convergence
+PT Sans		http://www.google.com/webfonts/specimen/PT+Sans
+Pacifico		http://www.google.com/webfonts/specimen/Pacifico
+
+
+
+
+
+
+
+
+

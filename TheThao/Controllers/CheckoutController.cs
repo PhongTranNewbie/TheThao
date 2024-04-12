@@ -66,7 +66,7 @@ namespace TheThao.Controllers
                     
                     HttpContext.Session.Remove("Cart");
                     // Tính tổng tiền
-                    decimal tongTien = _context.ChiTietDonHangs
+                    decimal? tongTien = _context.ChiTietDonHangs
                         .Where(ct => ct.MaDonHang == orderCode)
                         .Sum(ct => ct.Gia * ct.SoLuong);
 
@@ -77,7 +77,7 @@ namespace TheThao.Controllers
                             .Include(ct => ct.MaSanPhamNavigation)
                             .Where(ct => ct.MaDonHang == orderCode)
                             .ToList(),
-                        TongTien = tongTien // Gán giá trị tổng tiền vào ViewModel
+                        TongTien = (decimal)tongTien // Gán giá trị tổng tiền vào ViewModel
                     };
 
                     return View(viewModel);

@@ -1,37 +1,61 @@
 ﻿@model TheThao.Models.User
 @{
     Layout = "Client";
+    var circles = ViewBag.CircleImages as List<TheThao.Models.Circle>;
 }
-<h2>Complete Profile</h2>
+<!-- Slider -->
+<section class="section-slide">
+    <div class="wrap-slick1">
+        <div class="slick1">
+            @foreach (var circle in circles)
+            {
+                @if (circle.IsVisible == true)
+                {
+                    <div class="item-slick1" style="background-size: 100% 100%; background-image: url('@Url.Content(circle.HinhAnh)');">
+                        <div class="container h-full">
+                            <div class="flex-col-l-m h-full p-t-100 p-b-30 respon5">
+                                <div class="layer-slick1 animated visible-false" data-appear="fadeInDown" data-delay="0">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            }
+        </div>
+    </div>
+</section>
+<section class="bg0 p-t-23 p-b-140">
+<h2>Thông tin khách hàng</h2>
 <form asp-action="Profile" method="post">
     <div class="form-group">
-        <label asp-for="Ten" class="control-label">Full Name:</label>
+        <label asp-for="Ten" class="control-label">Name</label>
         <input asp-for="Ten" class="form-control" />
         <span asp-validation-for="Ten" class="text-danger"></span>
     </div>
     <div class="form-group">
-        <label asp-for="NgayThangNamSinh" class="control-label">Date of Birth:</label>
+        <label asp-for="NgayThangNamSinh" class="control-label">Date of Birth</label>
         <input type="date" asp-for="NgayThangNamSinh" class="form-control" />
         <span asp-validation-for="NgayThangNamSinh" class="text-danger"></span>
     </div>
     <div class="form-group">
-        <label asp-for="DiaChi" class="control-label">Address:</label>
+        <label asp-for="DiaChi" class="control-label">Adress</label>
         <input asp-for="DiaChi" class="form-control" />
         <span asp-validation-for="DiaChi" class="text-danger"></span>
     </div>
     <div class="form-group">
-        <label asp-for="Email" class="control-label">Email:</label>
+        <label asp-for="Email" class="control-label">Email</label>
         <input asp-for="Email" class="form-control" />
         <span asp-validation-for="Email" class="text-danger"></span>
     </div>
     <div class="form-group">
-        <label asp-for="Phone" class="control-label">Phone:</label>
+        <label asp-for="Phone" class="control-label">Phone</label>
         <input asp-for="Phone" class="form-control" />
         <span asp-validation-for="Phone" class="text-danger"></span>
     </div>
     <div class="form-group">
         <button type="submit" class="btn btn-primary">Save</button>
-        <a href="/Home/Index" class="btn btn-secondary">Trang chủ</a>
+        <a href="/Home/Index" class="btn btn-secondary">Home</a>
     </div>
     </div>
 </form>
+</section>

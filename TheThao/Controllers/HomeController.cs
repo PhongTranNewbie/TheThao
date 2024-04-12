@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using TheThao.Models;
 using TheThao.Models.Authentication;
+using X.PagedList;
 
 namespace TheThao.Controllers
 {
@@ -14,15 +15,18 @@ namespace TheThao.Controllers
         {
             _context = context;
         }
-        public IActionResult Index()
+        public IActionResult Index(int? page)
         {
-            List<SanPham> products = _context.SanPhams.ToList();
-            ViewBag.Products = products;
+            int pageSize = 12;
+            int pageNumber = page == null || page < 0 ? 1: page.Value;
+            var products = _context.SanPhams.AsNoTracking().OrderBy(x=>x.Id);
+            PagedList<SanPham> productsList = new PagedList<SanPham>(products, pageNumber, pageSize);
+            
             ViewBag.IsLoggedIn = false;
             var circles = _context.Circles.ToList();
             ViewBag.CircleImages = circles;
             
-            return View();
+            return View(productsList);
         }
         public IActionResult Category(int theLoaiId, string priceRange)
         {
@@ -148,30 +152,32 @@ namespace TheThao.Controllers
         }
 
 
-
-        public ActionResult Search(string keyword, string priceRange, string status)
+        [HttpGet]
+        public ActionResult Search(string keyword, decimal? minPrice, decimal? maxPrice, string status)
         {
-            IQueryable<SanPham> products = _context.SanPhams;
-
-            // Kiểm tra xem người dùng đã chọn phân khúc giá hay chưa
-            if (!string.IsNullOrEmpty(priceRange))
+            if (string.IsNullOrEmpty(keyword) && !minPrice.HasValue && !maxPrice.HasValue && string.IsNullOrEmpty(status))
             {
-                // Tách phân khúc giá thành giá tối thiểu và tối đa
-                var priceSegments = priceRange.Split('-');
-                var minPrice = Convert.ToDecimal(priceSegments[0]); // Chuyển đổi sang decimal
-                var maxPrice = priceSegments.Length == 2 ? Convert.ToDecimal(priceSegments[1]) : 999999999999; // Set a reasonable maximum value
+                // Trả về kết quả mặc định nếu không có tham số nào được cung cấp
+                return PartialView("SearchResults", _context.SanPhams.ToList());
+            }
 
-                // Lọc sản phẩm theo phân khúc giá
+            // Chuyển đổi từ khóa tìm kiếm sang chữ thường
+            var lowerKeyword = keyword?.ToLower();
+
+            // Lọc sản phẩm dựa trên từ khóa (nếu có)
+            var products = _context.SanPhams.AsQueryable();
+            if (!string.IsNullOrEmpty(lowerKeyword))
+            {
+                products = products.Where(p => p.Name.ToLower().Contains(lowerKeyword));
+            }
+
+            // Lọc sản phẩm theo phân khúc giá (nếu được chỉ định)
+            if (minPrice.HasValue && maxPrice.HasValue)
+            {
                 products = products.Where(p => p.Gia >= minPrice && p.Gia <= maxPrice);
             }
 
-            // Tìm kiếm sản phẩm dựa trên từ khóa (nếu có)
-            if (!string.IsNullOrEmpty(keyword))
-            {
-                products = products.Where(p => p.Name.Contains(keyword));
-            }
-
-            // Kiểm tra xem người dùng đã chọn trạng thái sản phẩm hay chưa
+            // Lọc sản phẩm theo trạng thái (nếu được chỉ định)
             if (!string.IsNullOrEmpty(status))
             {
                 products = products.Where(p => p.TrangThai == status);
@@ -180,9 +186,14 @@ namespace TheThao.Controllers
             var productList = products.ToList();
             var circles = _context.Circles.ToList();
             ViewBag.CircleImages = circles;
+
             // Trả về view kết quả tìm kiếm
             return View("SearchResults", productList);
         }
+
+
+
+
 
 
 

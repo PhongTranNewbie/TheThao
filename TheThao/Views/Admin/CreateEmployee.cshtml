@@ -1,0 +1,53 @@
+﻿@model TheThao.Models.User
+
+@{
+    ViewData["Title"] = "Create Employee";
+}
+
+<h2>Thêm nhân viên</h2>
+
+@if (!string.IsNullOrEmpty(ViewBag.ErrorMessage))
+{
+    <div class="alert alert-danger" role="alert">
+        @ViewBag.ErrorMessage
+    </div>
+}
+
+<form asp-action="CreateEmployee" method="post">
+    <div class="form-group">
+        <label asp-for="Ten" class="control-label">Họ và tên:</label>
+        <input asp-for="Ten" class="form-control" />
+        <span asp-validation-for="Ten" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="NgayThangNamSinh" class="control-label">Ngày sinh:</label>
+        <input asp-for="NgayThangNamSinh" class="form-control" />
+        <span asp-validation-for="NgayThangNamSinh" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="DiaChi" class="control-label">Địa chỉ:</label>
+        <input asp-for="DiaChi" class="form-control" />
+        <span asp-validation-for="DiaChi" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="Email" class="control-label">Email:</label>
+        <input asp-for="Email" class="form-control" />
+        <span asp-validation-for="Email" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="Phone" class="control-label">Số điện thoại:</label>
+        <input asp-for="Phone" class="form-control" />
+        <span asp-validation-for="Phone" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="Username" class="control-label">Tài khoản:</label>
+        <input asp-for="Username" class="form-control" />
+        <span asp-validation-for="Username" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="Password" class="control-label">Mật khẩu:</label>
+        <input asp-for="Password" class="form-control" type="password" />
+        <span asp-validation-for="Password" class="text-danger"></span>
+    </div>
+    <button type="submit" class="btn btn-primary">Thêm</button>
+</form>

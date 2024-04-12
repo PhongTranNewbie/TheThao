@@ -1,0 +1,43 @@
+﻿@{
+    Layout = "ExAdm";
+}
+<h2>Employee</h2>
+@if (ViewBag.Employees != null)
+{
+    <table id="table-body" class="table">
+        <thead>
+            <tr>
+                <th>
+                    Name
+                </th>
+                <th>
+                    Email
+                </th>
+                <th>
+                    UserName
+                </th>
+                <th>
+                    Password
+                </th>
+                <th>
+                    User Id
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var employee in ViewBag.Employees)
+            {
+                <td>@employee.Ten</td>
+                <td>@employee.Email</td>
+                <td>@employee.Username</td>
+                <td>@employee.Password</td>
+                <td>@employee.Id</td>
+            }
+        </tbody>
+    </table>
+
+}
+else
+{
+    <p>Không có nhân viên.</p>
+}

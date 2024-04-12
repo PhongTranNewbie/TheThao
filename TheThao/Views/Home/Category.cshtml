@@ -1,130 +1,334 @@
-﻿@{
-    var products = ViewBag.Products as List<TheThao.Models.SanPham>;
+﻿@using TheThao.Services
+@{
     Layout = "Client";
+    var products = ViewBag.Products as List<TheThao.Models.SanPham>; // Ép kiểu ViewBag.Products thành danh sách sản phẩm
     var circles = ViewBag.CircleImages as List<TheThao.Models.Circle>;
-    var searchUrl = Url.Action("Search", "Home");// Ép kiểu ViewBag.Products thành danh sách sản phẩm
+    var searchUrl = Url.Action("Search", "Home");
+
 }
-<div class="container py-5">
-    <div class="row g-5 align-items-center">
-        <div class="col-md-12 col-lg-7">
-            <h4 class="mb-3 text-secondary">Dụng cụ thể thao</h4>
-            <h1 class="mb-5 display-3 text-primary">Chất lượng và đáng tin cậy</h1>
-            <div class="position-relative mx-auto">
-                <form method="get" action="@Url.Action("Search", "Home")">
-                    <!-- Điều hướng đến action "Search" trong controller "SanPhams" -->
-                    <input name="keyword" class="form-control border-2 border-secondary w-75 py-3 px-4 rounded-pill" type="text" placeholder="Search">
-                    <button type="submit" class="btn btn-primary border-2 border-secondary py-3 px-4 position-absolute rounded-pill text-white h-100" style="top: 0; right: 25%;">Submit Now</button>
-                </form>
-            </div>
-            <div class="col-md-12 col-lg-5 order-first order-lg-last">
-                <div class="position-relative mx-auto mb-4">
-                    <form method="get" action="@Url.Action("Category", "Home")">
-                        <input name="keyword" class="form-control border-2 border-secondary w-75 py-3 px-4 rounded-pill" type="text" placeholder="Search">
-                        <select id="priceRangeDropdown" name="priceRange" class="form-select border-2 border-secondary py-3 px-4 position-absolute rounded-pill text-white h-100" style="top: 0; right: 0;">
-                            <option class="dropdown-item active" value="">Select Price Range</option>
-                            <option class="dropdown-item active" value="0-100000">Dưới 100k</option>
-                            <option class="dropdown-item active" value="100000-500000">100k - 500k</option>
-                            <option class="dropdown-item active" value="500000-1000000">500k - 1 triệu</option>
-                            <option class="dropdown-item active" value="1000000-2000000">1 triệu - 2 triệu</option>
-                            <option class="dropdown-item active" value="2000000-3000000">2 triệu - 3 triệu</option>
-                            <option class="dropdown-item active" value="3000000">Trên 3 triệu</option>
-                        </select>
-                       
-                    </form>
+<style>
+    .product-grid {
+        display: flex;
+        flex-wrap: wrap;
+        /* Ensures divs wrap to the next line */
+    }
+    /* Màu chữ của các mục trong dropdown */
+    .dropdown-item {
+        background-color: #f8f9fa;
+        color: black;
+        cursor: pointer; /* Đổi màu chữ thành màu xanh */
+    }
 
-                </div>
-            </div>
 
-        </div>
-        <div class="col-md-12 col-lg-5 order-first order-lg-last">
-            <div id="advertisementCarousel" class="carousel slide" data-bs-ride="carousel">
-                <div class="carousel-inner">
-                    @foreach (var circle in circles)
-                    {
-                        @if (circle.IsVisible == true)
-                        {
-                            <div class="carousel-item @(circle == circles.FirstOrDefault(c => c.IsVisible == true) ? "active" : "")">
-                                <img src="@circle.HinhAnh" class="d-block w-100" alt="Circle Image">
+
+    .btn-baka.dropdown-toggle {
+        background-color: dodgerblue; /* Màu nền là màu xanh */
+        color: white; /* Màu chữ là trắng */
+        cursor: pointer;
+    }
+    /* Màu nền của dropdown menu */
+    .dropdown-menu {
+        background-color: #f8f9fa; /* Đổi màu nền thành màu xám nhạt */
+    }
+
+</style>
+
+
+<!-- Slider -->
+<section class="section-slide">
+    <div class="wrap-slick1">
+        <div class="slick1">
+            @foreach (var circle in circles)
+            {
+                @if (circle.IsVisible == true)
+                {
+                    <div class="item-slick1" style="background-size: 100% 100%; background-image: url('@Url.Content(circle.HinhAnh)');">
+                        <div class="container h-full">
+                            <div class="flex-col-l-m h-full p-t-100 p-b-30 respon5">
+                                <div class="layer-slick1 animated visible-false" data-appear="fadeInDown" data-delay="0">
+                                </div>
                             </div>
-                        }
-                    }
-                </div>
-
-
-                <button class="carousel-control-prev" type="button" data-bs-target="#advertisementCarousel" data-bs-slide="prev">
-                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                    <span class="visually-hidden">Previous</span>
-                </button>
-                <button class="carousel-control-next" type="button" data-bs-target="#advertisementCarousel" data-bs-slide="next">
-                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                    <span class="visually-hidden">Next</span>
-                </button>
-            </div>
-
+                        </div>
+                    </div>
+                }
+            }
         </div>
     </div>
-</div>
+</section>
+<!-- Product -->
+<section class="bg0 p-t-23 p-b-140">
+    <div class="container">
+        <div class="p-b-10">
+            <h3 class="ltext-103 cl5">
+                Product Overview
+            </h3>
+        </div>
 
-</div>
-<div class="row">
-    <!-- Hiển thị danh sách các dụng cụ -->
-    @if (products != null && products.Any())
-    {
-        foreach (var product in products)
-        {
-            var promotionService = new PromotionService(new TheThaoContext());
-            var isPromotionActive = promotionService.HasPromotion(product.Id);
-            <div class="col-md-4">
-                <div class="product-item">
-                    <img src="@Url.Content(product.HinhAnh)" alt="Product Image" class="img-fluid">
-                    <h4 class="mt-2"><a asp-action="ChiTietSanPham" asp-controller="SanPhams" asp-route-Id="@product.Id">@product.Name</a></h4>
-
-
-                    @if (isPromotionActive)
-                    {
-                        // Hiển thị giá trước khi giảm giá và giá sau khi giảm giá
-                        <p>Giá trước khi giảm giá: @string.Format("{0:N0}", product.GiaTruocKhiGiamGia)</p>
-                        <p>Giá sau khi giảm giá: @string.Format("{0:N0}", product.Gia)</p>
-                    }
-                    else
-                    {
-                        // Hiển thị giá khi không có khuyến mãi
-                        <p>Giá: @string.Format("{0:N0}", product.Gia)</p>
-                    }
-                    <form asp-controller="Cart" asp-action="AddToCart" method="post">
-                        <input type="hidden" name="productId" value="@product.Id" />
-                        <input type="hidden" name="quantity" value="1" /> <!-- Số lượng mặc định -->
-                        <button type="submit" class="btn btn-primary" asp-action="AddToCart" asp-controller="Cart" asp-route-id="@product.Id">Thêm vào giỏ hàng</button>
-                    </form>
-                </div>
+        <div class="flex-w flex-sb-m p-b-52">
+            <div class="flex-w flex-l-m filter-tope-group m-tb-10" id="categoryButtons">
+                <!-- Buttons for categories will be populated here -->
 
             </div>
-        }
-    }
-    else
-    {
-        <p>No products available for this category.</p>
-    }
-</div>
 
+            <div class="flex-w flex-c-m m-tb-10">
+                <div class="flex-c-m stext-106 cl6 size-104 bor4 pointer hov-btn3 trans-04 m-r-8 m-tb-4 js-show-filter">
+                    <i class="icon-filter cl2 m-r-6 fs-15 trans-04 zmdi zmdi-filter-list"></i>
+                    <i class="icon-close-filter cl2 m-r-6 fs-15 trans-04 zmdi zmdi-close dis-none"></i>
+                    Filter
+                </div>
+
+                <div class="flex-c-m stext-106 cl6 size-105 bor4 pointer hov-btn3 trans-04 m-tb-4 js-show-search">
+                    <i class="icon-search cl2 m-r-6 fs-15 trans-04 zmdi zmdi-search"></i>
+                    <i class="icon-close-search cl2 m-r-6 fs-15 trans-04 zmdi zmdi-close dis-none"></i>
+                    Search
+                </div>
+            </div>
+
+            <!-- Search product -->
+            <div class="dis-none panel-search w-full p-t-10 p-b-15">
+                <div class="bor8 dis-flex p-l-15">
+                    <button class="size-113 flex-c-m fs-16 cl2 hov-cl1 trans-04">
+                        <i class="zmdi zmdi-search"></i>
+                    </button>
+
+                    <input class="mtext-107 cl2 size-114 plh2 p-r-15" type="text" name="search-product" placeholder="Search">
+                </div>
+            </div>
+            <!-- Filter -->
+            <div class="dis-none panel-filter w-full p-t-10">
+                <div class="wrap-filter flex-w bg6 w-full p-lr-40 p-t-27 p-lr-15-sm">
+
+
+                    <div class="filter-col1 p-r-15 p-b-27" style="width: 200px;" id="statusFilter">
+                        <div class="mtext-102 cl2 p-b-15">
+                            Trạng thái
+                        </div>
+                        <ul>
+                            <li class="p-b-6">
+                                <a href="/Home/Index" class="stext-106 trans-04">
+                                    Tất cả
+                                </a>
+                            </li>
+                            <li class="p-b-6">
+                                <a href="#" class="filter-link stext-106 trans-04" data-status="Hết hàng">
+                                    Hết hàng
+                                </a>
+                            </li>
+                            <li class="p-b-6">
+                                <a href="#" class="filter-link stext-106 trans-04" data-status="Bán chạy">
+                                    Bán chạy
+                                </a>
+                            </li>
+                            <li class="p-b-6">
+                                <a href="#" class="filter-link stext-106 trans-04" data-status="Còn hàng">
+                                    Còn hàng
+                                </a>
+                            </li>
+                            <li class="p-b-6">
+                                <a href="#" class="filter-link stext-106 trans-04" data-status="Mới">
+                                    Mới
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div class="filter-col2 p-r-15 p-b-27" id="priceFilter">
+                        <div class="mtext-102 cl2 p-b-15">
+                            Giá
+                        </div>
+                        <ul>
+                            <li class="p-b-6">
+                                <a href="/Home/Index" class="stext-106 trans-04">
+                                    Tất cả
+                                </a>
+                            </li>
+                            <li class="p-b-6">
+                                <a href="#" class="filter-link stext-106 trans-04" data-min-price="0" data-max-price="100000">
+                                    0 - 100k
+                                </a>
+                            </li>
+                            <li class="p-b-6">
+                                <a href="#" class="filter-link stext-106 trans-04" data-min-price="100000" data-max-price="1000000">
+                                    100k - 1.000.000
+                                </a>
+                            </li>
+                            <li class="p-b-6">
+                                <a href="#" class="filter-link stext-106 trans-04" data-min-price="1000000" data-max-price="2000000">
+                                    1.000.000 - 2.000.000
+                                </a>
+                            </li>
+                            <li class="p-b-6">
+                                <a href="#" class="filter-link stext-106 trans-04" data-min-price="2000000" data-max-price="3000000">
+                                    2.000.000 - 3.000.000
+                                </a>
+                            </li>
+                            <li class="p-b-6">
+                                <a href="#" class="filter-link stext-106 trans-04" data-min-price="3000000" data-max-price="">
+                                    3.000.000 +
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+
+        <div class="row">
+            @if (products != null && products.Any())
+            {
+                foreach (var product in products)
+                {
+                    var promotionService = new PromotionService(new TheThaoContext());
+                    var isPromotionActive = promotionService.HasPromotion(product.Id);
+                    var promotionDetail = await promotionService.GetPromotionDetails(product.Id);
+                    <div class="col-sm-6 col-md-4 col-lg-3 p-b-35 isotope-item @(product.TheLoaiId)">
+                        <!-- Block2 -->
+                        <div class="block2">
+                            <div class="block2-pic hov-img0">
+                                <img src="@Url.Content(product.HinhAnh)" alt="@product.Name">
+
+                                <a href="@Url.Action("ChiTietSanPham", "SanPhams", new { id = product.Id })" class="block2-btn flex-c-m stext-103 cl2 size-102 bg0 bor2 hov-btn1 p-lr-15 trans-04">
+                                    Quick View
+                                </a>
+                            </div>
+
+                            <div class="block2-txt flex-w flex-t p-t-14">
+                                <div class="block2-txt-child1 flex-col-l ">
+                                    <a href="@Url.Action("ChiTietSanPham", "SanPhams", new { id = product.Id })" class="stext-104 cl4 hov-cl1 trans-04 js-name-b2 p-b-6">
+                                        @product.Name
+                                    </a>
+
+                                    @if (isPromotionActive)
+                                    {
+                                        <span class="stext-105 cl3">
+                                            Giá trước khi giảm giá: @string.Format("{0:N0}", product.GiaTruocKhiGiamGia)
+                                        </span>
+                                        <span class="stext-105 cl3">
+                                            Giá sau khi giảm giá: @string.Format("{0:N0}", product.Gia)
+                                        </span>
+                                    }
+                                    else
+                                    {
+                                        <span class="stext-105 cl3">
+                                            Giá: @string.Format("{0:N0}", product.Gia)
+                                        </span>
+                                    }
+                                </div>
+
+                                <div class="block2-txt-child2 flex-r p-t-3">
+                                    <form asp-controller="Cart" asp-action="AddToCart" method="post">
+                                        <input type="hidden" name="productId" value="@product.Id" />
+                                        <input type="hidden" name="quantity" value="1" /> <!-- Số lượng mặc định -->
+                                        <button type="submit" class="btn-addwish-b2 dis-block pos-relative js-addwish-b2">
+                                            <img class="icon-heart1 dis-block trans-04" src="~/images/icons/icon-heart-01.png" alt="ICON">
+                                            <img class="icon-heart2 dis-block trans-04 ab-t-l" src="~/images/icons/icon-heart-02.png" alt="ICON">
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            }
+            else
+            {
+                <p>No products available.</p>
+            }
+        </div>
+        <!-- Load more -->
+        <div class="flex-c-m flex-w w-full p-t-45">
+            <a href="#" class="flex-c-m stext-101 cl5 size-103 bg2 bor1 hov-btn1 p-lr-15 trans-04">
+                Load More
+            </a>
+        </div>
+    </div>
+</section>
+
+
+
+
+
+
+
+
+
+
+</div>
 @section Scripts
 {
     <script>
         document.addEventListener("DOMContentLoaded", function () {
-            var priceRangeDropdown = document.getElementById("priceRangeDropdown");
-            if (priceRangeDropdown) {
-                priceRangeDropdown.addEventListener("change", function () {
-                    var selectedPriceRange = this.value;
-                    var currentUrl = window.location.href;
-                    var updatedUrl;
-                    if (currentUrl.includes("priceRange=")) {
-                        updatedUrl = currentUrl.replace(/priceRange=[^&]*/, "priceRange=" + selectedPriceRange);
-                    } else {
-                        updatedUrl = currentUrl + (currentUrl.includes("?") ? "&" : "?") + "priceRange=" + selectedPriceRange;
+            var searchInput = document.querySelector('input[name="search-product"]');
+
+            searchInput.addEventListener('keypress', function (event) {
+                if (event.keyCode === 13) {
+                    var keyword = searchInput.value.trim();
+                    if (keyword !== '') {
+                        var searchUrlWithParams = "@Url.Action("Search", "Home")" + "?keyword=" + keyword;
+                        window.location.href = searchUrlWithParams;
                     }
-                    window.location.href = updatedUrl;
+                }
+            });
+
+            var statusLinks = document.querySelectorAll('#statusFilter .filter-link');
+            statusLinks.forEach(function (link) {
+                link.addEventListener('click', function (event) {
+                    event.preventDefault();
+                    // Xóa lớp active từ tất cả các liên kết khác
+                    statusLinks.forEach(function (otherLink) {
+                        otherLink.classList.remove('filter-link-active');
+                    });
+                    // Thêm lớp active cho liên kết được chọn
+                    link.classList.add('filter-link-active');
+                    // Lấy trạng thái từ thuộc tính data
+                    var status = link.getAttribute('data-status');
+                    // Gọi hàm filterByStatus với trạng thái được chọn
+                    filterByStatus(status);
                 });
+            });
+
+            // Lọc theo giá
+            var priceLinks = document.querySelectorAll('#priceFilter .filter-link');
+            priceLinks.forEach(function (link) {
+                link.addEventListener('click', function (event) {
+                    event.preventDefault();
+                    // Xóa lớp active từ tất cả các liên kết khác
+                    priceLinks.forEach(function (otherLink) {
+                        otherLink.classList.remove('filter-link-active');
+                    });
+                    // Thêm lớp active cho liên kết được chọn
+                    link.classList.add('filter-link-active');
+                    // Lấy giá từ thuộc tính data
+                    var minPrice = link.getAttribute('data-min-price');
+                    var maxPrice = link.getAttribute('data-max-price');
+                    // Gọi hàm filterByPrice với giá được chọn
+                    filterByPrice(minPrice, maxPrice);
+                });
+            });
+
+            // Hàm xử lý lọc theo trạng thái
+            function filterByStatus(status) {
+                // Viết code xử lý lọc theo trạng thái ở đây
+                console.log('Lọc theo trạng thái:', status);
+                // Chuyển hướng đến trang Search với tham số trạng thái
+                var searchUrlWithParams = "@Url.Action("Search", "Home")" + "?status=" + status;
+                window.location.href = searchUrlWithParams;
+            }
+
+            // Hàm xử lý lọc theo giá
+            function filterByPrice(minPrice, maxPrice) {
+                // Viết code xử lý lọc theo giá ở đây
+                console.log('Lọc theo giá:', minPrice, '-', maxPrice);
+                // Chuyển hướng đến trang Search với tham số giá
+                var searchUrlWithParams = "@Url.Action("Search", "Home")" + "?minPrice=" + minPrice + "&maxPrice=" + maxPrice;
+                window.location.href = searchUrlWithParams;
             }
         });
     </script>
+
 }
+
+
+

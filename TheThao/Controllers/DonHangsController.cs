@@ -39,7 +39,7 @@ namespace TheThao.Controllers
                                         .ToList();
 
             // Tính tổng tiền
-            decimal tongTien = 0;
+            decimal? tongTien = 0;
             foreach (var chiTiet in chiTietDonHangs)
             {
                 tongTien += chiTiet.Gia  * chiTiet.SoLuong ;
@@ -50,7 +50,7 @@ namespace TheThao.Controllers
             {
                 DonHang = donHang,
                 ChiTietDonHangs = chiTietDonHangs,
-                TongTien = tongTien
+                TongTien = (decimal)tongTien
             };
             ViewBag.User = _context.Users.ToList();
             // Trả về view và truyền view model
@@ -71,7 +71,7 @@ namespace TheThao.Controllers
             }
 
             // Calculate total price
-            decimal tongTien = donHang.ChiTietDonHangs.Sum(ctdh => ctdh.Gia * ctdh.SoLuong);
+            decimal? tongTien = donHang.ChiTietDonHangs.Sum(ctdh => ctdh.Gia * ctdh.SoLuong);
 
             ViewBag.TongTien = tongTien; // Pass total price to view
 

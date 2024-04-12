@@ -3,6 +3,7 @@
     flex-direction: column;
     height: 100%;
 }
+
 .product-image {
     flex: 0 0 50%;
     padding: 0px;
@@ -10,13 +11,15 @@
     width: 500px;
 }
 
-.product-image img {
+    .product-image img {
         width: 100%;
         height: auto;
     }
+
 .main-image {
     margin-right: 20px;
 }
+
 .thumbnail-images {
     display: flex;
     flex-wrap: nowrap;
@@ -39,11 +42,11 @@
     display: flex;
     margin-top: 50px;
 }
+
 .product-gallery {
     flex: 0 0 50%;
-    padding: 0px;
+    padding: 10px;
     height: 100%;
-    width: 100px;
     overflow-y: auto;
 }
 
@@ -82,15 +85,17 @@
     margin-bottom: 20px; /* Khoảng cách giữa các ảnh nhỏ */
 }
 
-.product-gallery .swiper-slide img {
-       width: 70px; /* Đảm bảo ảnh nhỏ không vượt quá kích thước của cha */
+    .product-gallery .swiper-slide img {
+        width: 70px; /* Đảm bảo ảnh nhỏ không vượt quá kích thước của cha */
         height: 70px; /* Duy trì tỷ lệ khung hình */
     }
+
 #main-product-image {
     width: 445px;
     height: 445px;
     object-fit: cover; /* Đảm bảo ảnh chính được căn chỉnh đúng tỷ lệ */
 }
+
 .custom-product-detail-container {
     height: 600px;
     width: 520px;
@@ -187,17 +192,18 @@
     margin-bottom: 20px; /* Khoảng cách giữa các hình ảnh thu nhỏ */
     cursor: pointer;
 }
+
 .custom-thumbnail {
     height: 100px;
     width: 100px;
     margin-bottom: 20px; /* Khoảng cách giữa các hình ảnh thu nhỏ */
     cursor: pointer;
 }
+
 .custom-product-gallery {
-    flex: 0 0 50%;
+    flex: 0 0 100%;
     padding: 0px;
     height: 100%;
-    width: 100px;
     overflow-y: auto;
 }
 
@@ -240,11 +246,15 @@
         width: 70px; /* Đảm bảo ảnh nhỏ không vượt quá kích thước của cha */
         height: 70px; /* Duy trì tỷ lệ khung hình */
     }
+
 .custom-row {
     display: flex;
-    flex-direction: column;
-    height: 100%;
+    flex-direction: row;
+    justify-content: space-between; /* Canh chỉnh các phần tử thành hai đầu của hàng ngang */
+    align-items: center; /* Canh chỉnh các phần tử theo trục dọc */
+    padding: 0 20px; /* Tạo khoảng cách giữa các phần tử */
 }
+
 .custom-product-image {
     flex: 0 0 50%;
     padding: 0px;

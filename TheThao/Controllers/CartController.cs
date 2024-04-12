@@ -59,15 +59,10 @@ public class CartController : Controller
         TempData["CartMessage"] = $"{itemToRemove.SanPham.Name} ${itemToRemove.SanPham.TheLoai} Item Removed From Cart";
         if (itemToRemove != null)
         {
-            if(itemToRemove.Quantity > 1)
-            {
-                itemToRemove.Quantity--;
-            }
-            else
-            {
+            
                 
                 cartItems.Remove(itemToRemove);
-            }
+            
         }
         HttpContext.Session.Set("Cart", cartItems);
         
@@ -79,11 +74,26 @@ public class CartController : Controller
         var itemToIncrease = cartItems.FirstOrDefault(item => item.SanPham.Id == id);
         if (itemToIncrease != null)
         {
-            ++itemToIncrease.Quantity;
+            if (itemToIncrease.Quantity >= itemToIncrease.SanPham.SoLuong)
+            {
+                // Nếu số lượng đã đạt tối đa, hiển thị thông báo và không thực hiện thêm nữa
+                TempData["Message"] = "Sản phẩm này đã hết hàng.";
+            }
+            else
+            {
+                ++itemToIncrease.Quantity;
+                HttpContext.Session.Set("Cart", cartItems);
+                return RedirectToAction("ViewCart");
+            }
         }
-        HttpContext.Session.Set("Cart", cartItems);
+        else
+        {
+            // Xử lý khi không tìm thấy sản phẩm trong giỏ hàng
+            TempData["Message"] = "Không tìm thấy sản phẩm trong giỏ hàng.";
+        }
         return RedirectToAction("ViewCart");
     }
+
 
     public IActionResult DecreaseQuantity(int id)
     {

@@ -1,0 +1,62 @@
+﻿@model List<TheThao.Models.SanPham>
+
+@if (Model != null && Model.Any())
+{
+    @foreach (var product in Model)
+    {
+        var promotionService = new PromotionService(new TheThaoContext());
+        var isPromotionActive = promotionService.HasPromotion(product.Id);
+        var promotionDetail = await promotionService.GetPromotionDetails(product.Id);
+        <div class="col-sm-6 col-md-4 col-lg-3 p-b-35 isotope-item @(product.TheLoaiId)">
+            <!-- Block2 -->
+            <div class="block2">
+                <div class="block2-pic hov-img0">
+                    <img src="@Url.Content(product.HinhAnh)" alt="@product.Name">
+
+                    <a href="@Url.Action("ChiTietSanPham", "SanPhams", new { id = product.Id })" class="block2-btn flex-c-m stext-103 cl2 size-102 bg0 bor2 hov-btn1 p-lr-15 trans-04">
+                        Quick View
+                    </a>
+                </div>
+
+                <div class="block2-txt flex-w flex-t p-t-14">
+                    <div class="block2-txt-child1 flex-col-l ">
+                        <a href="@Url.Action("ChiTietSanPham", "SanPhams", new { id = product.Id })" class="stext-104 cl4 hov-cl1 trans-04 js-name-b2 p-b-6">
+                            @product.Name
+                        </a>
+
+                        @if (isPromotionActive)
+                        {
+                            <span class="stext-105 cl3">
+                                Giá trước khi giảm giá: @string.Format("{0:N0}", product.GiaTruocKhiGiamGia)
+                            </span>
+                            <span class="stext-105 cl3">
+                                Giá sau khi giảm giá: @string.Format("{0:N0}", product.Gia)
+                            </span>
+                        }
+                        else
+                        {
+                            <span class="stext-105 cl3">
+                                Giá: @string.Format("{0:N0}", product.Gia)
+                            </span>
+                        }
+                    </div>
+
+                    <div class="block2-txt-child2 flex-r p-t-3">
+                        <form asp-controller="Cart" asp-action="AddToCart" method="post">
+                            <input type="hidden" name="productId" value="@product.Id" />
+                            <input type="hidden" name="quantity" value="1" /> <!-- Số lượng mặc định -->
+                            <button type="submit" class="btn-addwish-b2 dis-block pos-relative js-addwish-b2">
+                                <img class="icon-heart1 dis-block trans-04" src="~/images/icons/icon-heart-01.png" alt="ICON">
+                                <img class="icon-heart2 dis-block trans-04 ab-t-l" src="~/images/icons/icon-heart-02.png" alt="ICON">
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+}
+else
+{
+    <p>No products available.</p>
+}

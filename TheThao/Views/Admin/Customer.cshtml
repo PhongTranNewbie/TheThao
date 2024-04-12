@@ -1,0 +1,44 @@
+﻿@{
+    Layout = "ExAdm";
+}
+
+    <h2>Customer</h2>
+
+    @if (ViewBag.Customers != null)
+        {
+<table id="table-body" class="table">
+    <thead>
+        <tr>
+            <th>
+                Name
+            </th>
+            <th>
+                Email
+            </th>
+            <th>
+                Address
+            </th>
+            <th>
+                User Id
+            </th>
+            
+        </tr>
+    </thead>
+    <tbody>
+        
+            @foreach (var customer in ViewBag.Customers)
+            {
+        <td>@customer.Ten</td>
+            <td>@customer.Email</td>
+            <td>@customer.DiaChi</td>
+
+            <td>@customer.Id</td>
+        }
+        }
+        else
+        {
+        <p>Không có khách hàng.</p>
+        
+    </tbody>
+</table>
+}

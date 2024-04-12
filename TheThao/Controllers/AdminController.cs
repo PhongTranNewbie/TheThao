@@ -90,6 +90,126 @@ namespace TheThao.Controllers
         }
 
 
-        // Các action khác
+        // GET: /Admin/CreateEmployee
+        [HttpGet]
+        public IActionResult CreateEmployee()
+        {
+            // Kiểm tra xem admin đã đăng nhập hay chưa
+            if (HttpContext.Session.GetString("AdminId") == null)
+            {
+                return RedirectToAction("AdminLogin");
+            }
+
+            return View();
+        }
+
+        // POST: /Admin/CreateEmployee
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult CreateEmployee(User model)
+        {
+            // Kiểm tra xem admin đã đăng nhập hay chưa
+            if (HttpContext.Session.GetString("AdminId") == null)
+            {
+                return RedirectToAction("AdminLogin");
+            }
+
+            if (ModelState.IsValid)
+            {
+                if (string.IsNullOrEmpty(model.Username) || string.IsNullOrEmpty(model.Password))
+                {
+                    ViewBag.ErrorMessage = "Username and password are required.";
+                    return View(model);
+                }
+                if (_context.Users.Any(u => u.Username == model.Username))
+                {
+                    ModelState.AddModelError("Username", "Username already exists.");
+                }
+                else
+                {
+                    model.Role = "Staff"; // Set role to "Staff" for employee
+                    _context.Users.Add(model);
+                    _context.SaveChanges();
+                    return RedirectToAction("EmployeeDashboard");
+                }
+            }
+            return View(model);
+        }
+        [HttpGet]
+        public IActionResult EmployeeLogin()
+        {
+            // Kiểm tra nếu đã đăng nhập thì chuyển hướng đến trang dashboard
+            if (HttpContext.Session.GetString("EmployeeId") != null)
+            {
+                return RedirectToAction("EmployeeDashboard");
+            }
+            return View();
+        }
+
+        [HttpPost]
+        public IActionResult EmployeeLogin(User model)
+        {
+            if (ModelState.IsValid)
+            {
+                var user = _context.Users.FirstOrDefault(u => u.Username == model.Username && u.Password == model.Password && u.Role == "Staff");
+                if (user != null)
+                {
+                    // Lưu Id của nhân viên vào Session khi đăng nhập thành công
+                    HttpContext.Session.SetString("EmployeeId", user.Id.ToString());
+                    return RedirectToAction("EmployeeDashboard");
+                }
+                else
+                {
+                    ModelState.AddModelError("", "Invalid username or password");
+                }
+            }
+            return View(model);
+        }
+
+        // Trang dashboard cho nhân viên
+        public IActionResult EmployeeDashboard()
+        {
+            // Kiểm tra xem nhân viên đã đăng nhập hay chưa
+            if (HttpContext.Session.GetString("EmployeeId") == null)
+            {
+                return RedirectToAction("EmployeeLogin");
+            }
+
+            return View("EmployeeDashboard");
+
+        }
+
+        // Đăng xuất nhân viên
+        public IActionResult EmployeeLogout()
+        {
+            // Xóa Session khi nhân viên đăng xuất
+            HttpContext.Session.Remove("EmployeeId");
+            return RedirectToAction("EmployeeLogin");
+        }
+        public IActionResult Employee()
+        {
+            // Lấy danh sách nhân viên và khách hàng từ cơ sở dữ liệu
+            var employees = _context.Users.Where(u => u.Role == "Staff").ToList();
+            
+
+            // Truyền danh sách nhân viên và khách hàng đến view
+            ViewBag.Employees = employees;
+            
+
+            return View();
+        }
+
+        public IActionResult Customer()
+        {
+            // Lấy danh sách nhân viên và khách hàng từ cơ sở dữ liệu
+            
+            var customers = _context.Users.Where(u => u.Role == "Customer").ToList();
+
+            // Truyền danh sách nhân viên và khách hàng đến view
+            
+            ViewBag.Customers = customers;
+
+            return View();
+        }
     }
 }
