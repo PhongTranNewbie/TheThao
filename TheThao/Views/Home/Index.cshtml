@@ -58,6 +58,42 @@
         background-color: transparent !important;
         pointer-events: none;
     }
+
+    .pagination {
+        display: inline-flex;
+    }
+
+        .pagination a {
+            color: black;
+            padding: 8px 16px;
+            text-decoration: none;
+            border: 1px solid #ddd;
+            box-sizing: border-box; /* Bao gồm border trong kích thước của phần tử */
+        }
+
+            .pagination a.active,
+            .pagination a:focus {
+                background-color: #4CAF50;
+                color: white;
+                padding: 8px 16px; /* Thiết lập padding khi active */
+                border: 1px solid #4CAF50; /* Hiển thị border khi focus */
+            }
+
+            .pagination a:hover:not(.active) {
+                background-color: #ddd;
+                border: 1px solid #ddd; /* Thêm đường viền khi hover */
+            }
+
+            .pagination a:first-child {
+                border-top-left-radius: 5px;
+                border-bottom-left-radius: 5px;
+            }
+
+            .pagination a:last-child {
+                border-top-right-radius: 5px;
+                border-bottom-right-radius: 5px;
+            }
+
 </style>
 
 
@@ -262,9 +298,14 @@
                     </div>
                 }
 
+                <div>
+                    @Html.PagedListPager(Model, page => Url.Action("Index", new { page = page }), new PagedListRenderOptions
+           {
+               LiElementClasses = new string[] { "page-item" },
+               PageClasses = new string[] { "page-link" }
+           })
+                </div>
 
-                @Html.PagedListPager(Model, page => Url.Action("Index", new { page = page }))
-                    
                
             }
             else

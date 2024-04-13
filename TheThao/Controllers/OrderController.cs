@@ -4,6 +4,7 @@ using System.Linq;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using TheThao.ViewModels;
+using X.PagedList;
 
 namespace TheThao.Controllers
 {
@@ -18,24 +19,25 @@ namespace TheThao.Controllers
             _httpContextAccessor = httpContextAccessor;
         }
 
-        public IActionResult ListOrders()
+        public IActionResult ListOrders(int? page)
         {
             var userIdString = HttpContext.Session.GetString("UserId");
             int userId;
             if (!string.IsNullOrEmpty(userIdString) && int.TryParse(userIdString, out userId))
             {
-                // Lấy danh sách đơn hàng của khách hàng có userId
+                int pageSize = 10;
+                int pageNumber = page ?? 1;
+
                 var orders = _context.DonHangs
                                     .Where(o => o.UserId == userId)
-                                    .ToList();
+                                    .OrderByDescending(x => x.NgayTao)
+                                    .ToPagedList(pageNumber, pageSize); // Chuyển danh sách thành IPagedList
 
                 return View(orders);
             }
             else
             {
-                // Xử lý trường hợp không tìm thấy userId hoặc userId không hợp lệ
-                // Ví dụ: có thể chuyển hướng đến trang lỗi hoặc trang đăng nhập
-                return RedirectToAction("Login", "Account"); // Chuyển hướng đến trang đăng nhập
+                return RedirectToAction("Login", "Account");
             }
         }
         public IActionResult Details(string id)

@@ -11,11 +11,11 @@ public partial class DonHang
 
     public int? TrangThai { get; set; }
 
+    public string? PhuongPhapThanhToan { get; set; }
+
     public int? UserId { get; set; }
 
     public virtual ICollection<ChiTietDonHang> ChiTietDonHangs { get; set; } = new List<ChiTietDonHang>();
-
-    public virtual ThanhToan? ThanhToan { get; set; }
 
     public virtual User? User { get; set; }
 }

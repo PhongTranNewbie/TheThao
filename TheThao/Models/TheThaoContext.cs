@@ -45,9 +45,6 @@ public partial class TheThaoContext : DbContext
 
     public virtual DbSet<SanPham> SanPhams { get; set; }
 
-    public virtual DbSet<Shipping> Shippings { get; set; }
-
-    public virtual DbSet<ThanhToan> ThanhToans { get; set; }
 
     public virtual DbSet<User> Users { get; set; }
 
@@ -194,6 +191,7 @@ public partial class TheThaoContext : DbContext
                 .HasMaxLength(255)
                 .IsUnicode(false);
             entity.Property(e => e.NgayTao).HasColumnType("date");
+            entity.Property(e => e.PhuongPhapThanhToan).HasMaxLength(70);
 
             entity.HasOne(d => d.User).WithMany(p => p.DonHangs)
                 .HasForeignKey(d => d.UserId)
@@ -286,48 +284,7 @@ public partial class TheThaoContext : DbContext
                 .HasConstraintName("FK_SanPham_LoaiSanPham");
         });
 
-        modelBuilder.Entity<Shipping>(entity =>
-        {
-            entity.HasKey(e => e.Id).HasName("PK__Shipping__3214EC07937ABA17");
-
-            entity.ToTable("Shipping");
-
-            entity.Property(e => e.DiaChi)
-                .HasMaxLength(255)
-                .IsUnicode(false);
-            entity.Property(e => e.Ngay).HasColumnType("date");
-            entity.Property(e => e.TongTien).HasColumnType("decimal(12, 0)");
-
-            entity.HasOne(d => d.User).WithMany(p => p.Shippings)
-                .HasForeignKey(d => d.UserId)
-                .HasConstraintName("FK__Shipping__UserId__45F365D3");
-        });
-
-        modelBuilder.Entity<ThanhToan>(entity =>
-        {
-            entity.HasKey(e => e.Id).HasName("PK__ThanhToa__3214EC07E2EB90B7");
-
-            entity.ToTable("ThanhToan");
-
-            entity.HasIndex(e => e.MaDonHang, "Unique_dh").IsUnique();
-
-            entity.Property(e => e.MaDonHang)
-                .HasMaxLength(255)
-                .IsUnicode(false);
-            entity.Property(e => e.Ngay).HasColumnType("date");
-            entity.Property(e => e.PhuongPhapThanhToan)
-                .HasMaxLength(255)
-                .IsUnicode(false);
-            entity.Property(e => e.TongTien).HasColumnType("decimal(12, 0)");
-
-            entity.HasOne(d => d.MaDonHangNavigation).WithOne(p => p.ThanhToan)
-                .HasForeignKey<ThanhToan>(d => d.MaDonHang)
-                .HasConstraintName("FK_ThanhToan_DonHang");
-
-            entity.HasOne(d => d.User).WithMany(p => p.ThanhToans)
-                .HasForeignKey(d => d.UserId)
-                .HasConstraintName("FK_ThanhToan_Users");
-        });
+        
 
         modelBuilder.Entity<User>(entity =>
         {

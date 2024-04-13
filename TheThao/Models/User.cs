@@ -35,7 +35,4 @@ public partial class User
 
     public virtual ICollection<PhanTramGiaCa> PhanTramGiaCas { get; set; } = new List<PhanTramGiaCa>();
 
-    public virtual ICollection<Shipping> Shippings { get; set; } = new List<Shipping>();
-
-    public virtual ICollection<ThanhToan> ThanhToans { get; set; } = new List<ThanhToan>();
 }

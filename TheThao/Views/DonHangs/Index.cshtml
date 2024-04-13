@@ -40,8 +40,10 @@
                     @Html.DisplayFor(modelItem => donHang.NgayTao)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => donHang.TrangThai)
+                    @ViewBag.StatusTexts[(int)donHang.TrangThai]
                 </td>
+
+
                 <td>
                     @Html.DisplayFor(modelItem => donHang.UserId)
                 </td>

@@ -191,6 +191,7 @@ namespace TheThao.Controllers
             var users = _context.Users.ToList();
 
             // Truyền dữ liệu sang view
+            ViewBag.SanPhams = _context.SanPhams.ToList();
             ViewData["Users"] = users;
             ViewBag.SanPham = _context.SanPhams.FirstOrDefault(e => e.Id == id);
             ViewBag.ChiTietHinhAnhs = _context.ChiTietHinhAnhs.ToList();

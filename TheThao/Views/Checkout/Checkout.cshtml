@@ -1,13 +1,16 @@
 ﻿@model TheThao.ViewModels.CheckoutSuccessViewModel
-<h1>Bạn đã đặt hàng thành công!</h1>
-<h1>Chi Tiết Đơn Hàng</h1>
+
+<section class="bg0 p-t-23 p-b-140">
+
+<h3 style="margin-top: 40px; margin-bottom: 10px;">Bạn đã đặt hàng thành công!</h3>
+    <h4 style="margin-bottom: 10px;">Chi Tiết Đơn Hàng</h4>
 
 <p>Thông tin đơn hàng:</p>
 <p>Id: @Model.DonHang.Id</p>
 <p>Ngày Tạo: @Model.DonHang.NgayTao</p>
+<p>Payment Selection: @Model.DonHang.PhuongPhapThanhToan</p>
 
-
-<h2>Danh sách Sản Phẩm</h2>
+    <h3 style="margin-bottom: 10px;">Danh sách Sản Phẩm</h3>
 @if (Model.ChiTietDonHangs != null && Model.ChiTietDonHangs.Any())
 {
     <table class="table">
@@ -32,3 +35,4 @@
 }
 
 <p>Tổng Tiền: @Model.TongTien</p>
+</section>

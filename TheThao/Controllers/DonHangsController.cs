@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using System.Linq;
 using TheThao.Models;
 using TheThao.ViewModels;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace TheThao.Controllers
 {
@@ -18,6 +19,21 @@ namespace TheThao.Controllers
 
         public IActionResult Index()
         {
+            // Define a dictionary to map status values (int) to corresponding texts
+            var statusTexts = new Dictionary<int, string>
+            {
+                { 1, "Đang chờ xác nhận" },
+                { 2, "Đang giao hàng" },
+                { 3, "Đã thanh toán" },
+                { 4, "Đã thanh toán và chờ giao hàng" },
+                { 5, "Đã hủy" }
+            };
+
+            // Pass the dictionary to the view
+            ViewBag.StatusTexts = statusTexts;
+
+
+
             var donHangs = _context.DonHangs.ToList();
             return View(donHangs);
         }
@@ -56,7 +72,6 @@ namespace TheThao.Controllers
             // Trả về view và truyền view model
             return View(viewModel);
         }
-        // GET: DonHangs/Edit/id
         // GET: DonHangs/Edit/id
         public IActionResult Edit(string id)
         {
@@ -103,15 +118,5 @@ namespace TheThao.Controllers
 
             return RedirectToAction("Details", new { id = donHang.Id });
         }
-
-
-
-
-
-
-
-
-
-
     }
 }
