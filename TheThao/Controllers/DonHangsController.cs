@@ -22,11 +22,12 @@ namespace TheThao.Controllers
             // Define a dictionary to map status values (int) to corresponding texts
             var statusTexts = new Dictionary<int, string>
             {
-                { 1, "Đang chờ xác nhận" },
-                { 2, "Đang giao hàng" },
-                { 3, "Đã thanh toán" },
-                { 4, "Đã thanh toán và chờ giao hàng" },
-                { 5, "Đã hủy" }
+                { 1, "Waiting for confirmation" },
+                { 2, "On delivery" },
+                { 3, "Paid" },
+                { 4, "Paid and awaiting delivery" },
+                { 5, "Cancelled" }
+
             };
 
             // Pass the dictionary to the view

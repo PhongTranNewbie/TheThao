@@ -8,7 +8,22 @@
     var searchUrl = Url.Action("Search", "Home");
 
 }
+@if (TempData["Message"] != null)
+{
+    <div style="margin-top: 50px;" class="alert alert-info" role="alert">
+        @TempData["Message"]
+    </div>
+}
 <style>
+    /* Ẩn trái tim đã điền ban đầu */
+    .js-heart-icon-filled {
+        display: none;
+    }
+    /* Lớp ẩn */
+    .hidden {
+        display: none;
+    }
+
     .product-grid {
         display: flex;
         flex-wrap: wrap;
@@ -165,32 +180,32 @@
 
                     <div class="filter-col1 p-r-15 p-b-27" style="width: 200px;" id="statusFilter">
                         <div class="mtext-102 cl2 p-b-15">
-                            Trạng thái
+                            Status
                         </div>
                         <ul>
                             <li class="p-b-6">
                                 <a href="/Home/Index" class="stext-106 trans-04">
-                                    Tất cả
+                                    All
                                 </a>
                             </li>
                             <li class="p-b-6">
-                                <a href="#" class="filter-link stext-106 trans-04" data-status="Hết hàng">
-                                    Hết hàng
+                                <a href="#" class="filter-link stext-106 trans-04" data-status="Out of stock">
+                                    Out of stock
                                 </a>
                             </li>
                             <li class="p-b-6">
-                                <a href="#" class="filter-link stext-106 trans-04" data-status="Bán chạy">
-                                    Bán chạy
+                                <a href="#" class="filter-link stext-106 trans-04" data-status="Selling">
+                                    Selling
                                 </a>
                             </li>
                             <li class="p-b-6">
-                                <a href="#" class="filter-link stext-106 trans-04" data-status="Còn hàng">
-                                    Còn hàng
+                                <a href="#" class="filter-link stext-106 trans-04" data-status="Stocking">
+                                    Stocking
                                 </a>
                             </li>
                             <li class="p-b-6">
-                                <a href="#" class="filter-link stext-106 trans-04" data-status="Mới">
-                                    Mới
+                                <a href="#" class="filter-link stext-106 trans-04" data-status="New">
+                                    New
                                 </a>
                             </li>
                         </ul>
@@ -198,12 +213,12 @@
 
                     <div class="filter-col2 p-r-15 p-b-27" id="priceFilter">
                         <div class="mtext-102 cl2 p-b-15">
-                            Giá
+                            Price
                         </div>
                         <ul>
                             <li class="p-b-6">
                                 <a href="/Home/Index" class="stext-106 trans-04">
-                                    Tất cả
+                                    All
                                 </a>
                             </li>
                             <li class="p-b-6">
@@ -252,15 +267,27 @@
                     <div class="col-sm-6 col-md-4 col-lg-3 p-b-35 isotope-item @(product.TheLoaiId)">
                         <!-- Block2 -->
                         <div class="block2">
-                            <div class="block2-pic hov-img0">
+                            @if (isPromotionActive)
+                            {
+                            <div class="block2-pic hov-img0 label1" data-label1="@promotionDetail.PhanTramKhuyenMai%">
                                 <img src="@Url.Content(product.HinhAnh)" alt="@product.Name">
-
+                               
                                 <a href="@Url.Action("ChiTietSanPham", "SanPhams", new { id = product.Id })" class="block2-btn flex-c-m stext-103 cl2 size-102 bg0 bor2 hov-btn1 p-lr-15 trans-04">
                                     Quick View
                                 </a>
-                            </div>
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="block2-pic hov-img0" >
+                                    <img src="@Url.Content(product.HinhAnh)" alt="@product.Name">
 
-                            <div class="block2-txt flex-w flex-t p-t-14">
+                                    <a href="@Url.Action("ChiTietSanPham", "SanPhams", new { id = product.Id })" class="block2-btn flex-c-m stext-103 cl2 size-102 bg0 bor2 hov-btn1 p-lr-15 trans-04">
+                                        Quick View
+                                    </a>
+                                </div>
+                            }
+                            <div class="block2-txt flex-w flex-t p-t-14" >
                                 <div class="block2-txt-child1 flex-col-l ">
                                     <a href="@Url.Action("ChiTietSanPham", "SanPhams", new { id = product.Id })" class="stext-104 cl4 hov-cl1 trans-04 js-name-b2 p-b-6">
                                         @product.Name
@@ -269,30 +296,40 @@
                                     @if (isPromotionActive)
                                     {
                                         <span class="stext-105 cl3">
-                                            Giá trước khi giảm giá: @string.Format("{0:N0}", product.GiaTruocKhiGiamGia)
+                                            Price: @string.Format("{0:N0}", product.GiaTruocKhiGiamGia)
                                         </span>
                                         <span class="stext-105 cl3">
-                                            Giá sau khi giảm giá: @string.Format("{0:N0}", product.Gia)
+                                            Promotion Price: @string.Format("{0:N0}", product.Gia)
                                         </span>
                                     }
                                     else
                                     {
                                         <span class="stext-105 cl3">
-                                            Giá: @string.Format("{0:N0}", product.Gia)
+                                            Price: @string.Format("{0:N0}", product.Gia)
                                         </span>
                                     }
                                 </div>
 
                                 <div class="block2-txt-child2 flex-r p-t-3">
-                                    <form asp-controller="Cart" asp-action="AddToCart" method="post">
-                                        <input type="hidden" name="productId" value="@product.Id" />
-                                        <input type="hidden" name="quantity" value="1" /> <!-- Số lượng mặc định -->
-                                        <button type="submit" class="btn-addwish-b2 dis-block pos-relative js-addwish-b2">
-                                            <img class="icon-heart1 dis-block trans-04" src="~/images/icons/icon-heart-01.png" alt="ICON">
-                                            <img class="icon-heart2 dis-block trans-04 ab-t-l" src="~/images/icons/icon-heart-02.png" alt="ICON">
-                                        </button>
-                                    </form>
+                                    <a href="@Url.Action("ToggleFavorite", "Favorite", new { productId = product.Id })" class="btn-addwish-b2 dis-block pos-relative js-addwish-b2 toggle-favorite">
+                                        <i  class="bi bi-heart js-heart-icon dis-block trans-04"></i>
+                                        <i  class="bi bi-heart-fill js-heart-icon-filled dis-block trans-04" style="display: none;"></i>
+                                    </a>
                                 </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                             </div>
                         </div>
                     </div>
@@ -325,14 +362,14 @@
 
 @section Scripts
 {
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
-       
-        document.addEventListener("DOMContentLoaded", function () {
-            var searchInput = document.querySelector('input[name="search-product"]');
+        $(document).ready(function () {
+            var searchInput = $('input[name="search-product"]');
 
-            searchInput.addEventListener('keypress', function (event) {
-                if (event.keyCode === 13) {
-                    var keyword = searchInput.value.trim();
+            searchInput.on('keypress', function (event) {
+                if (event.which === 13) {
+                    var keyword = searchInput.val().trim();
                     if (keyword !== '') {
                         var searchUrlWithParams = "@Url.Action("Search", "Home")" + "?keyword=" + keyword;
                         window.location.href = searchUrlWithParams;
@@ -340,40 +377,29 @@
                 }
             });
 
-            var statusLinks = document.querySelectorAll('#statusFilter .filter-link');
-            statusLinks.forEach(function (link) {
-                link.addEventListener('click', function (event) {
-                    event.preventDefault();
-                    // Xóa lớp active từ tất cả các liên kết khác
-                    statusLinks.forEach(function (otherLink) {
-                        otherLink.classList.remove('filter-link-active');
-                    });
-                    // Thêm lớp active cho liên kết được chọn
-                    link.classList.add('filter-link-active');
-                    // Lấy trạng thái từ thuộc tính data
-                    var status = link.getAttribute('data-status');
-                    // Gọi hàm filterByStatus với trạng thái được chọn
-                    filterByStatus(status);
-                });
+            $('#statusFilter .filter-link').on('click', function (event) {
+                event.preventDefault();
+                // Xóa lớp active từ tất cả các liên kết khác
+                $('#statusFilter .filter-link').removeClass('filter-link-active');
+                // Thêm lớp active cho liên kết được chọn
+                $(this).addClass('filter-link-active');
+                // Lấy trạng thái từ thuộc tính data
+                var status = $(this).data('status');
+                // Gọi hàm filterByStatus với trạng thái được chọn
+                filterByStatus(status);
             });
 
-            // Lọc theo giá
-            var priceLinks = document.querySelectorAll('#priceFilter .filter-link');
-            priceLinks.forEach(function (link) {
-                link.addEventListener('click', function (event) {
-                    event.preventDefault();
-                    // Xóa lớp active từ tất cả các liên kết khác
-                    priceLinks.forEach(function (otherLink) {
-                        otherLink.classList.remove('filter-link-active');
-                    });
-                    // Thêm lớp active cho liên kết được chọn
-                    link.classList.add('filter-link-active');
-                    // Lấy giá từ thuộc tính data
-                    var minPrice = link.getAttribute('data-min-price');
-                    var maxPrice = link.getAttribute('data-max-price');
-                    // Gọi hàm filterByPrice với giá được chọn
-                    filterByPrice(minPrice, maxPrice);
-                });
+            $('#priceFilter .filter-link').on('click', function (event) {
+                event.preventDefault();
+                // Xóa lớp active từ tất cả các liên kết khác
+                $('#priceFilter .filter-link').removeClass('filter-link-active');
+                // Thêm lớp active cho liên kết được chọn
+                $(this).addClass('filter-link-active');
+                // Lấy giá từ thuộc tính data
+                var minPrice = $(this).data('min-price');
+                var maxPrice = $(this).data('max-price');
+                // Gọi hàm filterByPrice với giá được chọn
+                filterByPrice(minPrice, maxPrice);
             });
 
             // Hàm xử lý lọc theo trạng thái
@@ -393,10 +419,14 @@
                 var searchUrlWithParams = "@Url.Action("Search", "Home")" + "?minPrice=" + minPrice + "&maxPrice=" + maxPrice;
                 window.location.href = searchUrlWithParams;
             }
-        });z
-    </script>
 
+            
+
+
+        });
+    </script>
 }
+
 
 
 

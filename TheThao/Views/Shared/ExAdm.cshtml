@@ -8,7 +8,28 @@
     <title>Modernize Free</title>
     <link rel="shortcut icon" type="image/png" href="../assets/images/logos/favicon.png" />
     <link rel="stylesheet" href="http://localhost:5098/assets/css/styles.min.css" />
+    <!-- Thêm link đến CSS của Bootstrap -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/5.1.3/css/bootstrap.min.css" rel="stylesheet">
 
+    <!-- Thêm thẻ script để lấy JavaScript của Bootstrap (lưu ý: bạn có thể cần jQuery) -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/5.1.3/js/bootstrap.bundle.min.js"></script>
+
+    <script src="https://cdn.tiny.cloud/1/rdy2lktabrps0d79ryog558z1ui6leqjqxthl0hzjyc6hp0h/tinymce/7/tinymce.min.js" referrerpolicy="origin"></script>
+    <script>
+        tinymce.init({
+            selector: 'textarea#NoiDung',
+                    plugins: [
+                'a11ychecker', 'advlist', 'advcode', 'advtable', 'autolink', 'checklist', 'markdown',
+                'lists', 'link', 'image', 'charmap', 'preview', 'anchor', 'searchreplace', 'visualblocks',
+                'powerpaste', 'fullscreen', 'formatpainter', 'insertdatetime', 'media', 'table', 'help', 'wordcount'
+            ],
+            toolbar: 'undo redo | a11ycheck casechange blocks | bold italic backcolor | alignleft aligncenter alignright alignjustify |' +
+                'bullist numlist checklist outdent indent | removeformat | code table help'
+        })
+    </script>
+    
+    
 
 </head>
 
@@ -31,6 +52,35 @@
                 <!-- Sidebar navigation-->
                 <nav class="sidebar-nav scroll-sidebar" data-simplebar="">
                     <ul id="sidebarnav">
+                        @if (HttpContextAccessor.HttpContext.Session.GetString("AdminId") != null)
+                        {
+                            <li class="nav-small-cap">
+                                <i class="ti ti-dots nav-small-cap-icon fs-4"></i>
+                                <span class="hide-menu">Home</span>
+                            </li>
+                            <li class="sidebar-item">
+                                <a class="sidebar-link" href="/Admin/AdminDashBoard" aria-expanded="false">
+                                    <span>
+                                        <i class="ti ti-layout-dashboard"></i>
+                                    </span>
+                                    <span class="hide-menu">Dashboard</span>
+                                </a>
+                            </li>
+                        } else
+                        {
+                            <li class="nav-small-cap">
+                                <i class="ti ti-dots nav-small-cap-icon fs-4"></i>
+                                <span class="hide-menu">Home</span>
+                            </li>
+                            <li class="sidebar-item">
+                                <a class="sidebar-link" href="/Admin/EmployeeDashBoard" aria-expanded="false">
+                                    <span>
+                                        <i class="ti ti-layout-dashboard"></i>
+                                    </span>
+                                    <span class="hide-menu">Dashboard</span>
+                                </a>
+                            </li>
+                        }
                         <li class="nav-small-cap">
                             <i class="ti ti-dots nav-small-cap-icon fs-4"></i>
                             <span class="hide-menu">UI COMPONENTS</span>
@@ -42,7 +92,7 @@
                                     <span>
                                         <i class="ti ti-article"></i>
                                     </span>
-                                    <span class="hide-menu">Nhân viên</span>
+                                    <span class="hide-menu">Employee</span>
                                 </a>
                                 <div class="collapse" id="aMenu">
                                     <ul class="sidebar-dropdown list-unstyled">
@@ -59,7 +109,7 @@
                         <li class="sidebar-item">
                             <a class="sidebar-link" href="/Admin/Customer" aria-expanded="false">
                                 <span>
-                                    <i class="ti ti-shopping-cart"></i>
+                                    <i class="ti ti-article"></i>
                                 </span>
                                 <span class="hide-menu">Customer</span>
                             </a>
@@ -69,21 +119,21 @@
                                 <span>
                                     <i class="ti ti-article"></i>
                                 </span>
-                                <span class="hide-menu">Nhập hàng</span>
+                                <span class="hide-menu">Import</span>
                             </a>
                             <div class="collapse" id="nhaphangMenu">
                                 <ul class="sidebar-dropdown list-unstyled">
                                     <li class="sidebar-subitem">
-                                        <a class="sidebar-link" href="/Import/Create">Nhập</a>
+                                        <a class="sidebar-link" href="/Import/Create">Import product</a>
                                     </li>
                                     <li class="sidebar-subitem">
-                                        <a class="sidebar-link" href="/NhapHangs/Index">Đơn Nhập</a>
+                                        <a class="sidebar-link" href="/NhapHangs/Index">The import goods</a>
                                     </li>
                                     <li class="sidebar-subitem">
-                                        <a class="sidebar-link" href="/ChiTietNhapHangs/Index">Chi tiết đơn nhập</a>
+                                        <a class="sidebar-link" href="/ChiTietNhapHangs/Index">The information of import goods</a>
                                     </li>
                                     <li class="sidebar-subitem">
-                                        <a class="sidebar-link" href="/NhaCungCaps/Index">Nhà cung cấp</a>
+                                        <a class="sidebar-link" href="/NhaCungCaps/Index">Supplier</a>
                                     </li>
                                 </ul>
                             </div>
@@ -93,16 +143,23 @@
                                 <span>
                                     <i class="ti ti-shopping-cart"></i>
                                 </span>
-                                <span class="hide-menu">Đơn hàng</span>
+                                <span class="hide-menu">The order</span>
                             </a>
                         </li>
-
+                        <li class="sidebar-item">
+                            <a class="sidebar-link" href="/Circle/Index" aria-expanded="false">
+                                <span>
+                                    <i class="ti ti-article"></i>
+                                </span>
+                                <span class="hide-menu">Circle</span>
+                            </a>
+                        </li>
                         <li class="sidebar-item">
                             <a class="sidebar-link" href="/Sanphams/Index" aria-expanded="false">
                                 <span>
                                     <i class="ti ti-alert-circle"></i>
                                 </span>
-                                <span class="hide-menu">Sản Phẩm</span>
+                                <span class="hide-menu">Product</span>
                             </a>
                         </li>
                         <li class="sidebar-item">
@@ -110,7 +167,7 @@
                                 <span>
                                     <i class="ti ti-cards"></i>
                                 </span>
-                                <span class="hide-menu">Loại sản phẩm</span>
+                                <span class="hide-menu">Product type</span>
                             </a>
                         </li>
                         <li class="sidebar-item">
@@ -118,7 +175,7 @@
                                 <span>
                                     <i class="ti ti-file-description"></i>
                                 </span>
-                                <span class="hide-menu">Hình ảnh</span>
+                                <span class="hide-menu">The image</span>
                             </a>
                         </li>
                         <li class="sidebar-item">
@@ -126,15 +183,15 @@
                                 <span>
                                     <i class="ti ti-article"></i>
                                 </span>
-                                <span class="hide-menu">Giá cho sản phẩm</span>
+                                <span class="hide-menu">Cost of product</span>
                             </a>
                             <div class="collapse" id="phantramMenu">
                                 <ul class="sidebar-dropdown list-unstyled">
                                     <li class="sidebar-subitem">
-                                        <a class="sidebar-link" href="/PhanTramGiaCas/Index">Phần trăm</a>
+                                        <a class="sidebar-link" href="/PhanTramGiaCas/Index">Percent of product</a>
                                     </li>
                                     <li class="sidebar-subitem">
-                                        <a class="sidebar-link" href="/ChiTietPhanTrams/Index">Chi tiết phần trăm</a>
+                                        <a class="sidebar-link" href="/ChiTietPhanTrams/Index">Detail of percent</a>
                                     </li>
                                 </ul>
                             </div>
@@ -144,28 +201,31 @@
                                 <span>
                                     <i class="ti ti-article"></i>
                                 </span>
-                                <span class="hide-menu">Khuyến mãi</span>
+                                <span class="hide-menu">Promotion</span>
                             </a>
                             <div class="collapse" id="kmMenu">
                                 <ul class="sidebar-dropdown list-unstyled">
                                     <li class="sidebar-subitem">
-                                        <a class="sidebar-link" href="/KhuyenMais/Index">Tạo Khuyến mãi</a>
+                                        <a class="sidebar-link" href="/KhuyenMais/Index">Create promotion</a>
                                     </li>
                                     <li class="sidebar-subitem">
-                                        <a class="sidebar-link" href="/ChiTietKhuyenMais/Index">Chi tiết khuyến mãi</a>
+                                        <a class="sidebar-link" href="/ChiTietKhuyenMais/Index">Detail of promotion</a>
                                     </li>
                                     
                                 </ul>
                             </div>
-                        </li>
                         <li class="sidebar-item">
-                            <a class="sidebar-link" href="./ui-typography.html" aria-expanded="false">
+                            <a class="sidebar-link" href="/Blog/Index" aria-expanded="false">
                                 <span>
-                                    <i class="ti ti-typography"></i>
+                                    <i class="ti ti-file-description"></i>
                                 </span>
-                                <span class="hide-menu">Typography</span>
+                                <span class="hide-menu">The Blogs</span>
                             </a>
                         </li>
+                        </li>
+                        
+                    </ul>
+
                 </nav>
                 <!-- End Sidebar navigation -->
             </div>
@@ -190,34 +250,7 @@
                             </a>
                         </li>
                     </ul>
-                    <div class="navbar-collapse justify-content-end px-0" id="navbarNav">
-                        <ul class="navbar-nav flex-row ms-auto align-items-center justify-content-end">
-                            <a href="https://adminmart.com/product/modernize-free-bootstrap-admin-dashboard/" target="_blank" class="btn btn-primary">Download Free</a>
-                            <li class="nav-item dropdown">
-                                <a class="nav-link nav-icon-hover" href="javascript:void(0)" id="drop2" data-bs-toggle="dropdown"
-                                   aria-expanded="false">
-                                    <img src="../assets/images/profile/user-1.jpg" alt="" width="35" height="35" class="rounded-circle">
-                                </a>
-                                <div class="dropdown-menu dropdown-menu-end dropdown-menu-animate-up" aria-labelledby="drop2">
-                                    <div class="message-body">
-                                        <a href="/Admin/Profile" class="d-flex align-items-center gap-2 dropdown-item">
-                                            <i class="ti ti-user fs-6"></i>
-                                            <p class="mb-0 fs-3">My Profile</p>
-                                        </a>
-                                        <a href="javascript:void(0)" class="d-flex align-items-center gap-2 dropdown-item">
-                                            <i class="ti ti-mail fs-6"></i>
-                                            <p class="mb-0 fs-3">My Account</p>
-                                        </a>
-                                        <a href="javascript:void(0)" class="d-flex align-items-center gap-2 dropdown-item">
-                                            <i class="ti ti-list-check fs-6"></i>
-                                            <p class="mb-0 fs-3">My Task</p>
-                                        </a>
-                                        <a href="./authentication-login.html" class="btn btn-outline-primary mx-3 mt-2 d-block">Logout</a>
-                                    </div>
-                                </div>
-                            </li>
-                        </ul>
-                    </div>
+                    
                 </nav>
             </header>
             <!--  Header End -->
@@ -226,9 +259,7 @@
                 @RenderSection("Scripts", required: false)
             </div>
 
-            <div class="py-6 px-6 text-center">
-                <p class="mb-0 fs-4">Design and Developed by <a href="https://adminmart.com/" target="_blank" class="pe-1 text-primary text-decoration-underline">AdminMart.com</a> Distributed by <a href="https://themewagon.com">ThemeWagon</a></p>
-            </div>
+            
     <script src="../assets/libs/jquery/dist/jquery.min.js"></script>
     <script src="../assets/libs/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="../assets/js/sidebarmenu.js"></script>

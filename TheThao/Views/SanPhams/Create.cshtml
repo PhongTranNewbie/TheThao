@@ -14,42 +14,44 @@
         <form accept-charset="UTF-8" asp-action="Create">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
-                <label asp-for="Name" class="control-label"></label>
+                <label asp-for="Name" class="control-label">Name</label>
                 <input asp-for="Name" class="form-control" />
                 <span asp-validation-for="Name" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="ChiTiet" class="control-label"></label>
+                <label asp-for="ChiTiet" class="control-label">Detail</label>
                 <textarea asp-for="ChiTiet" class="form-control"></textarea>
                 <span asp-validation-for="ChiTiet" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Gia" class="control-label"></label>
+                <label asp-for="Gia" class="control-label">Price</label>
                 <input asp-for="Gia" class="form-control" />
                 <span asp-validation-for="Gia" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="HinhAnh" class="control-label"></label>
+                <label asp-for="HinhAnh" class="control-label">Image</label>
                 <input asp-for="HinhAnh" class="form-control" />
                 <span asp-validation-for="HinhAnh" class="text-danger"></span>
             </div>
                         <div class="form-group">
-                <label asp-for="SoLuong" class="control-label"></label>
+                <label asp-for="SoLuong" class="control-label">Quantity</label>
                 <input asp-for="SoLuong" class="form-control" type="readonly"/>
                 <span asp-validation-for="SoLuong" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="TrangThai" class="control-label"></label>
+                <label asp-for="TrangThai" class="control-label">Status</label>
                 <select asp-for="TrangThai" class="form-control">
-                    <option value="Hết hàng">Hết hàng</option>
-                    <option value="Bán chạy">Bán chạy</option>
-                    <option value="Còn hàng">Còn hàng</option>
-                    <option value="Mới">Mới</option>
+                    <option value="Out of stock">Out of stock</option>
+                    <option value="Selling">Selling</option>
+                    <option value="Stocking">
+                        Stocking
+                    </option>
+                    <option value="New">New</option>
                 </select>
                 <span asp-validation-for="TrangThai" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="TheLoaiId" class="control-label"></label>
+                <label asp-for="TheLoaiId" class="control-label">TypeId</label>
                 <select asp-for="TheLoaiId" class="form-control" asp-items="ViewBag.TheLoaiId"></select>
             </div>
             <div class="form-group">

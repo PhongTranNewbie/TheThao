@@ -4,19 +4,19 @@
     var userId = HttpContextAccessor.HttpContext.Session.GetString("UserId");
     Layout = "ExAdm";
 }
-<h1>Tạo mới nhập hàng</h1>
+<h1>Import</h1>
 
 <form asp-action="Create">
     <div class="form-group" id="details">
         <!-- Dòng chi tiết nhập hàng mặc định -->
-        <label for="NgayNhap">Ngày Nhập:</label>
+        <label for="NgayNhap">Date:</label>
         <input type="date" id="NgayNhap" name="NgayNhap">
 
     </div>
 
     <input type="hidden" id="DanhSachChiTietJson" name="DanhSachChiTietJson" />
-    <button type="button" onclick="addProduct()" class="btn btn-primary">Thêm Sản Phẩm</button>
-    <button type="submit" class="btn btn-success">Hoàn Thành Đơn Hàng</button>
+    <button type="button" onclick="addProduct()" class="btn btn-primary">Add product</button>
+    <button type="submit" class="btn btn-success">Finish</button>
 </form>
 
 <style>
@@ -48,14 +48,14 @@
 
         // Thêm chỉ số duy nhất vào id của mỗi phần tử
         productDiv.innerHTML = `
-              <label for="MaSanPham${productCount}">Mã Sản Phẩm:</label>
+              <label for="MaSanPham${productCount}">Product Id:</label>
               <select id="MaSanPham${productCount}" name="ChiTietNhapHangs[${productCount - 1}].MaSanPham" class="form-control">
     @foreach (var item in ViewBag.MaSanPham)
     {
                               <option value="@item.Value">@item.Text</option>
     }
           </select>
-                  <label for="MaNhaCungCap${productCount}">Nhà cung cấp:</label>
+                  <label for="MaNhaCungCap${productCount}">Supplier:</label>
           <select id="MaNhaCungCap${productCount}" name="ChiTietNhapHangs[${productCount - 1}].MaNhaCungCap" class="form-control">
     @foreach (var item in ViewBag.MaNhaCungCap)
     {
@@ -63,7 +63,7 @@
     }
                 </select>
 
-                <label for="SoLuong${productCount}">Số Lượng:</label>
+                <label for="SoLuong${productCount}">Quantity:</label>
                 <input type="number" id="SoLuong${productCount}" name="ChiTietNhapHangs[${productCount - 1}].SoLuongNhap" class="form-control">
                 <label for="Gia${productCount}">Giá:</label>
                 <input type="number" id="Gia${productCount}" name="ChiTietNhapHangs[${productCount - 1}].Gia" class="form-control">

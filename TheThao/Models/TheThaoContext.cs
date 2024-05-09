@@ -33,6 +33,8 @@ public partial class TheThaoContext : DbContext
 
     public virtual DbSet<DonHang> DonHangs { get; set; }
 
+    public virtual DbSet<Favorite> Favorites { get; set; }
+
     public virtual DbSet<KhuyenMai> KhuyenMais { get; set; }
 
     public virtual DbSet<LoaiSanPham> LoaiSanPhams { get; set; }
@@ -44,7 +46,6 @@ public partial class TheThaoContext : DbContext
     public virtual DbSet<PhanTramGiaCa> PhanTramGiaCas { get; set; }
 
     public virtual DbSet<SanPham> SanPhams { get; set; }
-
 
     public virtual DbSet<User> Users { get; set; }
 
@@ -78,6 +79,8 @@ public partial class TheThaoContext : DbContext
         modelBuilder.Entity<Blog>(entity =>
         {
             entity.ToTable("Blog");
+
+            entity.Property(e => e.Title).HasMaxLength(100);
 
             entity.HasOne(d => d.User).WithMany(p => p.Blogs)
                 .HasForeignKey(d => d.UserId)
@@ -198,6 +201,25 @@ public partial class TheThaoContext : DbContext
                 .HasConstraintName("FK__DonHang__UserId__5441852A");
         });
 
+        modelBuilder.Entity<Favorite>(entity =>
+        {
+            entity.HasKey(e => new { e.ProductId, e.UserId });
+
+            entity.ToTable("Favorite");
+
+            entity.Property(e => e.FavoriteDate).HasColumnType("datetime");
+
+            entity.HasOne(d => d.Product).WithMany(p => p.Favorites)
+                .HasForeignKey(d => d.ProductId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_Favorite_SanPham");
+
+            entity.HasOne(d => d.User).WithMany(p => p.Favorites)
+                .HasForeignKey(d => d.UserId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_Favorite_Users");
+        });
+
         modelBuilder.Entity<KhuyenMai>(entity =>
         {
             entity.ToTable("KhuyenMai");
@@ -283,8 +305,6 @@ public partial class TheThaoContext : DbContext
                 .HasForeignKey(d => d.TheLoaiId)
                 .HasConstraintName("FK_SanPham_LoaiSanPham");
         });
-
-        
 
         modelBuilder.Entity<User>(entity =>
         {

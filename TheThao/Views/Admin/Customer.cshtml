@@ -28,17 +28,18 @@
         
             @foreach (var customer in ViewBag.Customers)
             {
-        <td>@customer.Ten</td>
-            <td>@customer.Email</td>
-            <td>@customer.DiaChi</td>
-
-            <td>@customer.Id</td>
-        }
-        }
-        else
-        {
-        <p>Không có khách hàng.</p>
-        
+                <tr>
+                <td>@customer.Ten</td>
+                <td>@customer.Email</td>
+                <td>@customer.DiaChi</td>
+                <td>@customer.Id</td>
+                </tr>
+            }
+            
     </tbody>
 </table>
+}
+else
+{
+    <p>Không có khách hàng.</p>
 }

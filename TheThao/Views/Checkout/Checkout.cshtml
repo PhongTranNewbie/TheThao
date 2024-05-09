@@ -2,23 +2,22 @@
 
 <section class="bg0 p-t-23 p-b-140">
 
-<h3 style="margin-top: 40px; margin-bottom: 10px;">Bạn đã đặt hàng thành công!</h3>
-    <h4 style="margin-bottom: 10px;">Chi Tiết Đơn Hàng</h4>
+<h3 style="margin-top: 40px; margin-bottom: 10px;">You are finish!</h3>
 
-<p>Thông tin đơn hàng:</p>
+<p>The information of order:</p>
 <p>Id: @Model.DonHang.Id</p>
-<p>Ngày Tạo: @Model.DonHang.NgayTao</p>
+<p>Create Date: @Model.DonHang.NgayTao</p>
 <p>Payment Selection: @Model.DonHang.PhuongPhapThanhToan</p>
 
-    <h3 style="margin-bottom: 10px;">Danh sách Sản Phẩm</h3>
+    <h3 style="margin-bottom: 10px;">List of products</h3>
 @if (Model.ChiTietDonHangs != null && Model.ChiTietDonHangs.Any())
 {
     <table class="table">
         <thead>
             <tr>
-                <th>Sản Phẩm</th>
-                <th>Giá</th>
-                <th>Số Lượng</th>
+                <th>Product</th>
+                <th>Price</th>
+                <th>Quantity</th>
             </tr>
         </thead>
         <tbody>
@@ -34,5 +33,5 @@
     </table>
 }
 
-<p>Tổng Tiền: @Model.TongTien</p>
+<p>Total: @Model.TongTien</p>
 </section>

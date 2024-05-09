@@ -1,0 +1,20 @@
+﻿@model TheThao.Models.Blog
+@{
+    Layout = "ExAdm";
+}
+<h2 class="border rounded text-center text-white my-3 p-2" style="background-color:aqua;">Blog</h2>
+<form method="post">
+    <div class="form-group">
+        <label asp-for="Title" class="control-label">Title</label>
+        <input asp-for="Title" class="form-control" />
+        <span asp-validation-for="Title" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="NoiDung" class="control-label">Content</label>
+        <textarea asp-for="NoiDung" class="form-control"></textarea>
+        <span asp-validation-for="NoiDung" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <input type="submit" value="Create" class="btn btn-primary" />
+    </div>
+</form>

@@ -22,9 +22,14 @@ public class CartController : Controller
         var sanphamToAdd = _context.SanPhams.Find(id);
         var cartItems = HttpContext.Session.Get<List<ShoppingCartItem>>("Cart") ?? new List<ShoppingCartItem>();
         var existingCartItem = cartItems.FirstOrDefault(item => item.SanPham.Id==id);
-        if (existingCartItem != null)
+        if (existingCartItem != null && sanphamToAdd.SoLuong > 0)
         {
             existingCartItem.Quantity++;
+
+        }
+        else if (existingCartItem != null && sanphamToAdd.SoLuong <= 0 || existingCartItem == null && sanphamToAdd.SoLuong <= 0)
+        {
+            TempData["Message"] = "Sản phẩm này đã hết hàng.";
         }
         else
         {

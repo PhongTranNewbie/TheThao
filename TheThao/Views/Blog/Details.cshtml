@@ -1,0 +1,13 @@
+﻿@model TheThao.Models.Blog
+
+<h1>Blog Details</h1>
+
+<div>
+    <h4>Id: @Model.Id</h4>
+    <h4>Title: @Model.Title</h4>
+    <p>Content: @Model.NoiDung</p>
+</div>
+<p>
+    <a asp-action="Edit" asp-route-id="@Model.Id">Edit</a> |
+    <a asp-action="Index">Back to List</a>
+</p>

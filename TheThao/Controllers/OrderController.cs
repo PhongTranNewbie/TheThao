@@ -21,6 +21,18 @@ namespace TheThao.Controllers
 
         public IActionResult ListOrders(int? page)
         {
+            var statusTexts = new Dictionary<int, string>
+            {
+                { 1, "Waiting for confirmation" },
+                { 2, "On delivery" },
+                { 3, "Paid" },
+                { 4, "Paid and awaiting delivery" },
+                { 5, "Cancelled" }
+
+            };
+
+            // Pass the dictionary to the view
+            ViewBag.StatusTexts = statusTexts;
             var userIdString = HttpContext.Session.GetString("UserId");
             int userId;
             if (!string.IsNullOrEmpty(userIdString) && int.TryParse(userIdString, out userId))

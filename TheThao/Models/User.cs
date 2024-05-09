@@ -29,10 +29,11 @@ public partial class User
 
     public virtual ICollection<DonHang> DonHangs { get; set; } = new List<DonHang>();
 
+    public virtual ICollection<Favorite> Favorites { get; set; } = new List<Favorite>();
+
     public virtual ICollection<KhuyenMai> KhuyenMais { get; set; } = new List<KhuyenMai>();
 
     public virtual ICollection<NhapHang> NhapHangs { get; set; } = new List<NhapHang>();
 
     public virtual ICollection<PhanTramGiaCa> PhanTramGiaCas { get; set; } = new List<PhanTramGiaCa>();
-
 }

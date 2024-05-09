@@ -103,32 +103,32 @@
 
                     <div class="filter-col1 p-r-15 p-b-27" style="width: 200px;" id="statusFilter">
                         <div class="mtext-102 cl2 p-b-15">
-                            Trạng thái
+                            Status
                         </div>
                         <ul>
                             <li class="p-b-6">
-                                <a href="#" class="stext-106 trans-04">
-                                    Tất cả
+                                <a href="/Home/Index" class="stext-106 trans-04">
+                                    All
                                 </a>
                             </li>
                             <li class="p-b-6">
-                                <a href="#" class="filter-link stext-106 trans-04" data-status="Hết hàng">
-                                    Hết hàng
+                                <a href="#" class="filter-link stext-106 trans-04" data-status="Out of stock">
+                                    Out of stock
                                 </a>
                             </li>
                             <li class="p-b-6">
-                                <a href="#" class="filter-link stext-106 trans-04" data-status="Bán chạy">
-                                    Bán chạy
+                                <a href="#" class="filter-link stext-106 trans-04" data-status="Selling">
+                                    Selling
                                 </a>
                             </li>
                             <li class="p-b-6">
-                                <a href="#" class="filter-link stext-106 trans-04" data-status="Còn hàng">
-                                    Còn hàng
+                                <a href="#" class="filter-link stext-106 trans-04" data-status="Stocking">
+                                    Stocking
                                 </a>
                             </li>
                             <li class="p-b-6">
-                                <a href="#" class="filter-link stext-106 trans-04" data-status="Mới">
-                                    Mới
+                                <a href="#" class="filter-link stext-106 trans-04" data-status="New">
+                                    New
                                 </a>
                             </li>
                         </ul>
@@ -136,12 +136,12 @@
 
                     <div class="filter-col2 p-r-15 p-b-27" id="priceFilter">
                         <div class="mtext-102 cl2 p-b-15">
-                            Giá
+                            Price
                         </div>
                         <ul>
                             <li class="p-b-6">
                                 <a href="/Home/Index" class="stext-106 trans-04">
-                                    Tất cả
+                                    All
                                 </a>
                             </li>
                             <li class="p-b-6">
@@ -188,14 +188,26 @@
                     <div class="col-sm-6 col-md-4 col-lg-3 p-b-35 isotope-item @(product.TheLoaiId)">
                         <!-- Block2 -->
                         <div class="block2">
-                            <div class="block2-pic hov-img0">
-                                <img src="@Url.Content(product.HinhAnh)" alt="@product.Name">
+                            @if (isPromotionActive)
+                            {
+                                <div class="block2-pic hov-img0 label1" data-label1="@promotionDetail.PhanTramKhuyenMai%">
+                                    <img src="@Url.Content(product.HinhAnh)" alt="@product.Name">
 
-                                <a href="@Url.Action("ChiTietSanPham", "SanPhams", new { id = product.Id })" class="block2-btn flex-c-m stext-103 cl2 size-102 bg0 bor2 hov-btn1 p-lr-15 trans-04">
-                                    Quick View
-                                </a>
-                            </div>
+                                    <a href="@Url.Action("ChiTietSanPham", "SanPhams", new { id = product.Id })" class="block2-btn flex-c-m stext-103 cl2 size-102 bg0 bor2 hov-btn1 p-lr-15 trans-04">
+                                        Quick View
+                                    </a>
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="block2-pic hov-img0">
+                                    <img src="@Url.Content(product.HinhAnh)" alt="@product.Name">
 
+                                    <a href="@Url.Action("ChiTietSanPham", "SanPhams", new { id = product.Id })" class="block2-btn flex-c-m stext-103 cl2 size-102 bg0 bor2 hov-btn1 p-lr-15 trans-04">
+                                        Quick View
+                                    </a>
+                                </div>
+                            }
                             <div class="block2-txt flex-w flex-t p-t-14">
                                 <div class="block2-txt-child1 flex-col-l ">
                                     <a href="@Url.Action("ChiTietSanPham", "SanPhams", new { id = product.Id })" class="stext-104 cl4 hov-cl1 trans-04 js-name-b2 p-b-6">
@@ -205,16 +217,16 @@
                                     @if (isPromotionActive)
                                     {
                                         <span class="stext-105 cl3">
-                                            Giá trước khi giảm giá: @string.Format("{0:N0}", product.GiaTruocKhiGiamGia)
+                                            Price: @string.Format("{0:N0}", product.GiaTruocKhiGiamGia)
                                         </span>
                                         <span class="stext-105 cl3">
-                                            Giá sau khi giảm giá: @string.Format("{0:N0}", product.Gia)
+                                            Promotion Price: @string.Format("{0:N0}", product.Gia)
                                         </span>
                                     }
                                     else
                                     {
                                         <span class="stext-105 cl3">
-                                            Giá: @string.Format("{0:N0}", product.Gia)
+                                            Price: @string.Format("{0:N0}", product.Gia)
                                         </span>
                                     }
                                 </div>
@@ -234,17 +246,13 @@
                     </div>
                 }
             }
+            
             else
             {
                 <p>No products available.</p>
             }
         </div>
-        <!-- Load more -->
-        <div class="flex-c-m flex-w w-full p-t-45">
-            <a href="#" class="flex-c-m stext-101 cl5 size-103 bg2 bor1 hov-btn1 p-lr-15 trans-04">
-                Load More
-            </a>
-        </div>
+        
     </div>
 </section>
 

@@ -2,12 +2,11 @@
 @{
     var sp = ViewBag.SanPham as List<TheThao.Models.SanPham>;
 }
-<h1>Giỏ hàng</h1>
 @if (TempData["Message"] != null)
 {
-    <div class="alert alert-info" role="alert">
-        @TempData["Message"]
-    </div>
+	<div style="margin-top: 50px;" class="alert alert-info" role="alert">
+		@TempData["Message"]
+	</div>
 }
 <!-- Shoping Cart -->
 <form class="bg0 p-t-75 p-b-85">

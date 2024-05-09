@@ -43,7 +43,7 @@ namespace TheThao.Controllers
                    
 
                     ViewBag.IsLoggedIn = true;
-					return RedirectToAction("Index", "Home");
+					return RedirectToAction("ToggleFavorite", "Favorite");
 
 				}
 				else

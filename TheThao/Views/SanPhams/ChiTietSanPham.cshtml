@@ -2,6 +2,9 @@
 @{
     var product = ViewBag.SanPham as TheThao.Models.SanPham;
     var images = ViewBag.ChiTietHinhAnhs as List<TheThao.Models.ChiTietHinhAnh>;
+	var promotionService = new PromotionService(new TheThaoContext());
+	var isPromotionActive = promotionService.HasPromotion(product.Id);
+	var promotionDetail = await promotionService.GetPromotionDetails(product.Id);
 }
 <html>
 <head>
@@ -46,8 +49,12 @@
 <div class="container">
     <div class="custom-product-detail-container">
         <div class="row">
-            <div class="custom-product-gallery" style="margin-right: 20px;">
-                <div class="custom-thumbnail-images">
+            
+				 @if (isPromotionActive)
+                 {
+					<div class="custom-product-gallery" style="margin-right: 20px;">
+					<div class="custom-thumbnail-images">
+
                     @if (images != null && images.Any(image => image.MaSanPham == product.Id))
                     {
                         @foreach (var image in images.Where(image => image.MaSanPham == product.Id))
@@ -59,14 +66,46 @@
                     {
                         <p>No additional images available.</p>
                     }
-                </div>
-            </div>
+						</div>
+						
+					</div>
+					<div>
+						<div class="custom-product-image label1" data-label1="@promotionDetail?.PhanTramKhuyenMai%">
+							<img id="main-product-image" src="@Url.Content(product.HinhAnh)" alt="Product Image">
+						</div>
+					</div>
+				}
+					else
+					{
+					<div class="custom-product-gallery" style="margin-right: 20px;">
 
-            <div>
-                <div class="custom-product-image">
-                    <img id="main-product-image" src="@Url.Content(product.HinhAnh)" alt="Product Image">
-                </div>
-            </div>
+						<div class="custom-thumbnail-images">
+
+							@if (images != null && images.Any(image => image.MaSanPham == product.Id))
+							{
+								@foreach (var image in images.Where(image => image.MaSanPham == product.Id))
+								{
+									<img class="custom-thumbnail" src="@Url.Content(image.HinhAnh)" alt="Product Image" onclick="changeMainImage('@Url.Content(image.HinhAnh)')" />
+								}
+							}
+							else
+							{
+								<p>No additional images available.</p>
+							}
+						</div>
+						
+						</div>
+					<div>
+						<div class="custom-product-image">
+							<img id="main-product-image" src="@Url.Content(product.HinhAnh)" alt="Product Image">
+						</div>
+					</div>
+					}
+					
+					
+			
+
+            
             
         </div>
 			<div style="margin-left: 200px;">
@@ -75,15 +114,29 @@
 				<h2>
 				</h2>
 
-				<p style="margin-bottom: 10px;">Còn @product.SoLuong</p>
+				<p style="margin-bottom: 10px;">@product.SoLuong Left</p>
 				<h2>
 				</h2>
 
-				<p style="margin-bottom: 10px;">Giá: @string.Format("{0:N0}", product.Gia)</p>
+				@if (isPromotionActive)
+				{
+					<p style="margin-bottom: 10px;">
+						Price before promotion: @string.Format("{0:N0}", product.GiaTruocKhiGiamGia)
+					</p>
+					<p style="margin-bottom: 10px;">
+						Price after promotion: @string.Format("{0:N0}", product.Gia)
+					</p>
+				}
+				else
+				{
+					<span class="stext-105 cl3">
+						Price: @string.Format("{0:N0}", product.Gia)
+					</span>
+				}
 				<h2>
 				</h2>
 
-				<a style="margin-top: 10px;" class="btn btn-primary" asp-action="AddToCart" asp-controller="Cart" asp-route-id="@product.Id">Thêm vào giỏ hàng</a>
+				<a style="margin-top: 10px;" class="btn btn-primary" asp-action="AddToCart" asp-controller="Cart" asp-route-id="@product.Id">Add to cart</a>
 			</div>
 
     </div>

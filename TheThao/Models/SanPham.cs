@@ -39,5 +39,7 @@ public partial class SanPham
 
     public virtual ICollection<ChiTietPhanTram> ChiTietPhanTrams { get; set; } = new List<ChiTietPhanTram>();
 
+    public virtual ICollection<Favorite> Favorites { get; set; } = new List<Favorite>();
+
     public virtual LoaiSanPham? TheLoai { get; set; }
 }

@@ -56,9 +56,16 @@ namespace TheThao.Controllers
 						orderdetails.MaDonHang = orderCode;
 						orderdetails.Gia = cart.SanPham.Gia;
 						orderdetails.SoLuong = cart.Quantity;
-						_context.Add(orderdetails);
+                        var sp = _context.SanPhams.FirstOrDefault(x => x.Id == cart.SanPham.Id);
+						sp.SoLuong -= cart.Quantity;
+						sp.SoLuongDaBan += cart.Quantity;
+						if(sp.SoLuong <= 0)
+						{
+							sp.TrangThai = "Out of Stock";
+						}
+                        _context.Add(orderdetails);
 					}
-
+					
 					await _context.SaveChangesAsync(); // Lưu các chi tiết đơn hàng vào cơ sở dữ liệu
 					await _emailSender.SendEmailAsync(user.Email, "Đơn hàng mới", $"Đơn hàng của bạn có mã {orderCode} đã được tạo thành công.");
 					if (userIdStringAd != null)
