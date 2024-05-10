@@ -77,7 +77,7 @@ namespace TheThao.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> CreateHA([Bind("Id,MaSanPham,HinhAnh")] ChiTietHinhAnh HA)
+        public async Task<IActionResult> CreateHA([Bind("Id,MaSanPham,HinhAnh,IsVideo")] ChiTietHinhAnh HA)
         {
             if (ModelState.IsValid)
             {
@@ -110,7 +110,7 @@ namespace TheThao.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> EditHA(int id, [Bind("Id,MaSanPham,HinhAnh")] ChiTietHinhAnh chiTietHinhAnh)
+        public async Task<IActionResult> EditHA(int id, [Bind("Id,MaSanPham,HinhAnh,IsVideo")] ChiTietHinhAnh chiTietHinhAnh)
         {
             if (id != chiTietHinhAnh.Id)
             {

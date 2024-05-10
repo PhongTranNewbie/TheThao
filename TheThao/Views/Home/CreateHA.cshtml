@@ -8,20 +8,34 @@
 
 <h1>Create</h1>
 
-<h4>Chi Tiết Hình Ảnh</h4>
+<h4>The image</h4>
 <hr />
 <div class="row">
     <div class="col-md-4">
         <form asp-action="CreateHA" id="createForm">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
-                <label asp-for="MaSanPham" class="control-label"></label>
+                <label asp-for="MaSanPham" class="control-label">Product Id</label>
                 <select asp-for="MaSanPham" class="form-control" asp-items="ViewBag.MaSanPham"></select>
             </div>
             <div class="form-group">
-                <label asp-for="HinhAnh" class="control-label"></label>
+                <label asp-for="HinhAnh" class="control-label">Image</label>
                 <input asp-for="HinhAnh" class="form-control" />
                 <span asp-validation-for="HinhAnh" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="IsVideo" class="control-label"></label>
+                <div>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="IsVideo" id="isVisibleTrue" value="true">
+                        <label class="form-check-label" for="isVisibleTrue">Video</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="IsVideo" id="isVisibleFalse" value="false">
+                        <label class="form-check-label" for="isVisibleFalse">Image</label>
+                    </div>
+                </div>
+                <span asp-validation-for="IsVideo" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <input type="submit" value="CreateHA" class="btn btn-primary" />

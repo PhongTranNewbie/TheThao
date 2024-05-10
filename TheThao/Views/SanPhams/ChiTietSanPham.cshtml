@@ -42,6 +42,20 @@
             }
         }
     </script>
+	<style>
+		.video-container {
+			position: relative;
+		}
+
+		.play-button {
+			position: absolute;
+			top: 50%;
+			left: 50%;
+			transform: translate(-50%, -50%);
+			cursor: pointer;
+		}
+
+	</style>
 </head>
 </html>
 <input type="hidden" value="@product.Id"/>
@@ -55,17 +69,33 @@
 					<div class="custom-product-gallery" style="margin-right: 20px;">
 					<div class="custom-thumbnail-images">
 
-                    @if (images != null && images.Any(image => image.MaSanPham == product.Id))
-                    {
-                        @foreach (var image in images.Where(image => image.MaSanPham == product.Id))
-                        {
-                            <img class="custom-thumbnail" src="@Url.Content(image.HinhAnh)" alt="Product Image" onclick="changeMainImage('@Url.Content(image.HinhAnh)')" />
-                        }
-                    }
-                    else
-                    {
-                        <p>No additional images available.</p>
-                    }
+							@if (images != null && images.Any(image => image.MaSanPham == product.Id))
+							{
+								foreach (var image in images.Where(image => image.MaSanPham == product.Id))
+								{
+									@if (image.IsVideo ?? false)
+									{
+										continue;
+									}
+									else
+									{
+										<img class="custom-thumbnail" src="@Url.Content(image.HinhAnh)" alt="Product Image" onclick="changeMainImage('@Url.Content(image.HinhAnh)')" />
+									}
+								}
+							}
+							else
+							{
+								<p>No additional images available.</p>
+							}
+
+							<script>
+								// Hàm này sẽ được gọi khi nhấp vào video
+								function playVideo(videoUrl) {
+									// Thay đổi hình ảnh chính khi nhấp vào video
+									changeMainImage(videoUrl);
+								}
+							</script>
+
 						</div>
 						
 					</div>
@@ -85,13 +115,24 @@
 							{
 								@foreach (var image in images.Where(image => image.MaSanPham == product.Id))
 								{
-									<img class="custom-thumbnail" src="@Url.Content(image.HinhAnh)" alt="Product Image" onclick="changeMainImage('@Url.Content(image.HinhAnh)')" />
+									@if (image.IsVideo ?? false)
+									{
+										continue;
+									}
+									else
+									{
+										<img class="custom-thumbnail" src="@Url.Content(image.HinhAnh)" alt="Product Image" onclick="changeMainImage('@Url.Content(image.HinhAnh)')" />
+									}
+
+
+
 								}
 							}
 							else
 							{
 								<p>No additional images available.</p>
 							}
+
 						</div>
 						
 						</div>
@@ -174,57 +215,17 @@
 				<div class="tab-pane fade" id="information" role="tabpanel">
 					<div class="row">
 						<div class="col-sm-10 col-md-8 col-lg-6 m-lr-auto">
-							<ul class="p-lr-28 p-lr-15-sm">
-								<li class="flex-w flex-t p-b-7">
-									<span class="stext-102 cl3 size-205">
-										Weight
-									</span>
+							@if (images != null && images.Any(image => image.MaSanPham == product.Id))
+							{
+								@foreach (var image in images.Where(image => image.MaSanPham == product.Id))
+								{
+									@if(image.IsVideo ?? false)
+									{
+										<iframe  width="560" height="315" src="@image.HinhAnh" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
-									<span class="stext-102 cl6 size-206">
-										0.79 kg
-									</span>
-								</li>
-
-								<li class="flex-w flex-t p-b-7">
-									<span class="stext-102 cl3 size-205">
-										Dimensions
-									</span>
-
-									<span class="stext-102 cl6 size-206">
-										110 x 33 x 100 cm
-									</span>
-								</li>
-
-								<li class="flex-w flex-t p-b-7">
-									<span class="stext-102 cl3 size-205">
-										Materials
-									</span>
-
-									<span class="stext-102 cl6 size-206">
-										60% cotton
-									</span>
-								</li>
-
-								<li class="flex-w flex-t p-b-7">
-									<span class="stext-102 cl3 size-205">
-										Color
-									</span>
-
-									<span class="stext-102 cl6 size-206">
-										Black, Blue, Grey, Green, Red, White
-									</span>
-								</li>
-
-								<li class="flex-w flex-t p-b-7">
-									<span class="stext-102 cl3 size-205">
-										Size
-									</span>
-
-									<span class="stext-102 cl6 size-206">
-										XL, L, M, S
-									</span>
-								</li>
-							</ul>
+									}
+								}
+							}
 						</div>
 					</div>
 				</div>
@@ -375,9 +376,15 @@
 				});
 			});
 		});
-        function changeMainImage(imageUrl) {
-            $("#main-product-image").attr("src", imageUrl);
-        }
+		function changeMainImage(imageUrl) {
+			$("#main-product-image").attr("src", imageUrl);
+		}
+
+		function changeMainVideo(videoUrl) {
+			$("#main-product-image").hide(); // Ẩn hình ảnh chính
+			$("#main-product-video").attr("src", videoUrl).show(); // Hiển thị video chính và thiết lập nguồn của video
+		}
+
 
     </script>
 }

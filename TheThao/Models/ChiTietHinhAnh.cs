@@ -11,5 +11,7 @@ public partial class ChiTietHinhAnh
 
     public string? HinhAnh { get; set; }
 
+    public bool? IsVideo { get; set; }
+
     public virtual SanPham? MaSanPhamNavigation { get; set; }
 }
