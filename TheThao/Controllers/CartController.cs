@@ -17,33 +17,44 @@ public class CartController : Controller
     {
         return View();
     }
-    public IActionResult AddToCart(int id)
-    {
-        var sanphamToAdd = _context.SanPhams.Find(id);
-        var cartItems = HttpContext.Session.Get<List<ShoppingCartItem>>("Cart") ?? new List<ShoppingCartItem>();
-        var existingCartItem = cartItems.FirstOrDefault(item => item.SanPham.Id==id);
-        if (existingCartItem != null && sanphamToAdd.SoLuong > 0)
-        {
-            existingCartItem.Quantity++;
+	public IActionResult AddToCart(int id, int quantityToAdd)
+	{
+		var sanphamToAdd = _context.SanPhams.Find(id);
+		var cartItems = HttpContext.Session.Get<List<ShoppingCartItem>>("Cart") ?? new List<ShoppingCartItem>();
+		var existingCartItem = cartItems.FirstOrDefault(item => item.SanPham.Id == id);
 
-        }
-        else if (existingCartItem != null && sanphamToAdd.SoLuong <= 0 || existingCartItem == null && sanphamToAdd.SoLuong <= 0)
-        {
-            TempData["Message"] = "Sản phẩm này đã hết hàng.";
-        }
-        else
-        {
-            cartItems.Add(new ShoppingCartItem
-            {
-                SanPham = sanphamToAdd,
-                Quantity = 1
-            });
-        }
-        HttpContext.Session.Set("Cart", cartItems);
-        TempData["CartMessage"] = $"{sanphamToAdd.Name} ${sanphamToAdd.TheLoai} added to Cart";
-        return RedirectToAction("ViewCart");
-    }
-    [HttpGet]
+		if (sanphamToAdd == null)
+		{
+			// Xử lý khi không tìm thấy sản phẩm với id cung cấp
+			TempData["Message"] = "Sản phẩm không tồn tại.";
+			return RedirectToAction("ViewCart");
+		}
+
+		if (existingCartItem != null && sanphamToAdd.SoLuong > 0)
+		{
+			// Nếu sản phẩm đã tồn tại trong giỏ hàng, tăng số lượng của nó lên số lượng đã chọn
+			existingCartItem.Quantity += quantityToAdd;
+		}
+		else if (existingCartItem != null && sanphamToAdd.SoLuong <= 0 || existingCartItem == null && sanphamToAdd.SoLuong <= 0)
+		{
+			TempData["error"] = "Sản phẩm này đã hết hàng.";
+		}
+		else
+		{
+			// Thêm một đối tượng mới vào giỏ hàng với số lượng đã chọn
+			cartItems.Add(new ShoppingCartItem
+			{
+				SanPham = sanphamToAdd,
+				Quantity = quantityToAdd
+			});
+		}
+
+		HttpContext.Session.Set("Cart", cartItems);
+		TempData["success"] = $"{sanphamToAdd.Name} {quantityToAdd} added to Cart";
+		return RedirectToAction("ViewCart");
+	}
+
+	[HttpGet]
     public IActionResult ViewCart()
     {
 

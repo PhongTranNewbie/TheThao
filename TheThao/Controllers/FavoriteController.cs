@@ -110,7 +110,7 @@ namespace TheThao.Controllers
             if (userIdString == null || !int.TryParse(userIdString, out int userId))
             {
                 // Redirect hoặc xử lý người dùng chưa đăng nhập
-                return RedirectToAction("Login", "Account");
+                return RedirectToAction("Login", "Login");
             }
 
             var favoriteProducts = await _context.Favorites

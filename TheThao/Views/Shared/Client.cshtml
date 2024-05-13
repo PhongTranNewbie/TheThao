@@ -136,8 +136,12 @@
 							<li>
 								<a href="/Blog/TrangChu">Blog</a>
 							</li>
-
-							
+							<li>
+								<a href="/Warranty/Create">Create</a>
+							</li>
+							<li>
+								<a href="/Warranty/Index">Index</a>
+							</li>
 						</ul>
 					</div>
 
@@ -279,15 +283,14 @@
 	<!-- Cart -->
 	<div class="wrap-header-cart js-panel-cart">
 		<div class="s-full js-hide-cart"></div>
-
-		
 	</div>
-
 
 
 	@RenderBody()
 	@RenderSection("content", required: false)
 	@RenderSection("Scripts", required: false)
+	@Html.Partial("_NotificationPartial")
+
 	<!-- Footer -->
 	<footer class="bg3 p-t-75 p-b-32">
 		<div class="container">

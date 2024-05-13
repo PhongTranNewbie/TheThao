@@ -15,6 +15,8 @@ public partial class ChiTietDonHang
 
     public int? SoLuong { get; set; }
 
+    public virtual ICollection<BaoHanh> BaoHanhs { get; set; } = new List<BaoHanh>();
+
     public virtual DonHang? MaDonHangNavigation { get; set; }
 
     public virtual SanPham? MaSanPhamNavigation { get; set; }

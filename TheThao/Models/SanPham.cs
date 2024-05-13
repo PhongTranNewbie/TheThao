@@ -27,6 +27,10 @@ public partial class SanPham
 
     public string? TrangThai { get; set; }
 
+    public int? NamBaoHanh { get; set; }
+
+    public virtual ICollection<BaoHanh> BaoHanhs { get; set; } = new List<BaoHanh>();
+
     public virtual ICollection<BinhLuan> BinhLuans { get; set; } = new List<BinhLuan>();
 
     public virtual ICollection<ChiTietDonHang> ChiTietDonHangs { get; set; } = new List<ChiTietDonHang>();
