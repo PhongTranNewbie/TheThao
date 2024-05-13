@@ -1,6 +1,7 @@
 ﻿@using TheThao.Services
 @using X.PagedList.Mvc.Core;
 @model X.PagedList.IPagedList<SanPham>
+
 @{
     Layout = "Client";
     
@@ -134,6 +135,59 @@
         </div>
     </div>
 </section>
+
+
+<!-- Product Slider -->
+<section class="section-slide" @* style="max-width: 1745px; max-height: 300px;" *@>
+    <div class="wrap-slick1">
+        <div class="slick1" >
+            @foreach (var product in Model)
+            {
+                var promotionService = new PromotionService(new TheThaoContext());
+                var isPromotionActive = promotionService.HasPromotion(product.Id);
+                var promotionDetail = await promotionService.GetPromotionDetails(product.Id);
+
+                <div class="col-md-3" style="max-width: 150px;justify-content: center;" >
+                    @if (isPromotionActive)
+                    {
+                        <div class="item">
+                            <!-- Nội dung của mỗi sản phẩm -->
+                            <div class="block2">
+                                <!-- Hình ảnh và nút Quick View -->
+                                <div class="block2-pic hov-img0 label1" data-label1="@promotionDetail.PhanTramKhuyenMai%">
+                                    <img src="@Url.Content(product.HinhAnh)" alt="@product.Name">
+                                    <a href="@Url.Action("ChiTietSanPham", "SanPhams", new { id = product.Id })" class="block2-btn flex-c-m stext-103 cl2 size-102 bg0 bor2 hov-btn1 p-lr-15 trans-04">
+                                        Quick View
+                                    </a>
+                                </div>
+                                <!-- Tên và giá của sản phẩm -->
+                                <div class="block2-txt flex-w flex-t p-t-14">
+                                    <div class="block2-txt-child1 flex-col-l">
+                                        <a href="@Url.Action("ChiTietSanPham", "SanPhams", new { id = product.Id })" class="stext-104 cl4 hov-cl1 trans-04 js-name-b2 p-b-6">
+                                            @product.Name
+                                        </a>
+                                        <!-- Giá chưa khuyến mãi -->
+                                        <span class="stext-105 cl3" style="text-decoration: line-through;">
+                                            Price: @string.Format("{0:N0}", product.GiaTruocKhiGiamGia)
+                                        </span>
+                                        <!-- Giá khuyến mãi -->
+                                        <span class="stext-105 cl3" style="background-color: red; color: yellow; padding: 3px;">
+                                            Promotion Price: @string.Format("{0:N0}", product.Gia)
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            }
+        </div>
+    </div>
+</section>
+
+
+
+
 <!-- Product -->
 <section class="bg0 p-t-23 p-b-140">
     <div class="container">
@@ -316,24 +370,11 @@
                                         <i  class="bi bi-heart-fill js-heart-icon-filled dis-block trans-04" style="display: none;"></i>
                                     </a>
                                 </div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
                             </div>
                         </div>
                     </div>
                 }
+
 
                 <div>
                     @Html.PagedListPager(Model, page => Url.Action("Index", new { page = page }), new PagedListRenderOptions
@@ -419,7 +460,6 @@
                 var searchUrlWithParams = "@Url.Action("Search", "Home")" + "?minPrice=" + minPrice + "&maxPrice=" + maxPrice;
                 window.location.href = searchUrlWithParams;
             }
-
             
 
 

@@ -17,7 +17,7 @@ public class ProductService : IProductService
     {
         var products = _context.SanPhams
             .Include(p => p.ChiTietPhanTrams)
-            .ThenInclude(ctpt => ctpt.MaPhanTramNavigation) // Include latest percentage discount
+            .ThenInclude(navigationPropertyPath: ctpt => ctpt.MaPhanTramNavigation) // Include latest percentage discount
             .Include(p => p.ChiTietNhapHangs)
             .ThenInclude(ctnh => ctnh.MaNhapHangNavigation)
             .Include(p => p.ChiTietKhuyenMais)

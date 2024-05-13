@@ -1,43 +1,87 @@
 ﻿@using TheThao.Services
-@using X.PagedList.Mvc.Core;
-@model X.PagedList.IPagedList<DonHang>
+
+@model TheThao.ViewModel.OrdersByStatusViewModel
+
 <section class="bg0 p-t-23 p-b-140">
     <h2 style="margin-top: 40px;">List of orders</h2>
-    <table class="table">
-        <thead>
-            <tr>
-                <th>ID Order</th>
-                <th>Create date</th>
-                <th>Status</th>
-                <!-- Thêm các cột khác nếu cần -->
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var order in Model)
-            {
-                <tr>
-                    <td>@order.Id</td>
-                    <td>@order.NgayTao</td>
-                    <td>@ViewBag.StatusTexts[(int)order.TrangThai]</td>
-                    <td>
-                        <a asp-controller="Order" asp-action="Details" asp-route-id="@order.Id" class="btn-details">Details</a>
-                    </td>
-                </tr>
-            }
-        </tbody>
-    </table>
+    <div class="container">
+        <div>
+            <h2>Waiting For Confirmation Orders</h2>
+            <table class="table">
+                <!-- Header -->
+                <thead>
+                    <tr>
+                        <th>ID Order</th>
+                        <th>Create date</th>
+                        <!-- Thêm các cột khác nếu cần -->
+                    </tr>
+                </thead>
+                <!-- Body -->
+                <tbody>
+                    @foreach (var order in Model.WaitingForConfirmationOrders)
+                    {
+                        <tr>
+                            <td>@order.Id</td>
+                            <td>@order.NgayTao</td>
+                            <!-- Thêm các cột khác nếu cần -->
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
 
+        <!-- Các bảng khác tương tự -->
 
-
-    <div class="pagination">
-        @Html.PagedListPager(Model, page => Url.Action("ListOrders", new { page = page }), new PagedListRenderOptions
-   {
-       LiElementClasses = new string[] { "page-item" },
-       PageClasses = new string[] { "page-link" }
-   })
+        <div>
+            <h2>On Delivery Orders</h2>
+            <table class="table">
+                <!-- Header -->
+                <thead>
+                    <tr>
+                        <th>ID Order</th>
+                        <th>Create date</th>
+                        <!-- Thêm các cột khác nếu cần -->
+                    </tr>
+                </thead>
+                <!-- Body -->
+                <tbody>
+                    @foreach (var order in Model.OnDeliveryOrders)
+                    {
+                        <tr>
+                            <td>@order.Id</td>
+                            <td>@order.NgayTao</td>
+                            <!-- Thêm các cột khác nếu cần -->
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+        <div>
+            <h2>Paid Orders</h2>
+            <table class="table">
+                <!-- Header -->
+                <thead>
+                    <tr>
+                        <th>ID Order</th>
+                        <th>Create date</th>
+                        <!-- Thêm các cột khác nếu cần -->
+                    </tr>
+                </thead>
+                <!-- Body -->
+                <tbody>
+                    @foreach (var order in Model.PaidAndAwaitingDeliveryOrders)
+                    {
+                        <tr>
+                            <td>@order.Id</td>
+                            <td>@order.NgayTao</td>
+                            <!-- Thêm các cột khác nếu cần -->
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
     </div>
-
-    
 </section>
+
 
 
