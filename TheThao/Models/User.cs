@@ -23,6 +23,8 @@ public partial class User
 
     public string? Role { get; set; }
 
+    public virtual ICollection<BaoHanh> BaoHanhs { get; set; } = new List<BaoHanh>();
+
     public virtual ICollection<BinhLuan> BinhLuans { get; set; } = new List<BinhLuan>();
 
     public virtual ICollection<Blog> Blogs { get; set; } = new List<Blog>();

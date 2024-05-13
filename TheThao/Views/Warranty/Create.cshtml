@@ -1,0 +1,12 @@
+﻿@model IEnumerable<TheThao.Models.ChiTietDonHang>
+
+<form asp-action="Create" method="post" style="margin-top:100px;">
+    @foreach (var product in Model)
+    {
+        <input type="checkbox" name="selectedProducts" value="@product.MaSanPham" />
+        <label>@product.MaSanPhamNavigation.Name</label>
+
+        <br />
+    }
+    <button type="submit">Tạo bảo hành</button>
+</form>

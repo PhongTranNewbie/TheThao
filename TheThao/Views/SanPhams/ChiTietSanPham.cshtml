@@ -5,6 +5,7 @@
 	var promotionService = new PromotionService(new TheThaoContext());
 	var isPromotionActive = promotionService.HasPromotion(product.Id);
 	var promotionDetail = await promotionService.GetPromotionDetails(product.Id);
+	int defaultQuantity = 1; // Giá trị mặc định của số lượng sản phẩm
 }
 <html>
 <head>
@@ -54,6 +55,8 @@
 			transform: translate(-50%, -50%);
 			cursor: pointer;
 		}
+
+		
 
 	</style>
 </head>
@@ -150,7 +153,7 @@
             
         </div>
 			<div style="margin-left: 200px;">
-				<h3 style="width:900px; margin-bottom: 10px;">@product.Name</h3>
+				<h3 style="width:700px; margin-bottom: 10px;">@product.Name</h3>
 
 				<h2>
 				</h2>
@@ -174,11 +177,24 @@
 						Price: @string.Format("{0:N0}", product.Gia)
 					</span>
 				}
-				<h2>
-				</h2>
+				
+				<div class="input-group input-group-sm mb-3">
+					<div class="input-group-prepend">
+						<button class="btn btn-outline-secondary" type="button" onclick="decreaseQuantity()">-</button>
+					</div>
+					<input type="text" class="text-center" id="quantityDisplay" readonly>
+					<div class="input-group-append">
+						<button class="btn btn-outline-secondary" type="button" onclick="increaseQuantity()">+</button>
+					</div>
+				</div>
 
-				<a style="margin-top: 10px;" class="btn btn-primary" asp-action="AddToCart" asp-controller="Cart" asp-route-id="@product.Id">Add to cart</a>
+				<a style="margin-top: 10px;" class="btn btn-primary" onclick="addToCart(@product.Id)">Add to cart</a>
+
+				<h4 style="margin-block: 10px;">The blog about healthy</h4>
+				<button type="button" class="btn btn-outline-secondary border" onclick="location.href='@Url.Action("ChiTiet", "Blog", new { id = @ViewBag.Blog.Id })'">@ViewBag.Blog.Id @ViewBag.Blog.Title</button>
 			</div>
+
+			
 
     </div>
 </div>
@@ -338,6 +354,38 @@
 <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
 
 @section Scripts {
+	<script>
+		// Thiết lập giá trị mặc định cho ô hiển thị số
+		document.getElementById("quantityDisplay").value = "1";
+
+		function decreaseQuantity() {
+			var quantityDisplay = document.getElementById("quantityDisplay");
+			var quantity = parseInt(quantityDisplay.value);
+			if (quantity > 1) {
+				quantity--;
+				quantityDisplay.value = quantity;
+			}
+		}
+
+		function increaseQuantity() {
+			var quantityDisplay = document.getElementById("quantityDisplay");
+			var quantity = parseInt(quantityDisplay.value);
+			quantity++;
+			quantityDisplay.value = quantity;
+		}
+
+		function addToCart(productId) {
+			// Lấy giá trị số lượng mới nhất từ ô input
+			var quantity = document.getElementById("quantityDisplay").value;
+
+			// Chờ 100ms trước khi chuyển hướng để đảm bảo rằng giá trị số lượng đã được cập nhật
+			setTimeout(function () {
+				// Chuyển hướng đến action AddToCart với id sản phẩm và số lượng
+				window.location.href = '/Cart/AddToCart?id=' + productId + '&quantityToAdd=' + quantity;
+			}, 100);
+		}
+
+	</script>
     <script>
 		// JavaScript to handle tab switching
 		document.addEventListener("DOMContentLoaded", function () {

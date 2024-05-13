@@ -15,6 +15,8 @@ public partial class TheThaoContext : DbContext
     {
     }
 
+    public virtual DbSet<BaoHanh> BaoHanhs { get; set; }
+
     public virtual DbSet<BinhLuan> BinhLuans { get; set; }
 
     public virtual DbSet<Blog> Blogs { get; set; }
@@ -55,6 +57,27 @@ public partial class TheThaoContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        modelBuilder.Entity<BaoHanh>(entity =>
+        {
+            entity.ToTable("BaoHanh");
+
+            entity.Property(e => e.NgayBaoHanh).HasColumnType("datetime");
+            entity.Property(e => e.NgayKetThucBaoHanh).HasColumnType("datetime");
+            entity.Property(e => e.TrangThai).HasMaxLength(50);
+
+            entity.HasOne(d => d.MaDonHangNavigation).WithMany(p => p.BaoHanhs)
+                .HasForeignKey(d => d.MaDonHang)
+                .HasConstraintName("FK_BaoHanh_ChiTietDonHang");
+
+            entity.HasOne(d => d.MaSanPhamNavigation).WithMany(p => p.BaoHanhs)
+                .HasForeignKey(d => d.MaSanPham)
+                .HasConstraintName("FK_BaoHanh_SanPham1");
+
+            entity.HasOne(d => d.User).WithMany(p => p.BaoHanhs)
+                .HasForeignKey(d => d.UserId)
+                .HasConstraintName("FK_BaoHanh_Users");
+        });
+
         modelBuilder.Entity<BinhLuan>(entity =>
         {
             entity.ToTable("BinhLuan");

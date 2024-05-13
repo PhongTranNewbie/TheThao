@@ -1,0 +1,28 @@
+﻿@model IEnumerable<TheThao.Models.BaoHanh>
+
+<h2 style="margin-top:100px;">Danh sách các sản phẩm đang được bảo hành</h2>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>STT</th>
+            <th>Tên sản phẩm</th>
+            <th>Ngày bảo hành</th>
+            <th>Ngày kết thúc bảo hành</th>
+            <th>Trạng thái</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.Id</td>
+                <td>@item.MaSanPhamNavigation.Name</td>
+                <td>@item.NgayBaoHanh.Value.ToString("dd/MM/yyyy")</td>
+                <td>@item.NgayKetThucBaoHanh.Value.ToString("dd/MM/yyyy")</td>
+
+                <td>@item.TrangThai</td>
+            </tr>
+        }
+    </tbody>
+</table>

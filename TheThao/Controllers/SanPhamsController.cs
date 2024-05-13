@@ -208,7 +208,11 @@ namespace TheThao.Controllers
                     Rate = a.Rate
                 })
                 .ToList();
-            return View(listOfCommentViewModels);
+			var randomBlog = _context.Blogs.OrderBy(x => Guid.NewGuid()).FirstOrDefault();
+
+            ViewBag.Blog = randomBlog;
+
+			return View(listOfCommentViewModels);
         }
 
 

@@ -1,0 +1,41 @@
+﻿@model IEnumerable<TheThao.Models.BaoHanh>
+@{
+    Layout = "ExAdm";
+}
+<h2 style="margin-top:100px;">List Warranty</h2>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>STT</th>
+            <th>Name</th>
+            <th>Date warranty</th>
+            <th>End Date</th>
+            <th>Status</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.Id</td>
+                <td>@item.MaSanPhamNavigation.Name</td>
+                <td>@item.NgayBaoHanh.Value.ToString("dd/MM/yyyy")</td>
+                <td>@item.NgayKetThucBaoHanh.Value.ToString("dd/MM/yyyy")</td>
+
+                <td>@item.TrangThai</td>
+                <td>
+                    <a asp-action="UpdateWarrantyStatus" asp-route-warrantyId="@item.Id">Edit</a>
+
+                </td>
+            </tr>
+            
+
+        }
+        <td>
+
+        </td>
+    </tbody>
+</table>
+
