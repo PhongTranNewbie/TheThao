@@ -138,50 +138,99 @@
 
 
 <!-- Product Slider -->
-<section class="section-slide" @* style="max-width: 1745px; max-height: 300px;" *@>
-    <div class="wrap-slick1">
-        <div class="slick1" >
-            @foreach (var product in Model)
-            {
-                var promotionService = new PromotionService(new TheThaoContext());
-                var isPromotionActive = promotionService.HasPromotion(product.Id);
-                var promotionDetail = await promotionService.GetPromotionDetails(product.Id);
+<section class="section-slide product-slider">
+    <style>
+        .product-slider {
+            border: 2px solid black; /* Black border around the section */
+            padding: 10px; /* Padding inside the border */
+            margin: 20px 0; /* Margin to separate from other sections */
+        }
 
-                <div class="col-md-3" style="max-width: 150px;justify-content: center;" >
-                    @if (isPromotionActive)
-                    {
-                        <div class="item">
-                            <!-- Nội dung của mỗi sản phẩm -->
-                            <div class="block2">
-                                <!-- Hình ảnh và nút Quick View -->
-                                <div class="block2-pic hov-img0 label1" data-label1="@promotionDetail.PhanTramKhuyenMai%">
-                                    <img src="@Url.Content(product.HinhAnh)" alt="@product.Name">
-                                    <a href="@Url.Action("ChiTietSanPham", "SanPhams", new { id = product.Id })" class="block2-btn flex-c-m stext-103 cl2 size-102 bg0 bor2 hov-btn1 p-lr-15 trans-04">
-                                        Quick View
-                                    </a>
-                                </div>
-                                <!-- Tên và giá của sản phẩm -->
-                                <div class="block2-txt flex-w flex-t p-t-14">
-                                    <div class="block2-txt-child1 flex-col-l">
-                                        <a href="@Url.Action("ChiTietSanPham", "SanPhams", new { id = product.Id })" class="stext-104 cl4 hov-cl1 trans-04 js-name-b2 p-b-6">
-                                            @product.Name
-                                        </a>
-                                        <!-- Giá chưa khuyến mãi -->
-                                        <span class="stext-105 cl3" style="text-decoration: line-through;">
-                                            Price: @string.Format("{0:N0}", product.GiaTruocKhiGiamGia)
-                                        </span>
-                                        <!-- Giá khuyến mãi -->
-                                        <span class="stext-105 cl3" style="background-color: red; color: yellow; padding: 3px;">
-                                            Promotion Price: @string.Format("{0:N0}", product.Gia)
-                                        </span>
-                                    </div>
-                                </div>
+            .product-slider .promotion-title {
+                text-align: center;
+                font-size: 24px;
+                font-weight: bold;
+                margin-bottom: 20px; /* Space between the title and the slider */
+            }
+
+            .product-slider .wrap-slick1 {
+                display: flex;
+                justify-content: center; /* Center all items */
+                overflow-x: auto;
+                white-space: nowrap;
+                scroll-snap-type: x mandatory;
+                padding: 20px 0; /* Add padding for spacing */
+            }
+
+            .product-slider .item {
+                flex: 0 0 auto;
+                scroll-snap-align: start;
+                margin: 0 10px; /* Margin for spacing between items */
+                max-width: 150px;
+            }
+
+            .product-slider .block2 {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .product-slider .block2-pic {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+            }
+
+            .product-slider .block2-txt {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+            }
+    </style>
+    <!-- Promotion Title -->
+    <div class="p-b-10">
+        <h3 class="ltext-103 cl5">
+            Promotion
+        </h3>
+    </div>
+    <div class="wrap-slick1">
+        @foreach (var product in Model)
+        {
+            var promotionService = new PromotionService(new TheThaoContext());
+            var isPromotionActive = promotionService.HasPromotion(product.Id);
+            var promotionDetail = await promotionService.GetPromotionDetails(product.Id);
+
+            <div class="item">
+                @if (isPromotionActive)
+                {
+                    <div class="block2">
+                        <!-- Hình ảnh và nút Quick View -->
+                        <div class="block2-pic hov-img0 label1" data-label1="@promotionDetail.PhanTramKhuyenMai%">
+                            <img src="@Url.Content(product.HinhAnh)" alt="@product.Name">
+                            <a href="@Url.Action("ChiTietSanPham", "SanPhams", new { id = product.Id })" class="block2-btn flex-c-m stext-103 cl2 size-102 bg0 bor2 hov-btn1 p-lr-15 trans-04">
+                                Quick View
+                            </a>
+                        </div>
+                        <!-- Tên và giá của sản phẩm -->
+                        <div class="block2-txt flex-w flex-t p-t-14">
+                            <div class="block2-txt-child1 flex-col-l">
+@*                                 <span href="@Url.Action("ChiTietSanPham", "SanPhams", new { id = product.Id })" class="stext-104 cl4 hov-cl1 trans-04 js-name-b2 p-b-6">
+                                    @product.Name
+                                </span> *@
+                                <!-- Giá chưa khuyến mãi -->
+                                <span class="stext-105 cl3" style="text-decoration: line-through;">
+                                    Price: @string.Format("{0:N0}", product.GiaTruocKhiGiamGia)
+                                </span>
+                                <!-- Giá khuyến mãi -->
+                                <span class="stext-105 cl3" style="background-color: red; color: yellow; padding: 3px;">
+                                    Promotion Price: @string.Format("{0:N0}", product.Gia)
+                                </span>
                             </div>
                         </div>
-                    }
-                </div>
-            }
-        </div>
+                    </div>
+                }
+            </div>
+        }
     </div>
 </section>
 
@@ -349,10 +398,12 @@
 
                                     @if (isPromotionActive)
                                     {
-                                        <span class="stext-105 cl3">
+                                        <!-- Giá chưa khuyến mãi -->
+                                        <span class="stext-105 cl3" style="text-decoration: line-through;">
                                             Price: @string.Format("{0:N0}", product.GiaTruocKhiGiamGia)
                                         </span>
-                                        <span class="stext-105 cl3">
+                                        <!-- Giá khuyến mãi -->
+                                        <span class="stext-105 cl3" style="background-color: red; color: yellow; padding: 3px;">
                                             Promotion Price: @string.Format("{0:N0}", product.Gia)
                                         </span>
                                     }
