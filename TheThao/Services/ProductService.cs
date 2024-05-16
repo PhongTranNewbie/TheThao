@@ -74,13 +74,24 @@ public class ProductService : IProductService
 
 
 
+        
 
 
 
 
 
 
+        _context.SaveChanges();
 
+    }
+    public void Cost()
+    {
+        var product = _context.SanPhams.ToList();
+        foreach (var item in product)
+        {
+            item.GiaSi = item.Gia * 0.9M;
+
+        }
         _context.SaveChanges();
 
     }

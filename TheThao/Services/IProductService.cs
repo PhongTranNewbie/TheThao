@@ -3,5 +3,6 @@
     public interface IProductService
     {
         void UpdateProductPrices();
+        void Cost();
     }
 }

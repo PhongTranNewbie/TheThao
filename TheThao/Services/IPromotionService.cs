@@ -3,6 +3,7 @@
     public interface IPromotionService
     {
         void ApplyPromotion();
+        void Cost();
     }
 
 }

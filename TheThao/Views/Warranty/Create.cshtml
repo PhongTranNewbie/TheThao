@@ -1,12 +1,18 @@
-﻿@model IEnumerable<TheThao.Models.ChiTietDonHang>
+﻿@model IEnumerable<(TheThao.Models.DonHang Order, List<TheThao.Models.QuanLySerial> Products)>
 
 <form asp-action="Create" method="post" style="margin-top:100px;">
-    @foreach (var product in Model)
+    @foreach (var orderGroup in Model)
     {
-        <input type="checkbox" name="selectedProducts" value="@product.MaSanPham" />
-        <label>@product.MaSanPhamNavigation.Name</label>
-
-        <br />
+        <h3>Đơn hàng: @orderGroup.Order.Id - Ngày tạo: @orderGroup.Order.NgayTao</h3>
+        @foreach (var product in orderGroup.Products)
+        {
+            <div class="row" style="display: flex; align-items: center; margin-bottom: 10px;">
+                <label style="margin-left: 20px;">@product.Serial.MaSanPhamNavigation.Name</label>
+                <img style="margin-left: 20px;" class="how-itemcart1" src="@product.Serial.MaSanPhamNavigation.HinhAnh" />
+                <input type="checkbox" name="selectedProducts" value="@product.SerialId" style="margin-left: 100px;" />
+                <input type="text" name="requests[@orderGroup.Order.Id][@product.SerialId]" placeholder="Nhập yêu cầu" style="margin-left: 20px;" />
+            </div>
+        }
     }
     <button type="submit">Tạo bảo hành</button>
 </form>

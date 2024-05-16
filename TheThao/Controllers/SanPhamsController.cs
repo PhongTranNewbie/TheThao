@@ -21,6 +21,8 @@ namespace TheThao.Controllers
         {
             var theThaoContext = _context.SanPhams.Include(s => s.TheLoai);
             _productService.UpdateProductPrices();
+            _productService.Cost();
+
             return View(await theThaoContext.ToListAsync());
         }
 

@@ -64,7 +64,33 @@ namespace TheThao.Controllers
 							sp.TrangThai = "Out of Stock";
 						}
                         _context.Add(orderdetails);
-					}
+                        await _context.SaveChangesAsync(); // Lưu đơn hàng vào cơ sở dữ liệu
+
+                        // Tạo mục QuanLySerial và cập nhật trạng thái trong Kho
+                        var khoItems = _context.Khos
+                            .Where(k => k.MaSanPham == cart.SanPham.Id && k.TrangThai != "Sold")
+                            .OrderBy(k => Guid.NewGuid()) // Sắp xếp ngẫu nhiên
+                            .Take(cart.Quantity)
+                            .ToList();
+
+                        if (khoItems.Count < cart.Quantity)
+                        {
+                            // Xử lý trường hợp không đủ số lượng trong kho
+                            // Có thể trả về thông báo lỗi hoặc thông báo cho người dùng
+                            return BadRequest("Không đủ số lượng sản phẩm trong kho.");
+                        }
+
+                        foreach (var khoItem in khoItems)
+                        {
+                            khoItem.TrangThai = "Sold";
+                            var quanLySerial = new QuanLySerial
+                            {
+                                MaChiTietDonHang = orderdetails.Id,
+                                SerialId = khoItem.Serial,
+                            };
+                            _context.Add(quanLySerial);
+                        }
+                    }
 					
 					await _context.SaveChangesAsync(); // Lưu các chi tiết đơn hàng vào cơ sở dữ liệu
 					await _emailSender.SendEmailAsync(user.Email, "Đơn hàng mới", $"Đơn hàng của bạn có mã {orderCode} đã được tạo thành công.");

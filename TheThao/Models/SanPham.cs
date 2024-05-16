@@ -29,7 +29,7 @@ public partial class SanPham
 
     public int? NamBaoHanh { get; set; }
 
-    public virtual ICollection<BaoHanh> BaoHanhs { get; set; } = new List<BaoHanh>();
+    public decimal? GiaSi { get; set; }
 
     public virtual ICollection<BinhLuan> BinhLuans { get; set; } = new List<BinhLuan>();
 
@@ -44,6 +44,8 @@ public partial class SanPham
     public virtual ICollection<ChiTietPhanTram> ChiTietPhanTrams { get; set; } = new List<ChiTietPhanTram>();
 
     public virtual ICollection<Favorite> Favorites { get; set; } = new List<Favorite>();
+
+    public virtual ICollection<Kho> Khos { get; set; } = new List<Kho>();
 
     public virtual LoaiSanPham? TheLoai { get; set; }
 }

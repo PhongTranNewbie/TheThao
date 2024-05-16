@@ -9,7 +9,7 @@ public partial class BaoHanh
 
     public int? UserId { get; set; }
 
-    public int? MaSanPham { get; set; }
+    public int? MaSerial { get; set; }
 
     public DateTime? NgayBaoHanh { get; set; }
 
@@ -17,11 +17,8 @@ public partial class BaoHanh
 
     public string? TrangThai { get; set; }
 
-    public int? MaDonHang { get; set; }
 
-    public virtual ChiTietDonHang? MaDonHangNavigation { get; set; }
+    public string? LyDo { get; set; }
 
-    public virtual SanPham? MaSanPhamNavigation { get; set; }
-
-    public virtual User? User { get; set; }
+    public virtual QuanLySerial? MaSerialNavigation { get; set; }
 }

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Azure.Core;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using TheThao.Models;
 
@@ -18,55 +19,84 @@ namespace TheThao.Controllers
             int userId;
             if (!string.IsNullOrEmpty(userIdString) && int.TryParse(userIdString, out userId))
             {
-                var baohanhs = _context.BaoHanhs.Include(x => x.MaSanPhamNavigation).Where(x => x.UserId == userId).ToList();
+                var baohanhs = _context.BaoHanhs.Include(x => x.MaSerialNavigation).Where(x => x.UserId == userId).ToList();
                 return View(baohanhs);
             }
             return RedirectToAction("Login","Login");
 		}
 
         [HttpGet]
-        public IActionResult Create()
+        public IActionResult Create(string id = null)
         {
             var userIdString = HttpContext.Session.GetString("UserId");
             int userId;
             if (!string.IsNullOrEmpty(userIdString) && int.TryParse(userIdString, out userId))
             {
                 // Lấy danh sách các đơn hàng đã thanh toán của người dùng hiện tại
-                var orders = _context.DonHangs
-                    .Where(x => x.UserId == userId && x.TrangThai == 3)
-                    .ToList();
+                List<DonHang> orders;
+                if (id == null)
+                {
+                    orders = _context.DonHangs
+                        .Where(x => x.UserId == userId && x.TrangThai == 3)
+                        .ToList();
+                }
+                else
+                {
+                    var order = _context.DonHangs
+                        .FirstOrDefault(x => x.UserId == userId && x.TrangThai == 3 && x.Id == id);
+
+                    orders = order != null ? new List<DonHang> { order } : new List<DonHang>();
+                }
 
                 // Tạo danh sách sản phẩm từ các đơn hàng đã thanh toán
-                var products = new List<ChiTietDonHang>();
+                var orderWithProducts = new List<(DonHang Order, List<QuanLySerial> Products)>();
                 foreach (var order in orders)
                 {
-                    var date = order.NgayTao;
-                    var orderProducts = _context.ChiTietDonHangs
+                    var orderDetails = _context.ChiTietDonHangs
                         .Include(x => x.MaSanPhamNavigation)
                         .Where(x => x.MaDonHang == order.Id)
                         .ToList();
 
-                    // Loại bỏ các sản phẩm đã được bảo hành
-                    // Loại bỏ các sản phẩm đã được bảo hành và chỉ giữ lại các sản phẩm còn thời gian bảo hành
-                    orderProducts = orderProducts.Where(p =>
-                        !_context.BaoHanhs.Any(b => b.MaSanPham == p.MaSanPham) && // Chưa được bảo hành
-                        (DateTime.Now < (order.NgayTao ?? DateTime.Now).AddYears((int)p.MaSanPhamNavigation.NamBaoHanh))
-                    ).ToList();
-                    products.AddRange(orderProducts);
+                    // Lấy danh sách quản lý serial cho từng chi tiết đơn hàng
+                    var serials = new List<QuanLySerial>();
+                    foreach (var orderDetail in orderDetails)
+                    {
+                        var orderSerials = _context.QuanLySerials
+                            .Include(x => x.Serial.MaSanPhamNavigation)
+                            .Where(s => s.MaChiTietDonHang == orderDetail.Id)
+                            .ToList();
+                        serials.AddRange(orderSerials);
+                    }
+
+                    // Lọc ra các serial chưa được bảo hành và vẫn còn thời gian bảo hành
+                    var filteredSerials = serials.Where(s => !_context.BaoHanhs.Any(b => b.MaSerial == s.SerialId && b.UserId == userId && b.TrangThai == "In warranty") &&
+                                          DateTime.Now < (order.NgayTao ?? DateTime.Now).AddYears((int)s.Serial.MaSanPhamNavigation.NamBaoHanh))
+                               .ToList();
+
+
+                    // Thêm dữ liệu vào orderWithProducts
+                    orderWithProducts.Add((order, filteredSerials));
                 }
 
-                return View(products);
+
+                return View(orderWithProducts);
             }
 
-            return View(new List<ChiTietDonHang>()); // Trả về view với danh sách rỗng nếu không tìm thấy UserId trong session
+            return View(new List<(DonHang, List<QuanLySerial>)>()); // Trả về view với danh sách rỗng nếu không tìm thấy UserId trong session
         }
+
+
+
+
+
+
 
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Create(int[] selectedProducts)
+        public IActionResult Create(Dictionary<string, Dictionary<int, string>> requests)
         {
-            if (selectedProducts == null || selectedProducts.Length == 0)
+            if (requests == null || requests.Count == 0)
             {
                 ModelState.AddModelError(string.Empty, "Vui lòng chọn ít nhất một sản phẩm để tạo bảo hành.");
                 return RedirectToAction(nameof(Create));
@@ -76,39 +106,44 @@ namespace TheThao.Controllers
             int userId;
             if (!string.IsNullOrEmpty(userIdString) && int.TryParse(userIdString, out userId))
             {
-                // Lấy danh sách các đơn hàng đã thanh toán của người dùng hiện tại
-                var orders = _context.DonHangs
-                    .Where(x => x.UserId == userId && x.TrangThai == 3)
-                    .ToList();
-
-                foreach (var productId in selectedProducts)
+                foreach (var orderId in requests.Keys)
                 {
-                    var productExistsInOrder = false;
-                    foreach (var order in orders)
+                    var order = _context.DonHangs.FirstOrDefault(x => x.Id == orderId && x.UserId == userId && x.TrangThai == 3);
+                    if (order == null)
                     {
-                        // Kiểm tra xem sản phẩm được chọn có thuộc đơn hàng đã thanh toán của người dùng hay không
-                        var orderDetail = _context.ChiTietDonHangs.Where( x=> x.MaDonHang == order.Id && x.MaSanPham == productId).FirstOrDefault();
-                        if (orderDetail != null)
+                        // Xử lý lỗi khi không tìm thấy đơn hàng hoặc đơn hàng không thuộc về người dùng
+                        return BadRequest("Đơn hàng không hợp lệ.");
+                    }
+
+                    foreach (var orderId1 in requests.Keys)
+                    {
+                        var order1 = _context.DonHangs.FirstOrDefault(x => x.Id == orderId1 && x.UserId == userId && x.TrangThai == 3);
+                        if (order1 == null)
                         {
-                            productExistsInOrder = true;
+                            // Xử lý lỗi khi không tìm thấy đơn hàng hoặc đơn hàng không thuộc về người dùng
+                            return BadRequest("Đơn hàng không hợp lệ.");
+                        }
+
+                        foreach (var productIdStr in requests[orderId1].Keys)
+                        {
+                            var productRequest = requests[orderId1][productIdStr];
+
+                            
+
                             var baoHanh = new BaoHanh
                             {
-                                MaSanPham = productId,
+                                MaSerial = productIdStr,
                                 UserId = userId,
-                                MaDonHang = orderDetail.Id,
                                 NgayBaoHanh = DateTime.Now,
                                 NgayKetThucBaoHanh = DateTime.Now.AddMonths(1),
-                                TrangThai = "Đang bảo hành"
+                                TrangThai = "In Warranty",
+                                LyDo = productRequest // Sử dụng giá trị của ô nhập liệu lý do
                             };
+
                             _context.BaoHanhs.Add(baoHanh);
-                            break; // Thoát khỏi vòng lặp nếu tìm thấy sản phẩm trong đơn hàng
                         }
                     }
 
-                    if (!productExistsInOrder)
-                    {
-                        ModelState.AddModelError(string.Empty, $"Sản phẩm có ID {productId} không thuộc đơn hàng đã thanh toán của bạn.");
-                    }
                 }
 
                 _context.SaveChanges();
@@ -121,9 +156,19 @@ namespace TheThao.Controllers
             }
         }
 
+
+
+
+
+
+
+
+
+
+
         public IActionResult AdminIndex()
         {
-            var wr = _context.BaoHanhs.Include(x=>x.MaSanPhamNavigation).OrderByDescending(x=>x.Id).ToList();
+            var wr = _context.BaoHanhs.Include(x=>x.MaSerialNavigation).OrderByDescending(x=>x.Id).ToList();
             return View(wr);
         }
         [HttpGet]
@@ -162,37 +207,7 @@ namespace TheThao.Controllers
 
 
 
-        [HttpGet]
-        public IActionResult BaoHanh(string id)
-        {
-            var userIdString = HttpContext.Session.GetString("UserId");
-            int userId;
-            if (!string.IsNullOrEmpty(userIdString) && int.TryParse(userIdString, out userId))
-            {
-                // Lấy duy nhất đơn hàng đã thanh toán của người dùng hiện tại
-                var order = _context.DonHangs
-                    .FirstOrDefault(x => x.UserId == userId && x.TrangThai == 3 && x.Id == id);
-
-                if (order != null)
-                {
-                    // Tạo danh sách chi tiết đơn hàng từ đơn hàng đã thanh toán
-                    var products = _context.ChiTietDonHangs
-                        .Include(x => x.MaSanPhamNavigation)
-                        .Where(x => x.MaDonHang == order.Id)
-                        .ToList();
-
-                    // Loại bỏ các sản phẩm đã được bảo hành và chỉ giữ lại các sản phẩm còn thời gian bảo hành
-                    products = products.Where(p =>
-                        !_context.BaoHanhs.Any(b => b.MaSanPham == p.MaSanPham) && // Chưa được bảo hành
-                        (DateTime.Now < (order.NgayTao ?? DateTime.Now).AddYears((int)p.MaSanPhamNavigation.NamBaoHanh))
-                    ).ToList();
-
-                    return View(products);
-                }
-            }
-
-            return View(new List<ChiTietDonHang>()); // Trả về view với danh sách rỗng nếu không tìm thấy UserId trong session hoặc không tìm thấy đơn hàng
-        }
+        
 
     }
 }
