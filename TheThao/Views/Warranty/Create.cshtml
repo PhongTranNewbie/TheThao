@@ -8,6 +8,7 @@
         {
             <div class="row" style="display: flex; align-items: center; margin-bottom: 10px;">
                 <label style="margin-left: 20px;">@product.Serial.MaSanPhamNavigation.Name</label>
+                <label style="margin-left: 20px;">@product.SerialId</label>
                 <img style="margin-left: 20px;" class="how-itemcart1" src="@product.Serial.MaSanPhamNavigation.HinhAnh" />
                 <input type="checkbox" name="selectedProducts" value="@product.SerialId" style="margin-left: 100px;" />
                 <input type="text" name="requests[@orderGroup.Order.Id][@product.SerialId]" placeholder="Nhập yêu cầu" style="margin-left: 20px;" />

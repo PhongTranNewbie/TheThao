@@ -19,7 +19,7 @@ namespace TheThao.Controllers
             int userId;
             if (!string.IsNullOrEmpty(userIdString) && int.TryParse(userIdString, out userId))
             {
-                var baohanhs = _context.BaoHanhs.Include(x => x.MaSerialNavigation).Where(x => x.UserId == userId).ToList();
+                var baohanhs = _context.BaoHanhs.Include(x => x.MaSerialNavigation.Serial.MaSanPhamNavigation).Where(x => x.UserId == userId).ToList();
                 return View(baohanhs);
             }
             return RedirectToAction("Login","Login");
@@ -94,9 +94,9 @@ namespace TheThao.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Create(Dictionary<string, Dictionary<int, string>> requests)
+        public IActionResult Create(Dictionary<string, Dictionary<int, string>> requests, List<int> selectedProducts)
         {
-            if (requests == null || requests.Count == 0)
+            if (requests == null || requests.Count == 0 || selectedProducts == null || selectedProducts.Count == 0)
             {
                 ModelState.AddModelError(string.Empty, "Vui lòng chọn ít nhất một sản phẩm để tạo bảo hành.");
                 return RedirectToAction(nameof(Create));
@@ -115,35 +115,30 @@ namespace TheThao.Controllers
                         return BadRequest("Đơn hàng không hợp lệ.");
                     }
 
-                    foreach (var orderId1 in requests.Keys)
+                    foreach (var productIdStr in requests[orderId].Keys)
                     {
-                        var order1 = _context.DonHangs.FirstOrDefault(x => x.Id == orderId1 && x.UserId == userId && x.TrangThai == 3);
-                        if (order1 == null)
+                        
+
+                        if (!selectedProducts.Contains(productIdStr))
                         {
-                            // Xử lý lỗi khi không tìm thấy đơn hàng hoặc đơn hàng không thuộc về người dùng
-                            return BadRequest("Đơn hàng không hợp lệ.");
+                            // Bỏ qua sản phẩm không được chọn
+                            continue;
                         }
 
-                        foreach (var productIdStr in requests[orderId1].Keys)
+                        var productRequest = requests[orderId][productIdStr];
+
+                        var baoHanh = new BaoHanh
                         {
-                            var productRequest = requests[orderId1][productIdStr];
+                            MaSerial = productIdStr,
+                            UserId = userId,
+                            NgayBaoHanh = DateTime.Now,
+                            NgayKetThucBaoHanh = DateTime.Now.AddMonths(1),
+                            TrangThai = "In Warranty",
+                            LyDo = productRequest
+                        };
 
-                            
-
-                            var baoHanh = new BaoHanh
-                            {
-                                MaSerial = productIdStr,
-                                UserId = userId,
-                                NgayBaoHanh = DateTime.Now,
-                                NgayKetThucBaoHanh = DateTime.Now.AddMonths(1),
-                                TrangThai = "In Warranty",
-                                LyDo = productRequest // Sử dụng giá trị của ô nhập liệu lý do
-                            };
-
-                            _context.BaoHanhs.Add(baoHanh);
-                        }
+                        _context.BaoHanhs.Add(baoHanh);
                     }
-
                 }
 
                 _context.SaveChanges();
@@ -155,6 +150,7 @@ namespace TheThao.Controllers
                 return RedirectToAction("Login", "Login"); // Chuyển hướng đến trang đăng nhập nếu không có UserId
             }
         }
+
 
 
 
