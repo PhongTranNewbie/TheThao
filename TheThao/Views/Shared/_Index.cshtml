@@ -440,8 +440,7 @@
                             // Sau khi gỡ khỏi danh sách thành công, cập nhật giao diện và thông báo
                             $heartIcon.removeClass('bi-heart-fill').addClass('bi-heart');
                             swal("Removed!", "Product removed from wishlist.", "success");
-                            var url = '@Url.Action("ToggleFavorite", "Favorite")';
-                            window.location.href = url;
+                            // Không cần chuyển hướng
                         })
                         .fail(function () {
                             swal("Error!", "Failed to remove product from wishlist.", "error");
@@ -453,14 +452,14 @@
                             // Sau khi thêm vào danh sách thành công, cập nhật giao diện và thông báo
                             $heartIcon.removeClass('bi-heart').addClass('bi-heart-fill');
                             swal("Added!", "Product added to wishlist.", "success");
-                            var url = '@Url.Action("ToggleFavorite", "Favorite")';
-                            window.location.href = url;
+                            // Không cần chuyển hướng
                         })
                         .fail(function () {
                             swal("Error!", "Failed to add product to wishlist.", "error");
                         });
                 }
             });
+
 
 
 
