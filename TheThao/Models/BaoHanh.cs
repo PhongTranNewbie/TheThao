@@ -17,6 +17,7 @@ public partial class BaoHanh
 
     public string? TrangThai { get; set; }
 
+    public int? MaDonHang { get; set; }
 
     public string? LyDo { get; set; }
 

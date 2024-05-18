@@ -31,6 +31,8 @@ public partial class TheThaoContext : DbContext
 
     public virtual DbSet<ChiTietPhanTram> ChiTietPhanTrams { get; set; }
 
+    public virtual DbSet<ChiTietSanPhamGoiY> ChiTietSanPhamGoiYs { get; set; }
+
     public virtual DbSet<Circle> Circles { get; set; }
 
     public virtual DbSet<DonHang> DonHangs { get; set; }
@@ -52,6 +54,8 @@ public partial class TheThaoContext : DbContext
     public virtual DbSet<QuanLySerial> QuanLySerials { get; set; }
 
     public virtual DbSet<SanPham> SanPhams { get; set; }
+
+    public virtual DbSet<SanPhamGoiY> SanPhamGoiYs { get; set; }
 
     public virtual DbSet<User> Users { get; set; }
 
@@ -196,6 +200,27 @@ public partial class TheThaoContext : DbContext
             entity.HasOne(d => d.MaSanPhamNavigation).WithMany(p => p.ChiTietPhanTrams)
                 .HasForeignKey(d => d.MaSanPham)
                 .HasConstraintName("FK_ChiTietPhanTram_SanPham");
+        });
+
+        modelBuilder.Entity<ChiTietSanPhamGoiY>(entity =>
+        {
+            entity.HasKey(e => new { e.MaSanPham, e.MaGoiY });
+
+            entity.ToTable("ChiTietSanPhamGoiY");
+
+            entity.HasIndex(e => e.Id, "IX_ChiTietSanPhamGoiY").IsUnique();
+
+            entity.Property(e => e.Id).ValueGeneratedOnAdd();
+
+            entity.HasOne(d => d.MaGoiYNavigation).WithMany(p => p.ChiTietSanPhamGoiYs)
+                .HasForeignKey(d => d.MaGoiY)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_ChiTietSanPhamGoiY_SanPhamGoiY");
+
+            entity.HasOne(d => d.MaSanPhamNavigation).WithMany(p => p.ChiTietSanPhamGoiYs)
+                .HasForeignKey(d => d.MaSanPham)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_ChiTietSanPhamGoiY_SanPham");
         });
 
         modelBuilder.Entity<Circle>(entity =>
@@ -357,6 +382,15 @@ public partial class TheThaoContext : DbContext
             entity.HasOne(d => d.TheLoai).WithMany(p => p.SanPhams)
                 .HasForeignKey(d => d.TheLoaiId)
                 .HasConstraintName("FK_SanPham_LoaiSanPham");
+        });
+
+        modelBuilder.Entity<SanPhamGoiY>(entity =>
+        {
+            entity.ToTable("SanPhamGoiY");
+
+            entity.Property(e => e.NgayTao).HasColumnType("datetime");
+            entity.Property(e => e.Ten).HasMaxLength(100);
+            entity.Property(e => e.TrangThai).HasMaxLength(100);
         });
 
         modelBuilder.Entity<User>(entity =>

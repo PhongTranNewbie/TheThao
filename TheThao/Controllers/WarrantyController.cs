@@ -194,7 +194,7 @@ namespace TheThao.Controllers
                 warranty.TrangThai = baoHanh.TrangThai; // Update the warranty status
                 _context.SaveChanges(); // Save changes to the database
 
-                return RedirectToAction(nameof(Index)); // Redirect to the warranty list page after updating
+                return RedirectToAction(nameof(AdminIndex)); // Redirect to the warranty list page after updating
             }
 
             // Return an error page or message if the warranty is not found

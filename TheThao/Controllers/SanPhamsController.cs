@@ -191,13 +191,28 @@ namespace TheThao.Controllers
         public IActionResult ChiTietSanPham(int id)
         {
             var users = _context.Users.ToList();
-
-            // Truyền dữ liệu sang view
-            ViewBag.SanPhams = _context.SanPhams.ToList();
+            var sanPham = _context.SanPhams.FirstOrDefault(e => e.Id == id);
+			// Truyền dữ liệu sang view
+			ViewBag.SanPhams = _context.SanPhams.ToList();
             ViewData["Users"] = users;
-            ViewBag.SanPham = _context.SanPhams.FirstOrDefault(e => e.Id == id);
-            ViewBag.ChiTietHinhAnhs = _context.ChiTietHinhAnhs.ToList();
-            var listOfCommentViewModels = _context.BinhLuans
+            ViewBag.SanPham = sanPham;
+
+			ViewBag.ChiTietHinhAnhs = _context.ChiTietHinhAnhs.ToList();
+			// Fetch related products based on MaGoiY
+			var relatedProducts = _context.ChiTietSanPhamGoiYs
+				.Where(ct => ct.MaSanPham == sanPham.Id) // Filter based on MaGoiY
+				.Select(ct => ct.MaGoiY) // Select the related products
+				.FirstOrDefault();
+			var rlt = _context.ChiTietSanPhamGoiYs
+				.Include(x => x.MaSanPhamNavigation)
+				.Where(ct => ct.MaGoiY == relatedProducts && ct.MaSanPham != sanPham.Id)
+				.ToList();
+
+
+			ViewBag.SanPham = sanPham;
+			ViewBag.ChiTietHinhAnhs = _context.ChiTietHinhAnhs.ToList();
+			ViewBag.RelatedProducts = rlt;
+			var listOfCommentViewModels = _context.BinhLuans
                 .Where(b => b.MaSanPham == id) // Thay vì b.Id == id, sử dụng b.MaSanPham == id để lấy tất cả bình luận cho sản phẩm này
                 .Select(a => new BinhLuanViewModel
                 {

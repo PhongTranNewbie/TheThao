@@ -1,0 +1,25 @@
+﻿@model TheThao.ViewModel.AddProductsToGoiYViewModel
+
+@{
+    ViewData["Title"] = "Edit Recommendation";
+    Layout = "ExAdm";
+
+}
+
+<h2>Edit Recommendation - @Model.TenGoiY</h2>
+
+<form asp-action="AddProductsToGoiY" method="post">
+    <input type="hidden" asp-for="MaGoiY" />
+    <div class="form-group">
+        <label for="maSanPhams">Products</label>
+        <select multiple="multiple" id="maSanPhams" name="maSanPhams" class="form-control" size="10" required>
+            @foreach (var item in Model.SanPhams)
+            {
+                <option value="@item.Id">@item.Name</option>
+            }
+        </select>
+    </div>
+    <button type="submit" class="btn btn-primary">Add Products</button>
+</form>
+
+<a asp-action="Index" class="btn btn-secondary">Back to List</a>

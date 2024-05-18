@@ -1,0 +1,36 @@
+﻿@model IEnumerable<TheThao.ViewModel.SanPhamGoiYViewModel>
+
+@{
+    ViewData["Title"] = "Recommendations List";
+    Layout = "ExAdm";
+
+}
+
+<h2>Recommendations List</h2>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Recommendation ID</th>
+            <th>Recommendation Name</th>
+            <th>Products</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.MaGoiY</td>
+                <td>@item.TenGoiY</td>
+                <td>
+                    @foreach (var product in item.SanPhams)
+                    {
+                        <p>@product.Name</p>
+                    }
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<a asp-action="Create" class="btn btn-primary">Create New Recommendation</a>

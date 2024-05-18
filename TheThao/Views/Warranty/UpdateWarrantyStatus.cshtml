@@ -1,11 +1,11 @@
 ﻿@model TheThao.Models.BaoHanh
 
-<form asp-action="UpdateWarrantyStatus" value="@Model.Id" method="post" style="margin-top:100px;">
+<form asp-action="UpdateWarrantyStatus" method="post" style="margin-top:100px;">
     <div class="form-group">
         <label for="status">Warranty status:</label>
-                    <input type="hidden" name="id" value="@Model.Id" />
+        <input type="hidden" name="Id" value="@Model.Id" />
 
-        <select class="form-control" for="TrangThai">
+        <select class="form-control" name="TrangThai">
             <option value="In warranty">In warranty</option>
             <option value="Out of warranty">Out of warranty</option>
             <option value="Exchanged">Exchanged</option>
