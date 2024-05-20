@@ -14,19 +14,21 @@ namespace TheThao.Controllers
             _context = context;
         }
 
-        // GET: GoiY/Create
-        public async Task<IActionResult> Create()
-        {
-            var sanPhams = await _context.SanPhams.ToListAsync();
-            var model = new AddProductsToGoiYViewModel
-            {
-                SanPhams = sanPhams
-            };
-            return View(model);
-        }
+		// GET: GoiY/Create
+		public async Task<IActionResult> Create()
+		{
+			var chiTietSanPhamGoiYs = _context.ChiTietSanPhamGoiYs.Select(c => c.MaSanPham).ToList();
+			var sanPhams = await _context.SanPhams.Where(sp => !chiTietSanPhamGoiYs.Contains(sp.Id)).ToListAsync();
+			var model = new AddProductsToGoiYViewModel
+			{
+				SanPhams = sanPhams
+			};
+			return View(model);
+		}
 
-        // POST: GoiY/Create
-        [HttpPost]
+
+		// POST: GoiY/Create
+		[HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(string tenGoiY, List<int> maSanPhams)
         {
