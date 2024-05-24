@@ -3,23 +3,26 @@
 @{
     ViewData["Title"] = "Edit Recommendation";
     Layout = "ExAdm";
-
 }
 
-<h2>Edit Recommendation - @Model.TenGoiY</h2>
+<h2>Edit Recommendation</h2>
 
-<form asp-action="AddProductsToGoiY" method="post">
-    <input type="hidden" asp-for="MaGoiY" />
+<form asp-action="Edit" method="post">
+    <input type="hidden" id="maGoiY" name="maGoiY" value="@Model.MaGoiY" />
+    <div class="form-group">
+        <label for="tenGoiY">Recommendation Name</label>
+        <input type="text" id="tenGoiY" name="tenGoiY" class="form-control" value="@Model.TenGoiY" required />
+    </div>
     <div class="form-group">
         <label for="maSanPhams">Products</label>
         <select multiple="multiple" id="maSanPhams" name="maSanPhams" class="form-control" size="10" required>
             @foreach (var item in Model.SanPhams)
             {
-                <option value="@item.Id">@item.Name</option>
+                <option value="@item.Id" selected="@(Model.SelectedSanPhams.Contains(item.Id) ? "selected" : null)">@item.Name</option>
             }
         </select>
     </div>
-    <button type="submit" class="btn btn-primary">Add Products</button>
+    <button style="margin-block: 20px;" type="submit" class="btn btn-primary">Save</button>
 </form>
 
 <a asp-action="Index" class="btn btn-secondary">Back to List</a>

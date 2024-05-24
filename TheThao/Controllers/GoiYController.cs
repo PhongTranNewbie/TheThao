@@ -71,22 +71,94 @@ namespace TheThao.Controllers
         // GET: GoiY/Edit/5
         public async Task<IActionResult> Edit(int id)
         {
-            var sanPhamGoiY = await _context.SanPhamGoiYs.FindAsync(id);
+            var sanPhamGoiY = await _context.SanPhamGoiYs
+                .Include(g => g.ChiTietSanPhamGoiYs)
+                .ThenInclude(ct => ct.MaSanPhamNavigation)
+                .FirstOrDefaultAsync(g => g.Id == id);
+
             if (sanPhamGoiY == null)
             {
                 return NotFound();
             }
 
-            var sanPhams = await _context.SanPhams.ToListAsync();
+            // Lấy danh sách các sản phẩm đã được chọn trong gợi ý này
+            var selectedSanPhams = sanPhamGoiY.ChiTietSanPhamGoiYs.Select(ct => ct.MaSanPham).ToList();
+
+            // Lấy danh sách các sản phẩm chưa được chọn trong bất kỳ gợi ý nào
+            var chiTietSanPhamGoiYs = _context.ChiTietSanPhamGoiYs.Select(c => c.MaSanPham).ToList();
+            var sanPhams = await _context.SanPhams
+                .Where(sp => !chiTietSanPhamGoiYs.Contains(sp.Id) || selectedSanPhams.Contains(sp.Id))
+                .ToListAsync();
             var model = new AddProductsToGoiYViewModel
             {
                 MaGoiY = sanPhamGoiY.Id,
                 TenGoiY = sanPhamGoiY.Ten,
-                SanPhams = sanPhams
+                SanPhams = sanPhams,
+                SelectedSanPhams = selectedSanPhams
             };
 
             return View(model);
         }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(int maGoiY, string tenGoiY, List<int> maSanPhams)
+        {
+            if (string.IsNullOrEmpty(tenGoiY))
+            {
+                ModelState.AddModelError(string.Empty, "Vui lòng nhập tên gợi ý.");
+                var sanPhams = await _context.SanPhams.ToListAsync();
+                var model = new AddProductsToGoiYViewModel
+                {
+                    MaGoiY = maGoiY,
+                    TenGoiY = tenGoiY,
+                    SanPhams = sanPhams,
+                    SelectedSanPhams = maSanPhams ?? new List<int>()
+                };
+                return View(model);
+            }
+
+            var sanPhamGoiY = await _context.SanPhamGoiYs
+                .Include(g => g.ChiTietSanPhamGoiYs)
+                .FirstOrDefaultAsync(g => g.Id == maGoiY);
+
+            if (sanPhamGoiY == null)
+            {
+                ModelState.AddModelError(string.Empty, "Gợi ý không tồn tại.");
+                return RedirectToAction(nameof(Edit), new { id = maGoiY });
+            }
+
+            // Update the name of the recommendation
+            sanPhamGoiY.Ten = tenGoiY;
+
+            // Get existing product recommendations
+            var existingChiTiet = sanPhamGoiY.ChiTietSanPhamGoiYs.ToList();
+
+            // Remove the products that are no longer selected
+            var chiTietToRemove = existingChiTiet.Where(ct => !maSanPhams.Contains(ct.MaSanPham)).ToList();
+            _context.ChiTietSanPhamGoiYs.RemoveRange(chiTietToRemove);
+
+            // Add new product recommendations
+            foreach (var maSanPham in maSanPhams)
+            {
+                if (!existingChiTiet.Any(ct => ct.MaSanPham == maSanPham))
+                {
+                    var chiTiet = new ChiTietSanPhamGoiY
+                    {
+                        MaSanPham = maSanPham,
+                        MaGoiY = maGoiY
+                    };
+
+                    _context.ChiTietSanPhamGoiYs.Add(chiTiet);
+                }
+            }
+
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction(nameof(Index));
+        }
+
+
 
         // POST: GoiY/AddProductsToGoiY
         [HttpPost]
