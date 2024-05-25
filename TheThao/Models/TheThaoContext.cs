@@ -31,11 +31,15 @@ public partial class TheThaoContext : DbContext
 
     public virtual DbSet<ChiTietPhanTram> ChiTietPhanTrams { get; set; }
 
+    public virtual DbSet<ChiTietSanPhamGoiY> ChiTietSanPhamGoiYs { get; set; }
+
     public virtual DbSet<Circle> Circles { get; set; }
 
     public virtual DbSet<DonHang> DonHangs { get; set; }
 
     public virtual DbSet<Favorite> Favorites { get; set; }
+
+    public virtual DbSet<Kho> Khos { get; set; }
 
     public virtual DbSet<KhuyenMai> KhuyenMais { get; set; }
 
@@ -47,7 +51,11 @@ public partial class TheThaoContext : DbContext
 
     public virtual DbSet<PhanTramGiaCa> PhanTramGiaCas { get; set; }
 
+    public virtual DbSet<QuanLySerial> QuanLySerials { get; set; }
+
     public virtual DbSet<SanPham> SanPhams { get; set; }
+
+    public virtual DbSet<SanPhamGoiY> SanPhamGoiYs { get; set; }
 
     public virtual DbSet<User> Users { get; set; }
 
@@ -61,21 +69,15 @@ public partial class TheThaoContext : DbContext
         {
             entity.ToTable("BaoHanh");
 
+            entity.HasIndex(e => e.MaSerial, "IX_BaoHanh").IsUnique();
+
             entity.Property(e => e.NgayBaoHanh).HasColumnType("datetime");
             entity.Property(e => e.NgayKetThucBaoHanh).HasColumnType("datetime");
             entity.Property(e => e.TrangThai).HasMaxLength(50);
 
-            entity.HasOne(d => d.MaDonHangNavigation).WithMany(p => p.BaoHanhs)
-                .HasForeignKey(d => d.MaDonHang)
-                .HasConstraintName("FK_BaoHanh_ChiTietDonHang");
-
-            entity.HasOne(d => d.MaSanPhamNavigation).WithMany(p => p.BaoHanhs)
-                .HasForeignKey(d => d.MaSanPham)
-                .HasConstraintName("FK_BaoHanh_SanPham1");
-
-            entity.HasOne(d => d.User).WithMany(p => p.BaoHanhs)
-                .HasForeignKey(d => d.UserId)
-                .HasConstraintName("FK_BaoHanh_Users");
+            entity.HasOne(d => d.MaSerialNavigation).WithOne(p => p.BaoHanh)
+                .HasForeignKey<BaoHanh>(d => d.MaSerial)
+                .HasConstraintName("FK_BaoHanh_QuanLySerial");
         });
 
         modelBuilder.Entity<BinhLuan>(entity =>
@@ -200,6 +202,27 @@ public partial class TheThaoContext : DbContext
                 .HasConstraintName("FK_ChiTietPhanTram_SanPham");
         });
 
+        modelBuilder.Entity<ChiTietSanPhamGoiY>(entity =>
+        {
+            entity.HasKey(e => new { e.MaSanPham, e.MaGoiY });
+
+            entity.ToTable("ChiTietSanPhamGoiY");
+
+            entity.HasIndex(e => e.Id, "IX_ChiTietSanPhamGoiY").IsUnique();
+
+            entity.Property(e => e.Id).ValueGeneratedOnAdd();
+
+            entity.HasOne(d => d.MaGoiYNavigation).WithMany(p => p.ChiTietSanPhamGoiYs)
+                .HasForeignKey(d => d.MaGoiY)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_ChiTietSanPhamGoiY_SanPhamGoiY");
+
+            entity.HasOne(d => d.MaSanPhamNavigation).WithMany(p => p.ChiTietSanPhamGoiYs)
+                .HasForeignKey(d => d.MaSanPham)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_ChiTietSanPhamGoiY_SanPham");
+        });
+
         modelBuilder.Entity<Circle>(entity =>
         {
             entity.ToTable("Circle");
@@ -241,6 +264,19 @@ public partial class TheThaoContext : DbContext
                 .HasForeignKey(d => d.UserId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_Favorite_Users");
+        });
+
+        modelBuilder.Entity<Kho>(entity =>
+        {
+            entity.HasKey(e => e.Serial);
+
+            entity.ToTable("Kho");
+
+            entity.Property(e => e.TrangThai).HasMaxLength(50);
+
+            entity.HasOne(d => d.MaSanPhamNavigation).WithMany(p => p.Khos)
+                .HasForeignKey(d => d.MaSanPham)
+                .HasConstraintName("FK_Kho_SanPham");
         });
 
         modelBuilder.Entity<KhuyenMai>(entity =>
@@ -310,6 +346,24 @@ public partial class TheThaoContext : DbContext
                 .HasConstraintName("FK_PhanTramGiaCa_Users");
         });
 
+        modelBuilder.Entity<QuanLySerial>(entity =>
+        {
+            entity.HasKey(e => e.SerialId);
+
+            entity.ToTable("QuanLySerial");
+
+            entity.Property(e => e.SerialId).ValueGeneratedNever();
+
+            entity.HasOne(d => d.MaChiTietDonHangNavigation).WithMany(p => p.QuanLySerials)
+                .HasForeignKey(d => d.MaChiTietDonHang)
+                .HasConstraintName("FK_QuanLySerial_ChiTietDonHang");
+
+            entity.HasOne(d => d.Serial).WithOne(p => p.QuanLySerial)
+                .HasForeignKey<QuanLySerial>(d => d.SerialId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_QuanLySerial_Kho");
+        });
+
         modelBuilder.Entity<SanPham>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PK__SanPham__3214EC07A00E0847");
@@ -317,6 +371,7 @@ public partial class TheThaoContext : DbContext
             entity.ToTable("SanPham");
 
             entity.Property(e => e.Gia).HasColumnType("decimal(12, 0)");
+            entity.Property(e => e.GiaSi).HasColumnType("decimal(12, 0)");
             entity.Property(e => e.GiaTruocKhiGiamGia).HasColumnType("decimal(12, 0)");
             entity.Property(e => e.HinhAnh).HasMaxLength(500);
             entity.Property(e => e.Name).HasMaxLength(255);
@@ -327,6 +382,15 @@ public partial class TheThaoContext : DbContext
             entity.HasOne(d => d.TheLoai).WithMany(p => p.SanPhams)
                 .HasForeignKey(d => d.TheLoaiId)
                 .HasConstraintName("FK_SanPham_LoaiSanPham");
+        });
+
+        modelBuilder.Entity<SanPhamGoiY>(entity =>
+        {
+            entity.ToTable("SanPhamGoiY");
+
+            entity.Property(e => e.NgayTao).HasColumnType("datetime");
+            entity.Property(e => e.Ten).HasMaxLength(100);
+            entity.Property(e => e.TrangThai).HasMaxLength(100);
         });
 
         modelBuilder.Entity<User>(entity =>

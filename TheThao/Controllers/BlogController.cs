@@ -130,6 +130,22 @@ namespace TheThao.Controllers
 
             return View(blog);
         }
+
+        private int? GetCurrentUserId()
+        {
+            var userIdString = HttpContext.Session.GetString("UserId");
+
+            if (userIdString == null || !int.TryParse(userIdString, out int userId))
+            {
+                // Hoặc thay đổi cách lấy ID của người dùng dựa trên hệ thống xác thực bạn đang sử dụng
+                // Ví dụ: ASP.NET Core Identity
+                // var user = await _userManager.GetUserAsync(User);
+                // var userId = user?.Id;
+                return null;
+            }
+
+            return userId;
+        }
     }
 }
 

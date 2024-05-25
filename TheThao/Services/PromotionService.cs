@@ -13,6 +13,18 @@ public class PromotionService : IPromotionService
         _context = context;
     }
 
+
+    public void Cost()
+    {
+        var product = _context.SanPhams.ToList();
+        foreach (var item in product)
+        {
+            item.GiaSi = item.Gia * 0.9M;
+
+        }
+        _context.SaveChanges();
+
+    }
     public void ApplyPromotion()
     {
         // Lấy tất cả sản phẩm từ cơ sở dữ liệu
@@ -31,7 +43,6 @@ public class PromotionService : IPromotionService
                 .Where(c => c.MaSanPham == productId && c.NgayBatDau <= DateTime.Now)
                 .OrderByDescending(c => c.NgayBatDau)
                 .FirstOrDefault();
-
             // Nếu có khuyến mãi cho sản phẩm và chưa hết hạn
             if (latestPromotion != null && latestPromotion.NgayKetThuc >= DateTime.Now)
             {
@@ -41,7 +52,8 @@ public class PromotionService : IPromotionService
                 // Áp dụng giảm giá cho sản phẩm
                 product.Gia -= (product.Gia * percentDiscount) / 100;
                 product.GiaTruocKhiGiamGia = product.Gia + (product.Gia * percentDiscount) / 100;
-
+                // Áp dụng giảm giá cho sản phẩm
+                product.GiaSi -= (product.GiaSi * percentDiscount) / 100;
                 // Cập nhật sản phẩm trong cơ sở dữ liệu để lưu giữ giá trị GiaTruocKhiGiamGia
                 _context.Entry(product).Property(x => x.GiaTruocKhiGiamGia).CurrentValue = product.GiaTruocKhiGiamGia;
             }

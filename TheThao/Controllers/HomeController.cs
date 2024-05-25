@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using TheThao.Models;
 using TheThao.Models.Authentication;
+using TheThao.Service;
 using X.PagedList;
 
 namespace TheThao.Controllers
@@ -194,8 +195,12 @@ namespace TheThao.Controllers
 
 
 
-
-
+        public IActionResult AddSerialNumbers()
+        {
+            var yourClassInstance = new addToStock(_context);
+            yourClassInstance.AddSerialsForAllProducts();
+            return Ok("Serial numbers added for all products.");
+        }
 
 
 

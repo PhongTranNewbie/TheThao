@@ -198,6 +198,72 @@
 
     </div>
 </div>
+	<section class="sec-relate-product bg0 p-t-45 p-b-105">
+		<div class="container">
+			<div class="p-b-45">
+				<h3 class="ltext-106 cl5 txt-center">
+					Recommend
+				</h3>
+			</div>
+			<!-- Slide2 -->
+			<div class="wrap-slick2">
+				<div class="slick2">
+					@foreach (var chiTietSanPhamGoiY in ViewBag.RelatedProducts)
+					{
+						var relatedProduct = chiTietSanPhamGoiY.MaSanPhamNavigation;
+						var Promotionservice = new PromotionService(new TheThaoContext());
+						var IsPromotionactive = promotionService.HasPromotion(relatedProduct.Id);
+						var PromotionDetail = await promotionService.GetPromotionDetails(relatedProduct.Id);
+
+						<div class="item-slick2 p-l-15 p-r-15 p-t-15 p-b-15">
+							<!-- Block2 -->
+							<div class="block2">
+								@if (IsPromotionactive)
+								{
+									<div class="block2-pic hov-img0 label1" data-label1="@PromotionDetail.PhanTramKhuyenMai%">
+										<img src="@Url.Content(relatedProduct.HinhAnh)" alt="IMG-PRODUCT">
+										<a href="@Url.Action("ChiTietSanPham", "SanPhams", new { id = relatedProduct.Id })" class="block2-btn flex-c-m stext-103 cl2 size-102 bg0 bor2 hov-btn1 p-lr-15 trans-04">
+											Quick View
+										</a>
+									</div>
+									<div class="block2-txt flex-w flex-t p-t-14">
+										<div class="block2-txt-child1 flex-col-l">
+											<!-- Price before promotion -->
+											<span class="stext-105 cl3" style="text-decoration: line-through;">
+												Price: @string.Format("{0:N0}", relatedProduct.GiaTruocKhiGiamGia)
+											</span>
+											<!-- Promotion price -->
+											<span class="stext-105 cl3" style="background-color: red; color: yellow; padding: 3px;">
+												Promotion Price: @string.Format("{0:N0}", relatedProduct.Gia)
+											</span>
+										</div>
+									</div>
+								}
+								else
+								{
+									<div class="block2-pic hov-img0">
+										<img src="@Url.Content(relatedProduct.HinhAnh)" alt="IMG-PRODUCT">
+										<a href="@Url.Action("ChiTietSanPham", "SanPhams", new { id = relatedProduct.Id })" class="block2-btn flex-c-m stext-103 cl2 size-102 bg0 bor2 hov-btn1 p-lr-15 trans-04">
+											Quick View
+										</a>
+									</div>
+									<div class="block2-txt flex-w flex-t p-t-14">
+										<div class="block2-txt-child1 flex-col-l">
+											<!-- Price without promotion -->
+											<span class="stext-105 cl3">
+												Price: @string.Format("{0:N0}", relatedProduct.Gia)
+											</span>
+										</div>
+									</div>
+								}
+							</div>
+						</div>
+					}
+				</div>
+			</div>
+		</div>
+	</section>
+
 	<div class="bor10 m-t-50 p-t-43 p-b-40">
 		<!-- Tab01 -->
 		<div class="tab01">
@@ -305,42 +371,68 @@
 		<!-- Slide2 -->
 		<div class="wrap-slick2">
 			<div class="slick2">
-				@foreach(var iem in ViewBag.SanPhams)
+				@foreach (var iem in ViewBag.SanPhams)
 				{
-					if(iem.Id == product.Id)
+					if (iem.Id == product.Id)
 					{
-						continue; // Bỏ qua và tiếp tục vòng lặp
+						continue; // Skip and continue to the next iteration
 					}
-					if(iem.TheLoaiId == product.TheLoaiId)
+
+					if (iem.TheLoaiId == product.TheLoaiId)
 					{
-					<div class="item-slick2 p-l-15 p-r-15 p-t-15 p-b-15">
-						<!-- Block2 -->
-						<div class="block2">
-							<div class="block2-pic hov-img0">
-								<img src="@Url.Content(iem.HinhAnh)" alt="IMG-PRODUCT">
+						var PromotionService = new PromotionService(new TheThaoContext());
+						var IsPromotionActive = promotionService.HasPromotion(iem.Id);
+						var PromotionDetail = await promotionService.GetPromotionDetails(iem.Id);
 
-								<a href="#" class="block2-btn flex-c-m stext-103 cl2 size-102 bg0 bor2 hov-btn1 p-lr-15 trans-04 js-show-modal1">
-									Quick View
-								</a>
-							</div>
-
-							<div class="block2-txt flex-w flex-t p-t-14">
-								<div class="block2-txt-child1 flex-col-l ">
-									<a href="product-detail.html" class="stext-104 cl4 hov-cl1 trans-04 js-name-b2 p-b-6">
-										@iem.Name
-									</a>
-
-									<span class="stext-105 cl3">
-										@iem.Gia
-									</span>
-								</div>
-
+						<div class="item-slick2 p-l-15 p-r-15 p-t-15 p-b-15">
+							<!-- Block2 -->
+							<div class="block2">
+								@if(IsPromotionActive)
+								{
+									<div class="block2-pic hov-img0 label1" data-label1="@PromotionDetail.PhanTramKhuyenMai%">
+										<img src="@Url.Content(iem.HinhAnh)" alt="@iem.Name">
+										<a href="@Url.Action("ChiTietSanPham", "SanPhams", new { id = iem.Id })" class="block2-btn flex-c-m stext-103 cl2 size-102 bg0 bor2 hov-btn1 p-lr-15 trans-04">
+											Quick View
+										</a>
+									</div>
+									<div class="block2-txt flex-w flex-t p-t-14">
+										<div class="block2-txt-child1 flex-col-l">
+											<!-- Price before promotion -->
+											<span class="stext-105 cl3" style="text-decoration: line-through;">
+												Price: @string.Format("{0:N0}", iem.GiaTruocKhiGiamGia)
+											</span>
+											<!-- Promotion price -->
+											<span class="stext-105 cl3" style="background-color: red; color: yellow; padding: 3px;">
+												Promotion Price: @string.Format("{0:N0}", iem.Gia)
+											</span>
+										</div>
+									</div>
+								}
+								else
+								{
+									<div class="block2-pic hov-img0">
+										<img src="@Url.Content(iem.HinhAnh)" alt="@iem.Name">
+										<a href="@Url.Action("ChiTietSanPham", "SanPhams", new { id = iem.Id })" class="block2-btn flex-c-m stext-103 cl2 size-102 bg0 bor2 hov-btn1 p-lr-15 trans-04">
+											Quick View
+										</a>
+									</div>
+									<div class="block2-txt flex-w flex-t p-t-14">
+										<div class="block2-txt-child1 flex-col-l">
+											<!-- Price before promotion -->
+											<span class="stext-105 cl3" >
+												Price: @string.Format("{0:N0}", iem.Gia)
+											</span>
+											
+										</div>
+									</div>
+								}
+								
 								
 							</div>
 						</div>
-					</div>
 					}
 				}
+
 
 				
 

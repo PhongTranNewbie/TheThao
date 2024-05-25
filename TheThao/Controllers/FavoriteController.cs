@@ -24,9 +24,9 @@ namespace TheThao.Controllers
 
             if (userId == null)
             {
-                return Json(new { success = false, message = "User not logged in" });
+                return RedirectToAction("Login", "Login");
             }
-            if(productId != 0)
+            if (productId != 0)
             {
                 // Kiểm tra xem sản phẩm đã được yêu thích chưa
                 var existingFavorite = await _context.Favorites.FirstOrDefaultAsync(f => f.UserId == userId && f.ProductId == productId);

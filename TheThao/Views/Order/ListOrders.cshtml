@@ -14,7 +14,7 @@
             </tr>
         </thead>
         <tbody>
-            @foreach (var order in Model)
+            @foreach (var order in Model.PaidOrders)
             {
                 <tr>
                     <td>@order.Id</td>
@@ -26,7 +26,7 @@
                     @if(order.TrangThai == 3)
                     {
                         <td>
-                            <a asp-controller="Warranty" asp-action="BaoHanh" asp-route-id="@order.Id" class="btn-details">Warranty</a>
+                            <a asp-controller="Warranty" asp-action="Create" asp-route-id="@order.Id" class="btn-details">Warranty</a>
                         </td>
                     }
                     
@@ -85,6 +85,30 @@
                 </tbody>
             </table>
         </div>
+    <div>
+        <h2>Paid Orders</h2>
+        <table class="table">
+            <!-- Header -->
+            <thead>
+                <tr>
+                    <th>ID Order</th>
+                    <th>Create date</th>
+                    <!-- Thêm các cột khác nếu cần -->
+                </tr>
+            </thead>
+            <!-- Body -->
+            <tbody>
+                @foreach (var order in Model.WaitingForConfirmationOrders)
+                {
+                    <tr>
+                        <td>@order.Id</td>
+                        <td>@order.NgayTao</td>
+                        <!-- Thêm các cột khác nếu cần -->
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
     </div>
 </section>
 
