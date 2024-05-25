@@ -1,37 +1,52 @@
 ﻿@model TheThao.ViewModels.CheckoutSuccessViewModel
 
-<section class="bg0 p-t-23 p-b-140">
+<section class="bg-light p-5">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h3 class="display-4">Order Complete!</h3>
+            <p class="lead">Thank you for your purchase.</p>
+        </div>
 
-<h3 style="margin-top: 40px; margin-bottom: 10px;">You are finish!</h3>
+        <div class="order-info mb-5">
+            <h4 class="mb-3">Order Information</h4>
+            <p><strong>Order ID:</strong> @Model.DonHang.Id</p>
+            <p><strong>Create Date:</strong> @Model.DonHang.NgayTao</p>
+            <p><strong>Payment Method:</strong> @Model.DonHang.PhuongPhapThanhToan</p>
+            <p><strong>Locate: </strong> @Model.DiaChi</p>
+        </div>
 
-<p>The information of order:</p>
-<p>Id: @Model.DonHang.Id</p>
-<p>Create Date: @Model.DonHang.NgayTao</p>
-<p>Payment Selection: @Model.DonHang.PhuongPhapThanhToan</p>
-
-    <h3 style="margin-bottom: 10px;">List of products</h3>
-@if (Model.ChiTietDonHangs != null && Model.ChiTietDonHangs.Any())
-{
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Product</th>
-                <th>Price</th>
-                <th>Quantity</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var chiTiet in Model.ChiTietDonHangs)
+        <div class="product-list">
+            <h4 class="mb-3">Products</h4>
+            @if (Model.ChiTietDonHangs != null && Model.ChiTietDonHangs.Any())
             {
-                <tr>
-                    <td>@chiTiet.MaSanPhamNavigation.Name</td>
-                    <td>@chiTiet.Gia</td>
-                    <td>@chiTiet.SoLuong</td>
-                </tr>
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Product</th>
+                            <th>Price</th>
+                            <th>Quantity</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var chiTiet in Model.ChiTietDonHangs)
+                        {
+                            <tr>
+                                <td>@chiTiet.MaSanPhamNavigation.Name</td>
+                                <td>@chiTiet.Gia</td>
+                                <td>@chiTiet.SoLuong</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
             }
-        </tbody>
-    </table>
-}
+            else
+            {
+                <p>No products found in the order.</p>
+            }
+        </div>
 
-<p>Total: @Model.TongTien</p>
+        <div class="total-amount text-right mt-5">
+            <h4>Total Amount: @Model.TongTien</h4>
+        </div>
+    </div>
 </section>

@@ -86,7 +86,8 @@ namespace TheThao.Controllers
 							.Include(ct => ct.MaSanPhamNavigation)
 							.Where(ct => ct.MaDonHang == orderCode)
 							.ToList(),
-						TongTien = (decimal)tongTien // Gán giá trị tổng tiền vào ViewModel
+						TongTien = (decimal)tongTien,// Gán giá trị tổng tiền vào ViewModel
+						DiaChi = user.DiaChi
 					};
 
 					return View(viewModel);

@@ -7,5 +7,6 @@ namespace TheThao.ViewModels
         public DonHang DonHang { get; set; }
         public List<ChiTietDonHang> ChiTietDonHangs { get; set; }
         public decimal TongTien { get; set; } // Thuộc tính để lưu tổng tiền
+        public string DiaChi { get;set; }
     }
 }
