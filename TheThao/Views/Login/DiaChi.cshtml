@@ -1,0 +1,158 @@
+﻿@model TheThao.Models.User
+
+<div style="margin-top:50px;" class="oti6">
+    <div class="account-address">
+        <h3 class="account-page-title">Địa chỉ của tôi</h3>
+        <button id="add-address-button" class="account-page-button">Thêm địa chỉ mới</button>
+    </div>
+
+    <div class="account-address__list">
+        <h4>Danh sách địa chỉ</h4>
+        @if (Model.SoDiaChis.Any())
+        {
+            <ul>
+                @foreach (var address in Model.SoDiaChis)
+                {
+                    <li>
+                        <p>@address.DiaChi, @address.Xa, @address.QuanHuyen, @address.ThanhPho</p>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="default-address" value="@address.Id" @(address.IsMacDinh.HasValue && address.IsMacDinh.Value ? "checked" : "") />
+                            <label class="form-check-label" for="default-address-@address.Id">
+                                Đặt làm địa chỉ mặc định
+                            </label>
+                        </div>
+                    </li>
+                }
+            </ul>
+        }
+        else
+        {
+            <p>Bạn chưa có địa chỉ nào. Hãy thêm địa chỉ mới bằng cách nhấn vào nút "Thêm địa chỉ mới".</p>
+        }
+    </div>
+    <div id="add-address-form" style="display: none;">
+        <div>
+            <select class="form-select form-select-sm mb-3" id="city" aria-label=".form-select-sm">
+                <option value="" selected>Chọn tỉnh thành</option>
+            </select>
+
+            <select class="form-select form-select-sm mb-3" id="district" aria-label=".form-select-sm">
+                <option value="" selected>Chọn quận huyện</option>
+            </select>
+
+            <select class="form-select form-select-sm" id="ward" aria-label=".form-select-sm">
+                <option value="" selected>Chọn phường xã</option>
+            </select>
+        </div>
+        <div class="form-check">
+            <input class="form-check-input" type="checkbox" id="set-default-address">
+            <label class="form-check-label" for="set-default-address">
+                Đặt làm địa chỉ mặc định
+            </label>
+        </div>
+        <button type="button" onclick="addNewAddress()" class="btn btn-primary">Lưu</button>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.21.1/axios.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            var addAddressButton = document.getElementById("add-address-button");
+            var addAddressForm = document.getElementById("add-address-form");
+            var saveButton = document.querySelector("#add-address-form .btn-primary");
+
+            // Hiển thị form thêm địa chỉ khi click vào nút "Thêm địa chỉ mới"
+            addAddressButton.addEventListener('click', function () {
+                addAddressForm.style.display = "block";
+            });
+
+            // Xử lý sự kiện click của nút "Lưu" trong form thêm địa chỉ
+            saveButton.addEventListener('click', addNewAddress);
+
+            function addNewAddress() {
+                var cityIndex = document.getElementById("city").selectedIndex;
+                var districtIndex = document.getElementById("district").selectedIndex;
+                var wardIndex = document.getElementById("ward").selectedIndex;
+
+                if (cityIndex < 0 || districtIndex < 0) {
+                    alert("Vui lòng chọn tỉnh/thành phố và quận/huyện");
+                    return;
+                }
+
+                var city = document.getElementById("city").options[cityIndex].text;
+                var district = document.getElementById("district").options[districtIndex].text;
+                var ward = wardIndex >= 0 ? document.getElementById("ward").options[wardIndex].text : "";
+                var setDefaultAddress = document.getElementById("set-default-address").checked;
+
+                var newAddress = {
+                    DiaChi: "",
+                    ThanhPho: city,
+                    QuanHuyen: district,
+                    Xa: ward,
+                    IsMacDinh: setDefaultAddress
+                };
+
+                // Gửi yêu cầu AJAX để thêm địa chỉ mới
+                axios.post('/Login/AddDiaChi', newAddress)
+                    .then(function (response) {
+                        console.log('New address added:', response.data);
+                        // Xử lý sau khi thêm địa chỉ thành công
+                        document.getElementById("city").selectedIndex = 0;
+                        document.getElementById("district").innerHTML = "<option value='' selected>Chọn quận huyện</option>";
+                        document.getElementById("ward").innerHTML = "<option value='' selected>Chọn phường xã</option>";
+                        document.getElementById("add-address-form").style.display = "none";
+                    })
+                    .catch(function (error) {
+                        console.error('Error adding new address:', error);
+                        // Xử lý lỗi khi thêm địa chỉ mới
+                    });
+            }
+
+
+
+
+
+            var citis = document.getElementById("city");
+            var districts = document.getElementById("district");
+            var wards = document.getElementById("ward");
+            var Parameter = {
+                url: "https://raw.githubusercontent.com/kenzouno1/DiaGioiHanhChinhVN/master/data.json",
+                method: "GET",
+                responseType: "application/json",
+            };
+            var promise = axios(Parameter);
+            promise.then(function (result) {
+                renderCity(result.data);
+            });
+
+            function renderCity(data) {
+                for (const x of data) {
+                    citis.options[citis.options.length] = new Option(x.Name, x.Id);
+                }
+                citis.onchange = function () {
+                    districts.length = 1;
+                    wards.length = 1;
+                    if (this.value != "") {
+                        const result = data.filter(n => n.Id === this.value);
+
+                        for (const k of result[0].Districts) {
+                            districts.options[districts.options.length] = new Option(k.Name, k.Id);
+                        }
+                    }
+                };
+                districts.onchange = function () {
+                    wards.length = 1;
+                    const dataCity = data.filter((n) => n.Id === citis.value);
+                    if (this.value != "") {
+                        const dataWards = dataCity[0].Districts.filter(n => n.Id === this.value)[0].Wards;
+
+                        for (const w of dataWards) {
+                            wards.options[wards.options.length] = new Option(w.Name, w.Id);
+                        }
+                    }
+                };
+            }
+        });
+    </script>
+}
