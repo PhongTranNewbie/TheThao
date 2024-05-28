@@ -15,9 +15,5 @@ public partial class SoDiaChi
 
     public string? Xa { get; set; }
 
-    public string? DiaChi { get; set; }
-
-    public bool? IsMacDinh { get; set; }
-
     public virtual User? User { get; set; }
 }

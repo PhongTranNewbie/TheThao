@@ -1,158 +1,282 @@
 ﻿@model TheThao.Models.User
+<link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
+
+<style>
+
+    /* This ensures the backdrop is not visible by default */
+    .modal-backdrop {
+        opacity: 0.5;
+    }
+
+    .my-modal-class .modal-content {
+        margin-top: 100px;
+    }
+    .select-container {
+        margin-bottom: 15px;
+    }
+    .account-address {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding-bottom: 2rem;
+        padding-top: 2rem;
+        border-bottom: 1px solid rgba(0,0,0,.1333333333);
+    }
+    .account-address .account-page-title {
+        margin-bottom: 0;
+    }
+    .account-address__item {
+        display: flex;
+        justify-content: space-between;
+        padding-bottom: 1.5rem;
+        margin-bottom: 1.5rem;
+        border-bottom: 1px solid rgba(0,0,0,.1333333333);
+    }
+    .account-address__content {
+        flex: 1;
+    }
+    .account-address__head {
+        display: flex;
+        align-items: center;
+        font-size: 1rem;
+        margin-bottom: .5rem;
+    }
+    .account-address__head span {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        border: 1px solid rgba(0,0,0,.1333333333);
+        border-radius: 100vmax;
+        padding: 4px 10px 5px;
+        font-size: .75rem;
+        margin-left: .5rem;
+    }
+    .account-address__head span:before {
+        content: "";
+        width: .625rem;
+        height: .625rem;
+        display: block;
+        background-image: url(https://mcdn.coolmate.me/image/September2023/mceclip0_65.png);
+        background-repeat: no-repeat;
+        background-size: contain;
+        background-position: 50%;
+        margin-right: .25rem;
+    }
+    .account-page-button {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 54px;
+        padding: 0 40px;
+        border-radius: 100vmax;
+        color: #fff;
+        text-transform: uppercase;
+        border: 0;
+        background-color: #000;
+        transition: all .3s;
+        letter-spacing: .125rem;
+        font-size: 1rem;
+        cursor: pointer;
+    }
+    .account-page-button:hover {
+        background-color: #2f5acf;
+        color: #fff;
+        border: 0;
+    }
+    .account-address__text {
+        font-size: 1rem;
+        color: rgba(0,0,0,.6);
+    }
+    .account-address__action {
+        display: flex;
+        flex-flow: column;
+    }
+    .account-address__list ul {
+        list-style: none;
+        padding: 0;
+    }
+    .account-address__list ul li {
+        background-color: #f8f9fa;
+        margin-bottom: 10px;
+        padding: 15px;
+        border: 1px solid #e9ecef;
+        border-radius: 5px;
+    }
+    .account-address__title {
+        font-size: 1.5rem;
+        padding-top: 1rem;
+        padding-bottom: 1rem;
+    }
+</style>
 
 <div style="margin-top:50px;" class="oti6">
     <div class="account-address">
         <h3 class="account-page-title">Địa chỉ của tôi</h3>
-        <button id="add-address-button" class="account-page-button">Thêm địa chỉ mới</button>
+        <button type="button" class="account-page-button" data-toggle="modal" data-target="#addAddressModal">
+            Thêm địa chỉ mới
+        </button>
     </div>
 
-    <div class="account-address__list">
+    <div class="account-address__title">
         <h4>Danh sách địa chỉ</h4>
-        @if (Model.SoDiaChis.Any())
-        {
-            <ul>
-                @foreach (var address in Model.SoDiaChis)
-                {
-                    <li>
-                        <p>@address.DiaChi, @address.Xa, @address.QuanHuyen, @address.ThanhPho</p>
-                        <div class="form-check">
-                            <input class="form-check-input" type="radio" name="default-address" value="@address.Id" @(address.IsMacDinh.HasValue && address.IsMacDinh.Value ? "checked" : "") />
-                            <label class="form-check-label" for="default-address-@address.Id">
-                                Đặt làm địa chỉ mặc định
-                            </label>
-                        </div>
-                    </li>
-                }
-            </ul>
-        }
-        else
-        {
-            <p>Bạn chưa có địa chỉ nào. Hãy thêm địa chỉ mới bằng cách nhấn vào nút "Thêm địa chỉ mới".</p>
-        }
+        <div class="account-address__content">
+            @if (Model.SoDiaChis.Any())
+            {
+                <ul id="addressList">
+                    @foreach (var address in Model.SoDiaChis)
+                    {
+                        <li class="account-address__item">
+                            <div class="account-address__text">@address.Xa, @address.QuanHuyen, @address.ThanhPho</div>
+                        </li>
+                    }
+                </ul>
+            }
+            else
+            {
+                <div id="noAddressMessage">
+                    <p>Bạn chưa có địa chỉ nào. Hãy thêm địa chỉ mới bằng cách nhấn vào nút "Thêm địa chỉ mới".</p>
+                </div>
+            }
+        </div>
     </div>
-    <div id="add-address-form" style="display: none;">
-        <div>
-            <select class="form-select form-select-sm mb-3" id="city" aria-label=".form-select-sm">
-                <option value="" selected>Chọn tỉnh thành</option>
-            </select>
+</div>
 
-            <select class="form-select form-select-sm mb-3" id="district" aria-label=".form-select-sm">
-                <option value="" selected>Chọn quận huyện</option>
-            </select>
-
-            <select class="form-select form-select-sm" id="ward" aria-label=".form-select-sm">
-                <option value="" selected>Chọn phường xã</option>
-            </select>
+<!-- Modal -->
+<div class="modal fade" id="addAddressModal" tabindex="-1" role="dialog" aria-labelledby="addAddressModalLabel" aria-hidden="true">
+    <div class="modal-dialog my-modal-class" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addAddressModalLabel">Thêm địa chỉ mới</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div>
+                    <div class="select-container">
+                        <select class="form-select form-select-sm mb-3" id="city" aria-label=".form-select-sm">
+                            <option value="" selected>Chọn tỉnh thành</option>
+                            <!-- Các tùy chọn khác -->
+                        </select>
+                    </div>
+                    <div class="select-container">
+                        <select class="form-select form-select-sm mb-3" id="district" aria-label=".form-select-sm">
+                            <option value="" selected>Chọn quận huyện</option>
+                            <!-- Các tùy chọn khác -->
+                        </select>
+                    </div>
+                    <div class="select-container">
+                        <select class="form-select form-select-sm" id="ward" aria-label=".form-select-sm">
+                            <option value="" selected>Chọn phường xã</option>
+                            <!-- Các tùy chọn khác -->
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+                <button type="button" class="btn btn-primary" id="saveAddressBtn">Lưu</button>
+            </div>
         </div>
-        <div class="form-check">
-            <input class="form-check-input" type="checkbox" id="set-default-address">
-            <label class="form-check-label" for="set-default-address">
-                Đặt làm địa chỉ mặc định
-            </label>
-        </div>
-        <button type="button" onclick="addNewAddress()" class="btn btn-primary">Lưu</button>
     </div>
 </div>
 
 @section Scripts {
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.21.1/axios.min.js"></script>
     <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            var addAddressButton = document.getElementById("add-address-button");
-            var addAddressForm = document.getElementById("add-address-form");
-            var saveButton = document.querySelector("#add-address-form .btn-primary");
-
-            // Hiển thị form thêm địa chỉ khi click vào nút "Thêm địa chỉ mới"
-            addAddressButton.addEventListener('click', function () {
-                addAddressForm.style.display = "block";
+        $(document).ready(function () {
+            $('#addAddressModal').on('hidden.bs.modal', function () {
+                // Reset the backdrop opacity to default after modal is hidden
+                $('.modal-backdrop').css('opacity', '0.5').remove();
+                // Ensure modal classes are reset
+                $(this).removeClass('modal fade show').addClass('modal fade');
             });
+            var citis = document.getElementById("city");
+            var districts = document.getElementById("district");
+            var wards = document.getElementById("ward");
+            var addressData = [];
 
-            // Xử lý sự kiện click của nút "Lưu" trong form thêm địa chỉ
-            saveButton.addEventListener('click', addNewAddress);
+            axios.get("https://raw.githubusercontent.com/kenzouno1/DiaGioiHanhChinhVN/master/data.json")
+                .then(function (response) {
+                    addressData = response.data;
+                    renderCity(addressData);
+                })
+                .catch(function (error) {
+                    console.error('Error getting address data:', error);
+                });
 
-            function addNewAddress() {
+            function renderCity(data) {
+                for (const city of data) {
+                    citis.options[citis.options.length] = new Option(city.Name, city.Id);
+                }
+                citis.onchange = function () {
+                    districts.length = 1;
+                    wards.length = 1;
+                    if (this.value !== "") {
+                        const city = data.find(n => n.Id === this.value);
+                        for (const district of city.Districts) {
+                            districts.options[districts.options.length] = new Option(district.Name, district.Id);
+                        }
+                    }
+                };
+                districts.onchange = function () {
+                    wards.length = 1;
+                    const city = addressData.find(n => n.Id === citis.value);
+                    if (this.value !== "") {
+                        const district = city.Districts.find(n => n.Id === this.value);
+                        for (const ward of district.Wards) {
+                            wards.options[wards.options.length] = new Option(ward.Name, ward.Id);
+                        }
+                    }
+                };
+            }
+
+            $("#saveAddressBtn").click(function () {
                 var cityIndex = document.getElementById("city").selectedIndex;
                 var districtIndex = document.getElementById("district").selectedIndex;
                 var wardIndex = document.getElementById("ward").selectedIndex;
 
-                if (cityIndex < 0 || districtIndex < 0) {
+                if (cityIndex < 1 || districtIndex < 1) {
                     alert("Vui lòng chọn tỉnh/thành phố và quận/huyện");
                     return;
                 }
 
                 var city = document.getElementById("city").options[cityIndex].text;
                 var district = document.getElementById("district").options[districtIndex].text;
-                var ward = wardIndex >= 0 ? document.getElementById("ward").options[wardIndex].text : "";
-                var setDefaultAddress = document.getElementById("set-default-address").checked;
+                var ward = wardIndex >= 1 ? document.getElementById("ward").options[wardIndex].text : "";
 
                 var newAddress = {
                     DiaChi: "",
                     ThanhPho: city,
                     QuanHuyen: district,
-                    Xa: ward,
-                    IsMacDinh: setDefaultAddress
+                    Xa: ward
                 };
 
-                // Gửi yêu cầu AJAX để thêm địa chỉ mới
                 axios.post('/Login/AddDiaChi', newAddress)
                     .then(function (response) {
                         console.log('New address added:', response.data);
-                        // Xử lý sau khi thêm địa chỉ thành công
+
+                        var newAddressItem = document.createElement('li');
+                        newAddressItem.className = "account-address__item";
+                        newAddressItem.innerHTML = `<div class="account-address__text">${newAddress.Xa}, ${newAddress.QuanHuyen}, ${newAddress.ThanhPho}</div>`;
+
+                        document.getElementById('addressList').appendChild(newAddressItem);
+
+                        $('#addAddressModal').modal('hide');
                         document.getElementById("city").selectedIndex = 0;
                         document.getElementById("district").innerHTML = "<option value='' selected>Chọn quận huyện</option>";
                         document.getElementById("ward").innerHTML = "<option value='' selected>Chọn phường xã</option>";
-                        document.getElementById("add-address-form").style.display = "none";
+
+                        if (document.getElementById('noAddressMessage')) {
+                            document.getElementById('noAddressMessage').style.display = 'none';
+                        }
                     })
                     .catch(function (error) {
                         console.error('Error adding new address:', error);
-                        // Xử lý lỗi khi thêm địa chỉ mới
                     });
-            }
-
-
-
-
-
-            var citis = document.getElementById("city");
-            var districts = document.getElementById("district");
-            var wards = document.getElementById("ward");
-            var Parameter = {
-                url: "https://raw.githubusercontent.com/kenzouno1/DiaGioiHanhChinhVN/master/data.json",
-                method: "GET",
-                responseType: "application/json",
-            };
-            var promise = axios(Parameter);
-            promise.then(function (result) {
-                renderCity(result.data);
             });
-
-            function renderCity(data) {
-                for (const x of data) {
-                    citis.options[citis.options.length] = new Option(x.Name, x.Id);
-                }
-                citis.onchange = function () {
-                    districts.length = 1;
-                    wards.length = 1;
-                    if (this.value != "") {
-                        const result = data.filter(n => n.Id === this.value);
-
-                        for (const k of result[0].Districts) {
-                            districts.options[districts.options.length] = new Option(k.Name, k.Id);
-                        }
-                    }
-                };
-                districts.onchange = function () {
-                    wards.length = 1;
-                    const dataCity = data.filter((n) => n.Id === citis.value);
-                    if (this.value != "") {
-                        const dataWards = dataCity[0].Districts.filter(n => n.Id === this.value)[0].Wards;
-
-                        for (const w of dataWards) {
-                            wards.options[wards.options.length] = new Option(w.Name, w.Id);
-                        }
-                    }
-                };
-            }
         });
     </script>
 }

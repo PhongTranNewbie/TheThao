@@ -146,8 +146,14 @@ namespace TheThao.Controllers
                 var user = _context.Users
                                    .Include(u => u.SoDiaChis)
                                    .FirstOrDefault(u => u.Id == userId);
-                return View(user);
-            }
+				if (user != null)
+				{
+					// Lấy lại dữ liệu từ cơ sở dữ liệu
+					user.SoDiaChis = _context.SoDiaChis.Where(a => a.UserId == userId).ToList();
+
+					return View(user);
+				}
+			}
             return RedirectToAction("Login", "Login"); // Sửa lại controller nếu cần
         }
 
@@ -166,21 +172,15 @@ namespace TheThao.Controllers
 
                 if (user != null)
                 {
-                    if (newAddress.IsMacDinh.HasValue && newAddress.IsMacDinh.Value)
-                    {
-                        // Đặt tất cả các địa chỉ hiện có khác thành không mặc định
-                        foreach (var address in user.SoDiaChis)
-                        {
-                            address.IsMacDinh = false;
-                        }
-                    }
+                    
 
                     _context.SoDiaChis.Add(newAddress);
                     _context.SaveChanges();
-
-                    return RedirectToAction("DiaChi");
-                }
-            }
+                    // Chờ 100 milliseconds trước khi chuyển hướng đến trang mới
+                    System.Threading.Thread.Sleep(100);
+                    return RedirectToAction(nameof(DiaChi));
+				}
+			}
 
             return RedirectToAction("Login", "Login");
         }
@@ -197,10 +197,7 @@ namespace TheThao.Controllers
 
                 if (user != null)
                 {
-                    foreach (var address in user.SoDiaChis)
-                    {
-                        address.IsMacDinh = address.Id == addressId;
-                    }
+                    
                     _context.SaveChanges();
                 }
                 return RedirectToAction("DiaChi");

@@ -400,7 +400,6 @@ public partial class TheThaoContext : DbContext
         {
             entity.ToTable("SoDiaChi");
 
-            entity.Property(e => e.DiaChi).HasMaxLength(200);
             entity.Property(e => e.QuanHuyen).HasMaxLength(50);
             entity.Property(e => e.ThanhPho).HasMaxLength(50);
             entity.Property(e => e.Xa).HasMaxLength(50);
