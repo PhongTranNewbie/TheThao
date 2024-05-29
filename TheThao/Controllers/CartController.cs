@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using TheThao.Models;
 using Microsoft.AspNetCore.Http;
+using System.Linq;
 public class CartController : Controller
 {
     private readonly TheThaoContext _context;
@@ -74,7 +75,11 @@ public class CartController : Controller
             CartItems = cartItems,
             TotalPrice = total
         };
-
+        var userIdString = HttpContext.Session.GetString("UserId");
+        if (!string.IsNullOrEmpty(userIdString) && int.TryParse(userIdString, out int userId))
+        {
+            ViewBag.userAddress = _context.SoDiaChis.Where(x => x.UserId == userId).ToList();
+        }
         ViewBag.SanPham = _context.SanPhams.ToList();
         ViewBag.CartMessage = TempData["CartMessage"];
 

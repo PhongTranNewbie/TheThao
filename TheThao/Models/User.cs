@@ -11,8 +11,6 @@ public partial class User
 
     public DateTime? NgayThangNamSinh { get; set; }
 
-    public string? DiaChi { get; set; }
-
     public string? Email { get; set; }
 
     public string? Phone { get; set; }
@@ -36,4 +34,6 @@ public partial class User
     public virtual ICollection<NhapHang> NhapHangs { get; set; } = new List<NhapHang>();
 
     public virtual ICollection<PhanTramGiaCa> PhanTramGiaCas { get; set; } = new List<PhanTramGiaCa>();
+
+    public virtual ICollection<SoDiaChi> SoDiaChis { get; set; } = new List<SoDiaChi>();
 }

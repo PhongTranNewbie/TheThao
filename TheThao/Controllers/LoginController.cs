@@ -119,15 +119,14 @@ namespace TheThao.Controllers
                         {
                             user.Ten = model.Ten;
                             user.NgayThangNamSinh = model.NgayThangNamSinh;
-                            user.DiaChi = model.DiaChi;
                             user.Email = model.Email;
                             user.Phone = model.Phone;
                             _context.SaveChanges();
-                            return RedirectToAction("Client");
+                            return RedirectToAction("Profile");
                         }
                     }
                 }
-                return View("Client");
+                return View(model);
             }
 
         
@@ -139,6 +138,75 @@ namespace TheThao.Controllers
 			return RedirectToAction("Index", "Home");
 		}
 
+        [HttpGet]
+        public IActionResult DiaChi()
+        {
+            var userIdString = HttpContext.Session.GetString("UserId");
+            if (!string.IsNullOrEmpty(userIdString) && int.TryParse(userIdString, out int userId))
+            {
+                var user = _context.Users
+                                   .Include(u => u.SoDiaChis)
+                                   .FirstOrDefault(u => u.Id == userId);
+				if (user != null)
+				{
+					// Lấy lại dữ liệu từ cơ sở dữ liệu
+					user.SoDiaChis = _context.SoDiaChis.Where(a => a.UserId == userId).ToList();
 
-	}
+					return View(user);
+				}
+			}
+            return RedirectToAction("Login", "Login"); // Sửa lại controller nếu cần
+        }
+
+        [HttpPost]
+        public IActionResult AddDiaChi([FromBody] SoDiaChi newAddress)
+        {
+            var userIdString = HttpContext.Session.GetString("UserId");
+
+            if (!string.IsNullOrEmpty(userIdString) && int.TryParse(userIdString, out int userId))
+            {
+                newAddress.UserId = userId;
+
+                var user = _context.Users
+                    .Include(u => u.SoDiaChis)
+                    .FirstOrDefault(u => u.Id == userId);
+
+                if (user != null)
+                {
+                    
+
+                    _context.SoDiaChis.Add(newAddress);
+                    _context.SaveChanges();
+                    // Chờ 100 milliseconds trước khi chuyển hướng đến trang mới
+                    System.Threading.Thread.Sleep(100);
+                    return RedirectToAction(nameof(DiaChi));
+				}
+			}
+
+            return RedirectToAction("Login", "Login");
+        }
+
+        [HttpPost]
+        public IActionResult SetDefaultDiaChi(int addressId)
+        {
+            var userIdString = HttpContext.Session.GetString("UserId");
+            if (!string.IsNullOrEmpty(userIdString) && int.TryParse(userIdString, out int userId))
+            {
+                var user = _context.Users
+                                   .Include(u => u.SoDiaChis)
+                                   .FirstOrDefault(u => u.Id == userId);
+
+                if (user != null)
+                {
+                    
+                    _context.SaveChanges();
+                }
+                return RedirectToAction("DiaChi");
+            }
+            return RedirectToAction("Login", "Login");
+        }
+
+
+
+    }
 }

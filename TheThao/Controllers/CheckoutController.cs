@@ -17,7 +17,7 @@ namespace TheThao.Controllers
             _emailSender = emailSender;
         }
 
-		public async Task<IActionResult> Checkout(string paymentSelection)
+		public async Task<IActionResult> Checkout(string paymentSelection, string selectedAddress)
 		{
 			// Lấy userId từ Session
 			var userIdString = HttpContext.Session.GetString("UserId");
@@ -44,6 +44,7 @@ namespace TheThao.Controllers
 					orderItem.UserId = userId;
 					orderItem.PhuongPhapThanhToan = paymentSelection;
 					orderItem.TrangThai = 1;
+					orderItem.DiaChi = selectedAddress;
 					orderItem.NgayTao = DateTime.UtcNow;
 					_context.Add(orderItem);
 					await _context.SaveChangesAsync(); // Lưu đơn hàng vào cơ sở dữ liệu

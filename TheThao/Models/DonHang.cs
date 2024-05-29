@@ -13,6 +13,8 @@ public partial class DonHang
 
     public string? PhuongPhapThanhToan { get; set; }
 
+    public string? DiaChi { get; set; }
+
     public int? UserId { get; set; }
 
     public virtual ICollection<ChiTietDonHang> ChiTietDonHangs { get; set; } = new List<ChiTietDonHang>();

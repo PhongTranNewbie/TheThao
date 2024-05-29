@@ -57,6 +57,8 @@ public partial class TheThaoContext : DbContext
 
     public virtual DbSet<SanPhamGoiY> SanPhamGoiYs { get; set; }
 
+    public virtual DbSet<SoDiaChi> SoDiaChis { get; set; }
+
     public virtual DbSet<User> Users { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -239,6 +241,7 @@ public partial class TheThaoContext : DbContext
             entity.Property(e => e.Id)
                 .HasMaxLength(255)
                 .IsUnicode(false);
+            entity.Property(e => e.DiaChi).HasMaxLength(200);
             entity.Property(e => e.NgayTao).HasColumnType("date");
             entity.Property(e => e.PhuongPhapThanhToan).HasMaxLength(70);
 
@@ -393,13 +396,23 @@ public partial class TheThaoContext : DbContext
             entity.Property(e => e.TrangThai).HasMaxLength(100);
         });
 
+        modelBuilder.Entity<SoDiaChi>(entity =>
+        {
+            entity.ToTable("SoDiaChi");
+
+            entity.Property(e => e.QuanHuyen).HasMaxLength(50);
+            entity.Property(e => e.ThanhPho).HasMaxLength(50);
+            entity.Property(e => e.Xa).HasMaxLength(50);
+
+            entity.HasOne(d => d.User).WithMany(p => p.SoDiaChis)
+                .HasForeignKey(d => d.UserId)
+                .HasConstraintName("FK_SoDiaChi_Users");
+        });
+
         modelBuilder.Entity<User>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PK__Users__3214EC078F80E094");
 
-            entity.Property(e => e.DiaChi)
-                .HasMaxLength(255)
-                .IsUnicode(false);
             entity.Property(e => e.Email)
                 .HasMaxLength(255)
                 .IsUnicode(false);

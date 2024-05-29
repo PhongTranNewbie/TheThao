@@ -102,6 +102,21 @@
 							</span>
 						</div>
 					</div>
+					@if (ViewBag.userAddress != null && ((IEnumerable<TheThao.Models.SoDiaChi>)ViewBag.userAddress).Any())
+					{
+						<h2>Select Address:</h2>
+							<select name="selectedAddress" class="form-control">
+								@foreach (var address in (IEnumerable<TheThao.Models.SoDiaChi>)ViewBag.userAddress)
+								{
+								<option value="@address.ThanhPho, @address.QuanHuyen, @address.Xa">@address.ThanhPho, @address.QuanHuyen, @address.Xa</option>
+							}
+							</select>
+					}
+					else
+					{
+						<p>No addresses found for the user.</p>
+					}
+
 					<div class="bor8 bg0 m-b-22">
 						<label for="paymentSelection">Payment Method:</label>
 						<select id="paymentSelection" name="paymentSelection" class="form-control">
