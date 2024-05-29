@@ -34,14 +34,15 @@ namespace TheThao.Controllers
                 {
                     // Đăng nhập thành công, lấy UserId
                     HttpContext.Session.SetString("UserId", user.Id.ToString());
-
+                    HttpContext.Session.SetString("Role", user.Role.ToString());
+                    HttpContext.Session.SetInt32("UserId_Int", user.Id);
                     // Tạo một instance của CartController
                     var cartController = new CartController(_context, _httpContextAccessor);
 
                     // Lấy UserId từ session
                     var userId = HttpContext.Session.GetString("UserId");
-                   
 
+                   
                     ViewBag.IsLoggedIn = true;
 					return RedirectToAction("ToggleFavorite", "Favorite");
 

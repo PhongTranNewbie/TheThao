@@ -49,12 +49,20 @@ namespace TheThao.Controllers
 					await _context.SaveChangesAsync(); // Lưu đơn hàng vào cơ sở dữ liệu
 
 					var cartItems = HttpContext.Session.Get<List<ShoppingCartItem>>("Cart") ?? new List<ShoppingCartItem>();
-					foreach (var cart in cartItems)
+                    var role = HttpContext.Session.GetString("Role");
+                    foreach (var cart in cartItems)
 					{
 						var orderdetails = new ChiTietDonHang();
 						orderdetails.MaSanPham = cart.SanPham.Id;
 						orderdetails.MaDonHang = orderCode;
-						orderdetails.Gia = cart.SanPham.Gia;
+						if (role == "Retailer")
+						{
+                            orderdetails.Gia = cart.SanPham.GiaSi;
+                        }
+						else
+						{
+                            orderdetails.Gia = cart.SanPham.Gia;
+                        }
 						orderdetails.SoLuong = cart.Quantity;
                         var sp = _context.SanPhams.FirstOrDefault(x => x.Id == cart.SanPham.Id);
 						sp.SoLuong -= cart.Quantity;

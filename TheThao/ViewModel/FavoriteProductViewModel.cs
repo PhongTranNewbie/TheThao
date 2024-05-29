@@ -10,6 +10,7 @@ namespace TheThao.ViewModels
         public string? ChiTiet { get; set; }
         public decimal? Gia { get; set; }
         public decimal? GiaTruocKhiGiamGia { get; set; }
+        public decimal? GiaSi { get; set; }
         public string? HinhAnh { get; set; }
         public int? SoLuong { get; set; }
         public int? TheLoaiId { get; set; }

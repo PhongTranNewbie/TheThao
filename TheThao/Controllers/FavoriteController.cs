@@ -20,9 +20,9 @@ namespace TheThao.Controllers
         public async Task<IActionResult> ToggleFavorite(int productId, int? page)
         {
             // Lấy thông tin người dùng hiện tại từ hệ thống xác thực (chú ý thay đổi nếu cần)
-            var userId = GetCurrentUserId();
+            var userIdString = HttpContext.Session.GetString("UserId");
 
-            if (userId == null)
+            if (userIdString == null || !int.TryParse(userIdString, out int userId))
             {
                 return RedirectToAction("Login", "Login");
             }
@@ -35,7 +35,7 @@ namespace TheThao.Controllers
                 {
                     // Nếu sản phẩm chưa được yêu thích, thêm vào danh sách yêu thích
                     _context.Favorites.Add(new Favorite { ProductId = productId, UserId = (int)userId, FavoriteDate = DateTime.Now });
-                    await _context.SaveChangesAsync();  
+                    await _context.SaveChangesAsync();
                 }
                 else
                 {
@@ -44,7 +44,7 @@ namespace TheThao.Controllers
                     await _context.SaveChangesAsync();
                 }
             }
-            
+
 
             // Lấy danh sách sản phẩm từ bảng SanPhams
             int pageSize = 12;
@@ -65,6 +65,7 @@ namespace TheThao.Controllers
                 ChiTiet = p.ChiTiet,
                 Gia = p.Gia,
                 GiaTruocKhiGiamGia = p.GiaTruocKhiGiamGia,
+                GiaSi = p.GiaSi,
                 HinhAnh = p.HinhAnh,
                 SoLuong = p.SoLuong,
                 TheLoaiId = p.TheLoaiId,
@@ -104,21 +105,92 @@ namespace TheThao.Controllers
 
         public async Task<IActionResult> Index()
         {
-            // Lấy danh sách sản phẩm yêu thích của người dùng hiện tại
             var userIdString = HttpContext.Session.GetString("UserId");
 
             if (userIdString == null || !int.TryParse(userIdString, out int userId))
             {
-                // Redirect hoặc xử lý người dùng chưa đăng nhập
                 return RedirectToAction("Login", "Login");
             }
 
-            var favoriteProducts = await _context.Favorites
+            var favoriteProductIds = await _context.Favorites
                 .Where(f => f.UserId == userId)
-                .Include(f => f.Product)
+                .Select(f => f.ProductId)
                 .ToListAsync();
 
-            return View(favoriteProducts);
+            var products = await _context.SanPhams
+                .Where(p => favoriteProductIds.Contains(p.Id))
+                .ToListAsync();
+
+            var promotionService = new PromotionService(_context);
+            var favoriteViewModels = new List<FavoriteProductViewModel>();
+
+            foreach (var product in products)
+            {
+                favoriteViewModels.Add(new FavoriteProductViewModel
+                {
+                    Id = product.Id,
+                    Name = product.Name,
+                    ChiTiet = product.ChiTiet,
+                    Gia = product.Gia,
+                    GiaTruocKhiGiamGia = product.GiaTruocKhiGiamGia,
+                    HinhAnh = product.HinhAnh,
+                    SoLuong = product.SoLuong,
+                    TheLoaiId = product.TheLoaiId,
+                    ThoiGianBaoHanh = product.ThoiGianBaoHanh,
+                    SoLuongDaBan = product.SoLuongDaBan,
+                    TrangThai = product.TrangThai,
+                    IsFavorite = true // As these are favorite products
+                });
+            }
+            return View(favoriteViewModels);
+        }
+        public async Task<IActionResult> RemoveFavorite(int productId)
+        {
+            var userId = GetCurrentUserId();
+
+            if (userId == null)
+            {
+                return RedirectToAction("Login", "Login");
+            }
+
+            if (productId != 0)
+            {
+                var existingFavorite = await _context.Favorites.FirstOrDefaultAsync(f => f.UserId == userId && f.ProductId == productId);
+
+                if (existingFavorite != null)
+                {
+                    _context.Favorites.Remove(existingFavorite);
+                    await _context.SaveChangesAsync();
+                }
+            }
+
+            var favoriteProductIds = await _context.Favorites
+                .Where(f => f.UserId == userId)
+                .Select(f => f.ProductId)
+                .ToListAsync();
+
+            var products = await _context.SanPhams
+                .Where(p => favoriteProductIds.Contains(p.Id))
+                .ToListAsync();
+
+            var favoriteViewModels = products.Select(p => new FavoriteProductViewModel
+            {
+                Id = p.Id,
+                Name = p.Name,
+                ChiTiet = p.ChiTiet,
+                Gia = p.Gia,
+                GiaTruocKhiGiamGia = p.GiaTruocKhiGiamGia,
+                GiaSi = p.GiaSi,
+                HinhAnh = p.HinhAnh,
+                SoLuong = p.SoLuong,
+                TheLoaiId = p.TheLoaiId,
+                ThoiGianBaoHanh = p.ThoiGianBaoHanh,
+                SoLuongDaBan = p.SoLuongDaBan,
+                TrangThai = p.TrangThai,
+                IsFavorite = true
+            }).ToList();
+
+            return View("Index", favoriteViewModels);
         }
     }
 }

@@ -6,7 +6,6 @@
 
     var circles = ViewBag.CircleImages as List<TheThao.Models.Circle>;
     var searchUrl = Url.Action("Search", "Home");
-
 }
 @if (TempData["Message"] != null)
 {
@@ -35,8 +34,6 @@
         color: black;
         cursor: pointer; /* Đổi màu chữ thành màu xanh */
     }
-
-
 
     .btn-baka.dropdown-toggle {
         background-color: dodgerblue; /* Màu nền là màu xanh */
@@ -108,10 +105,9 @@
                 border-top-right-radius: 5px;
                 border-bottom-right-radius: 5px;
             }
-
 </style>
 
-
+<!-- Slider -->
 <!-- Slider -->
 <section class="section-slide">
     <div class="wrap-slick1">
@@ -135,35 +131,42 @@
 </section>
 
 <!-- Product Slider -->
+<!-- Product Slider -->
 <section class="section-slide product-slider">
     <style>
         .product-slider {
-            border: 2px solid black; /* Black border around the section */
-            padding: 10px; /* Padding inside the border */
-            margin: 20px 0; /* Margin to separate from other sections */
+            border: 2px solid black;
+            padding: 10px;
+            margin: 20px 0;
+            background-color: #f9f9f9;
+            border-radius: 10px;
         }
 
             .product-slider .promotion-title {
                 text-align: center;
                 font-size: 24px;
                 font-weight: bold;
-                margin-bottom: 20px; /* Space between the title and the slider */
+                margin-bottom: 20px;
             }
 
             .product-slider .wrap-slick1 {
                 display: flex;
-                justify-content: center; /* Center all items */
+                justify-content: center;
                 overflow-x: auto;
                 white-space: nowrap;
                 scroll-snap-type: x mandatory;
-                padding: 20px 0; /* Add padding for spacing */
+                padding: 20px 0;
             }
 
             .product-slider .item {
                 flex: 0 0 auto;
                 scroll-snap-align: start;
-                margin: 0 10px; /* Margin for spacing between items */
-                max-width: 150px;
+                margin: 0 10px;
+                max-width: 250px;
+                background-color: #fff;
+                border-radius: 5px;
+                box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+                overflow: hidden;
             }
 
             .product-slider .block2 {
@@ -173,19 +176,64 @@
             }
 
             .product-slider .block2-pic {
-                display: flex;
-                justify-content: center;
-                align-items: center;
+                position: relative;
+                width: 100%;
+                height: 200px;
+                overflow: hidden;
             }
 
-            .product-slider .block2-txt {
-                display: flex;
-                flex-direction: column;
-                align-items: center;
+                .product-slider .block2-pic img {
+                    width: 100%;
+                    height: 100%;
+                    object-fit: cover;
+                }
+
+            .product-slider .block2-btn {
+                position: absolute;
+                bottom: 10px;
+                left: 50%;
+                transform: translateX(-50%);
+                padding: 8px 20px;
+                background-color: #333;
+                color: #fff;
+                border: none;
+                border-radius: 20px;
+                font-size: 14px;
+                text-transform: uppercase;
+                transition: background-color 0.3s ease;
             }
+
+                .product-slider .block2-btn:hover {
+                    background-color: #222;
+                }
+
+            .product-slider .block2-txt {
+                text-align: center;
+                padding: 15px;
+            }
+
+                .product-slider .block2-txt .stext-104 {
+                    font-size: 18px;
+                    font-weight: bold;
+                    color: #333;
+                    margin-bottom: 10px;
+                    /* Allow text to wrap */
+                    white-space: normal;
+                    /* Limit the number of lines to 2 */
+                    display: -webkit-box;
+                    -webkit-line-clamp: 2;
+                    -webkit-box-orient: vertical;
+                    overflow: hidden;
+                }
+
+                .product-slider .block2-txt .stext-105 {
+                    display: block;
+                    color: #999;
+                    margin-top: 5px;
+                }
     </style>
     <!-- Promotion Title -->
-    <div class="p-b-10">
+    <div class="p-b-10 promotion-title">
         <h3 class="ltext-103 cl5">
             Promotion
         </h3>
@@ -201,28 +249,22 @@
                 @if (isPromotionActive)
                 {
                     <div class="block2">
-                        <!-- Hình ảnh và nút Quick View -->
                         <div class="block2-pic hov-img0 label1" data-label1="@promotionDetail.PhanTramKhuyenMai%">
                             <img src="@Url.Content(product.HinhAnh)" alt="@product.Name">
                             <a href="@Url.Action("ChiTietSanPham", "SanPhams", new { id = product.Id })" class="block2-btn flex-c-m stext-103 cl2 size-102 bg0 bor2 hov-btn1 p-lr-15 trans-04">
                                 Quick View
                             </a>
                         </div>
-                        <!-- Tên và giá của sản phẩm -->
-                        <div class="block2-txt flex-w flex-t p-t-14">
-                            <div class="block2-txt-child1 flex-col-l">
-                                @*                                 <span href="@Url.Action("ChiTietSanPham", "SanPhams", new { id = product.Id })" class="stext-104 cl4 hov-cl1 trans-04 js-name-b2 p-b-6">
-                        @product.Name
-                        </span> *@
-                                <!-- Giá chưa khuyến mãi -->
-                                <span class="stext-105 cl3" style="text-decoration: line-through;">
-                                    Price: @string.Format("{0:N0}", product.GiaTruocKhiGiamGia)
-                                </span>
-                                <!-- Giá khuyến mãi -->
-                                <span class="stext-105 cl3" style="background-color: red; color: yellow; padding: 3px;">
-                                    Promotion Price: @string.Format("{0:N0}", product.Gia)
-                                </span>
-                            </div>
+                        <div class="block2-txt">
+                            <a href="@Url.Action("ChiTietSanPham", "SanPhams", new { id = product.Id })" class="stext-104 cl4 hov-cl1 trans-04 js-name-b2">
+                                @product.Name
+                            </a>
+                            <span class="stext-105" style="text-decoration: line-through;">
+                                Price: @string.Format("{0:N0}", product.GiaTruocKhiGiamGia)
+                            </span>
+                            <span class="stext-105" style="background-color: red; color: yellow; padding: 3px;">
+                                Promotion Price: @string.Format("{0:N0}", product.Gia)
+                            </span>
                         </div>
                     </div>
                 }
@@ -230,6 +272,9 @@
         }
     </div>
 </section>
+
+
+
 <!-- Product -->
 <section class="bg0 p-t-23 p-b-140">
     <div class="container">
@@ -272,8 +317,6 @@
             <!-- Filter -->
             <div class="dis-none panel-filter w-full p-t-10">
                 <div class="wrap-filter flex-w bg6 w-full p-lr-40 p-t-27 p-lr-15-sm">
-
-
                     <div class="filter-col1 p-r-15 p-b-27" style="width: 200px;" id="statusFilter">
                         <div class="mtext-102 cl2 p-b-15">
                             Status
@@ -344,22 +387,19 @@
                             </li>
                         </ul>
                     </div>
-
                 </div>
             </div>
-
         </div>
 
         <div class="row">
             @if (Model != null && Model.Any())
             {
-
-
                 foreach (var product in Model)
                 {
                     var promotionService = new PromotionService(new TheThaoContext());
                     var isPromotionActive = promotionService.HasPromotion(product.Id);
                     var promotionDetail = await promotionService.GetPromotionDetails(product.Id);
+                    var role = ViewContext.HttpContext.Session.GetString("Role");
                     <div class="col-sm-6 col-md-4 col-lg-3 p-b-35 isotope-item @(product.TheLoaiId)">
                         <!-- Block2 -->
                         <div class="block2">
@@ -406,10 +446,15 @@
                                             Price: @string.Format("{0:N0}", product.Gia)
                                         </span>
                                     }
+                                    @if (role == "Retailer")
+                                    {
+                                        <span class="stext-105 cl3" style="background-color: mediumblue; color: red; padding: 3px;">
+                                            Retailer Price: @string.Format("{0:N0}", product.GiaSi)
+                                        </span>
+                                    }
                                 </div>
-                               
                                 <div class="block2-txt-child2 flex-r p-t-3">
-                                    <a href="@Url.Action("ToggleFavorite", "Favorite", new { productId = product.Id })" class="btn-addwish-b2 dis-block pos-relative js-addwish-b2 toggle-favorite">
+                                    <a href="#" class="btn-addwish-b2 dis-block pos-relative js-addwish-b2 toggle-favorite" data-product-id="@product.Id">
                                         <i class="bi bi-heart js-heart-icon dis-block trans-04"></i>
                                         <i class="bi bi-heart-fill js-heart-icon-filled dis-block trans-04" style="display: none;"></i>
                                     </a>
@@ -419,7 +464,6 @@
                     </div>
                 }
 
-
                 <div>
                     @Html.PagedListPager(Model, page => Url.Action("Index", new { page = page }), new PagedListRenderOptions
            {
@@ -427,26 +471,19 @@
                PageClasses = new string[] { "page-link" }
            })
                 </div>
-
-
             }
             else
             {
                 <p>No products available.</p>
             }
         </div>
-
+    </div>
 </section>
-
-
-
-
-
-
 
 @section Scripts
 {
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
     <script>
         $(document).ready(function () {
             var searchInput = $('input[name="search-product"]');
@@ -463,90 +500,59 @@
 
             $('#statusFilter .filter-link').on('click', function (event) {
                 event.preventDefault();
-                // Xóa lớp active từ tất cả các liên kết khác
                 $('#statusFilter .filter-link').removeClass('filter-link-active');
-                // Thêm lớp active cho liên kết được chọn
                 $(this).addClass('filter-link-active');
-                // Lấy trạng thái từ thuộc tính data
                 var status = $(this).data('status');
-                // Gọi hàm filterByStatus với trạng thái được chọn
                 filterByStatus(status);
             });
 
             $('#priceFilter .filter-link').on('click', function (event) {
                 event.preventDefault();
-                // Xóa lớp active từ tất cả các liên kết khác
                 $('#priceFilter .filter-link').removeClass('filter-link-active');
-                // Thêm lớp active cho liên kết được chọn
                 $(this).addClass('filter-link-active');
-                // Lấy giá từ thuộc tính data
                 var minPrice = $(this).data('min-price');
                 var maxPrice = $(this).data('max-price');
-                // Gọi hàm filterByPrice với giá được chọn
                 filterByPrice(minPrice, maxPrice);
             });
 
-            // Hàm xử lý lọc theo trạng thái
             function filterByStatus(status) {
-                // Viết code xử lý lọc theo trạng thái ở đây
                 console.log('Lọc theo trạng thái:', status);
-                // Chuyển hướng đến trang Search với tham số trạng thái
                 var searchUrlWithParams = "@Url.Action("Search", "Home")" + "?status=" + status;
                 window.location.href = searchUrlWithParams;
             }
 
-            // Hàm xử lý lọc theo giá
             function filterByPrice(minPrice, maxPrice) {
-                // Viết code xử lý lọc theo giá ở đây
                 console.log('Lọc theo giá:', minPrice, '-', maxPrice);
-                // Chuyển hướng đến trang Search với tham số giá
                 var searchUrlWithParams = "@Url.Action("Search", "Home")" + "?minPrice=" + minPrice + "&maxPrice=" + maxPrice;
                 window.location.href = searchUrlWithParams;
             }
 
-            $('.js-addwish-b2').on('click', function (e) {
+            $('.toggle-favorite').on('click', function (e) {
                 e.preventDefault();
                 var $heartIcon = $(this).find('.js-heart-icon');
-
                 var productId = $(this).data('product-id');
                 var isFavorite = $heartIcon.hasClass('bi-heart-fill');
 
                 if (isFavorite) {
-                    // Nếu sản phẩm đã được thêm vào danh sách yêu thích, gỡ khỏi danh sách
                     $.post('@Url.Action("ToggleFavorite", "Favorite")', { productId: productId })
                         .done(function () {
-                            // Sau khi gỡ khỏi danh sách thành công, cập nhật giao diện và thông báo
                             $heartIcon.removeClass('bi-heart-fill').addClass('bi-heart');
                             swal("Removed!", "Product removed from wishlist.", "success");
-                            // Không cần chuyển hướng
                         })
                         .fail(function () {
                             swal("Error!", "Failed to remove product from wishlist.", "error");
                         });
                 } else {
-                    // Nếu sản phẩm chưa được thêm vào danh sách yêu thích, thêm vào danh sách
                     $.post('@Url.Action("ToggleFavorite", "Favorite")', { productId: productId })
                         .done(function () {
-                            // Sau khi thêm vào danh sách thành công, cập nhật giao diện và thông báo
                             $heartIcon.removeClass('bi-heart').addClass('bi-heart-fill');
                             swal("Added!", "Product added to wishlist.", "success");
-                            // Không cần chuyển hướng
                         })
                         .fail(function () {
                             swal("Error!", "Failed to add product to wishlist.", "error");
                         });
                 }
             });
-
-
-
-
-
-
         });
     </script>
 }
-
-
-
-

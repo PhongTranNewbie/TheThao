@@ -1,116 +1,96 @@
 ﻿@using TheThao.Services
-
 @model TheThao.ViewModel.OrdersByStatusViewModel
 
 <section class="bg0 p-t-23 p-b-140">
-    <h2 style="margin-top: 40px;">List of orders</h2>
-@*     <table class="table">
-        <thead>
-            <tr>
-                <th>ID Order</th>
-                <th>Create date</th>
-                <th>Status</th>
-                <!-- Thêm các cột khác nếu cần -->
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var order in Model.PaidOrders)
-            {
-                <tr>
-                    <td>@order.Id</td>
-                    <td>@order.NgayTao</td>
-                    <td>@ViewBag.StatusTexts[(int)order.TrangThai]</td>
-                    <td>
-                        <a asp-controller="Order" asp-action="Details" asp-route-id="@order.Id" class="btn-details">Details</a>
-                    </td>
-                    @if(order.TrangThai == 3)
-                    {
-                        <td>
-                            <a asp-controller="Warranty" asp-action="Create" asp-route-id="@order.Id" class="btn-details">Warranty</a>
-                        </td>
-                    }
-                    
-                </tr>
-            }
-        </tbody>
-    </table> *@
-
-        <!-- Các bảng khác tương tự -->
-
-        <div>
-            <h2>On Delivery Orders</h2>
-            <table class="table">
-                <!-- Header -->
-                <thead>
-                    <tr>
-                        <th>ID Order</th>
-                        <th>Create date</th>
-                        <!-- Thêm các cột khác nếu cần -->
-                    </tr>
-                </thead>
-                <!-- Body -->
-                <tbody>
-                    @foreach (var order in Model.OnDeliveryOrders)
-                    {
-                        <tr>
-                            <td>@order.Id</td>
-                            <td>@order.NgayTao</td>
-                            <!-- Thêm các cột khác nếu cần -->
-                        </tr>
-                    }
-                </tbody>
-            </table>
+    <div class="container">
+        <h2 class="text-center my-4" style="margin-top: 100px;">List of Orders</h2>
+        <div class="row">
+            <div class="col-md-4">
+                <h3 class="text-center">On Delivery Orders</h3>
+                <div class="scrollable-table">
+                    <div class="table-responsive">
+                        <table class="table table-striped">
+                            <thead class="thead-dark">
+                                <tr>
+                                    <th>ID Order</th>
+                                    <th>Create Date</th>
+                                    <!-- Additional columns if needed -->
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var order in Model.OnDeliveryOrders)
+                                {
+                                    <tr>
+                                        <td>@order.Id</td>
+                                        <td>@order.NgayTao</td>
+                                        <!-- Additional columns if needed -->
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <h3 class="text-center">Paid Orders</h3>
+                <div class="scrollable-table">
+                    <div class="table-responsive">
+                        <table class="table table-striped">
+                            <thead class="thead-dark">
+                                <tr>
+                                    <th>ID Order</th>
+                                    <th>Create Date</th>
+                                    <!-- Additional columns if needed -->
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var order in Model.PaidAndAwaitingDeliveryOrders)
+                                {
+                                    <tr>
+                                        <td>@order.Id</td>
+                                        <td>@order.NgayTao</td>
+                                        <!-- Additional columns if needed -->
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <h3 class="text-center">Waiting for Confirmation Orders</h3>
+                <div class="scrollable-table">
+                    <div class="table-responsive">
+                        <table class="table table-striped">
+                            <thead class="thead-dark">
+                                <tr>
+                                    <th>ID Order</th>
+                                    <th>Create Date</th>
+                                    <!-- Additional columns if needed -->
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var order in Model.WaitingForConfirmationOrders)
+                                {
+                                    <tr>
+                                        <td>@order.Id</td>
+                                        <td>@order.NgayTao</td>
+                                        <!-- Additional columns if needed -->
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
         </div>
-        <div>
-            <h2>Paid Orders</h2>
-            <table class="table">
-                <!-- Header -->
-                <thead>
-                    <tr>
-                        <th>ID Order</th>
-                        <th>Create date</th>
-                        <!-- Thêm các cột khác nếu cần -->
-                    </tr>
-                </thead>
-                <!-- Body -->
-                <tbody>
-                    @foreach (var order in Model.PaidAndAwaitingDeliveryOrders)
-                    {
-                        <tr>
-                            <td>@order.Id</td>
-                            <td>@order.NgayTao</td>
-                            <!-- Thêm các cột khác nếu cần -->
-                        </tr>
-                    }
-                </tbody>
-            </table>
-        </div>
-    <div>
-        <h2>Paid Orders</h2>
-        <table class="table">
-            <!-- Header -->
-            <thead>
-                <tr>
-                    <th>ID Order</th>
-                    <th>Create date</th>
-                    <!-- Thêm các cột khác nếu cần -->
-                </tr>
-            </thead>
-            <!-- Body -->
-            <tbody>
-                @foreach (var order in Model.WaitingForConfirmationOrders)
-                {
-                    <tr>
-                        <td>@order.Id</td>
-                        <td>@order.NgayTao</td>
-                        <!-- Thêm các cột khác nếu cần -->
-                    </tr>
-                }
-            </tbody>
-        </table>
-    </div>
     </div>
 </section>
 
-
-
+<style>
+    .scrollable-table {
+        height: 400px; /* Set the desired height */
+        overflow-y: auto; /* Add vertical scrollbar */
+        overflow-x: hidden; /* Hide horizontal scrollbar */
+    }
+</style>

@@ -11,7 +11,6 @@ public class CartController : Controller
     {
         _context = context;
         _cartItems = new List<ShoppingCartItem>();
-
     }
     public IActionResult Index()
     {
@@ -57,17 +56,31 @@ public class CartController : Controller
 	[HttpGet]
     public IActionResult ViewCart()
     {
-
         var cartItems = HttpContext.Session.Get<List<ShoppingCartItem>>("Cart") ?? new List<ShoppingCartItem>();
+        var role = HttpContext.Session.GetString("Role");
+        decimal total;
+
+        if (role == "Retailer")
+        {
+            total = cartItems.Sum(item => item.SanPham.GiaSi?? 0 * item.Quantity);
+        }
+        else
+        {
+            total = cartItems.Sum(item => item.SanPham.Gia??0 * item.Quantity);
+        }
+
         var cartViewModel = new ShoppingCartViewModel
         {
             CartItems = cartItems,
-            TotalPrice = cartItems.Sum(item => item.SanPham.Gia * item.Quantity)
+            TotalPrice = total
         };
+
         ViewBag.SanPham = _context.SanPhams.ToList();
         ViewBag.CartMessage = TempData["CartMessage"];
+
         return View(cartViewModel);
     }
+
     public IActionResult RemoveItem(int id)
     {
         var cartItems = HttpContext.Session.Get<List<ShoppingCartItem>>("Cart") ?? new List<ShoppingCartItem>();

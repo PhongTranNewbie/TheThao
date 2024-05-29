@@ -1,12 +1,12 @@
 ﻿@model IEnumerable<TheThao.Models.BaoHanh>
 
-<section class="container my-5">
+<section class="container my-5" style="margin-top: 50px">
     <div class="text-center mb-4">
         <h2 class="display-4">Danh Sách Các Sản Phẩm Đang Được Bảo Hành</h2>
     </div>
 
     <div class="table-responsive">
-        <table class="table table-hover table-bordered">
+        <table class="table table-hover table-bordered table-striped">
             <thead class="thead-dark">
                 <tr>
                     <th scope="col">STT</th>
@@ -17,17 +17,55 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach (var item in Model)
+                @if (Model != null)
+                {
+                    int stt = 1;
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <th scope="row">@stt++</th>
+                            <td>@item?.MaSerialNavigation?.MaChiTietDonHangNavigation?.MaSanPhamNavigation?.Name ?? "N/A"</td>
+                            <td>@item?.NgayBaoHanh</td>
+                            <td>@item?.NgayKetThucBaoHanh"</td>
+                            <td>
+                                <span class="badge badge-@{
+                                    switch (item?.TrangThai)
+                                    {
+                                        case "Active":
+                                                @:success
+                                            break;
+                                        case "Expired":
+                                                @:danger
+                                            break;
+                                        default:
+                                                @:secondary
+                                            break;
+                                    }
+                                }">
+                                    @item?.TrangThai ?? "N/A"
+                                </span>
+                            </td>
+                        </tr>
+                    }
+                }
+                else
                 {
                     <tr>
-                        <th scope="row">@item.Id</th>
-                        <td>@item.MaSanPhamNavigation.Name</td>
-                        <td>@item.NgayBaoHanh.Value.ToString("dd/MM/yyyy")</td>
-                        <td>@item.NgayKetThucBaoHanh.Value.ToString("dd/MM/yyyy")</td>
-                        <td>@item.TrangThai</td>
+                        <td colspan="5" class="text-center">No data available</td>
                     </tr>
                 }
             </tbody>
         </table>
     </div>
 </section>
+
+<style>
+    .table-hover tbody tr:hover {
+        background-color: #f5f5f5;
+    }
+
+    .badge {
+        font-size: 1em;
+        padding: 0.5em;
+    }
+</style>

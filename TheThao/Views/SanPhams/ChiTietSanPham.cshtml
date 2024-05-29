@@ -6,6 +6,7 @@
 	var isPromotionActive = promotionService.HasPromotion(product.Id);
 	var promotionDetail = await promotionService.GetPromotionDetails(product.Id);
 	int defaultQuantity = 1; // Giá trị mặc định của số lượng sản phẩm
+	var role = ViewContext.HttpContext.Session.GetString("Role");
 }
 <html>
 <head>
@@ -175,6 +176,12 @@
 				{
 					<span class="stext-105 cl3">
 						Price: @string.Format("{0:N0}", product.Gia)
+					</span>
+				}
+				@if (role == "Retailer")
+				{
+					<span class="stext-105 cl3">
+						Retailer Price: @string.Format("{0:N0}", product.GiaSi)
 					</span>
 				}
 				

@@ -1,6 +1,7 @@
 ﻿@model ShoppingCartViewModel
 @{
     var sp = ViewBag.SanPham as List<TheThao.Models.SanPham>;
+	var role = ViewContext.HttpContext.Session.GetString("Role");
 }
 @if (TempData["Message"] != null)
 {
@@ -37,7 +38,14 @@
 											}
 									</td>
 									<td class="column-2">@item.SanPham.Name</td>
-									<td class="column-3">@item.SanPham.Gia</td>
+									@if(role == "Retailer")
+									{
+										<td class="column-3">@item.SanPham.GiaSi</td>
+									}
+									else
+									{
+										<td class="column-3">@item.SanPham.Gia</td>
+									}
 									<td class="column-4">
 										<div class="btn-group btn-group-sm" role="group" aria-label="Basic example">
 											<button type="button" class="btn btn-outline-secondary border" onclick="location.href='@Url.Action("DecreaseQuantity", "Cart", new { id = item.SanPham.Id })'"><i class="fs-16 zmdi zmdi-minus"></i></button>
@@ -45,8 +53,15 @@
 											<button type="button" class="btn btn-outline-secondary border" onclick="location.href='@Url.Action("IncreaseQuantity", "Cart", new { id = item.SanPham.Id })'"><i class="fs-16 zmdi zmdi-plus"></i></button>
 										</div>
 									</td>
+									@if (role == "Retailer")
+									{
+										<td class="column-5">@((item.SanPham.GiaSi * item.Quantity)?.ToString("C0"))</td>
+									}
+									else
+									{
+										<td class="column-5">@((item.SanPham.Gia * item.Quantity)?.ToString("C0"))</td>
+									}
 
-									<td class="column-5">@((item.SanPham.Gia * item.Quantity)?.ToString("C0"))</td>
 									<input type="hidden" value="@item.SanPham.Id" />
 									<td class="column-6">
 										<a asp-controller="Cart" asp-action="RemoveItem" asp-route-id="@item.SanPham.Id" class="btn btn-danger">Delete</a>

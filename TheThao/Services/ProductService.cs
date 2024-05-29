@@ -47,14 +47,14 @@ public class ProductService : IProductService
             {
 
                 // Lấy phần trăm giảm giá mới nhất
-                
+
                 // Lấy phần trăm khuyến mãi mới nhất
                 var latestPromotionPercentage = product.ChiTietKhuyenMais
                     .OrderByDescending(ctkm => ctkm.Id)
                     .FirstOrDefault()?.MaKmNavigation?.PhanTramKhuyenMai ?? 0; // Mặc định là 1 nếu không có khuyến mãi
 
                 // Lấy giá nhập hàng mới nhất
-                
+
 
                 // Cập nhật giá mới cho sản phẩm
                 if (latestPurchasePrice.HasValue)
@@ -65,24 +65,9 @@ public class ProductService : IProductService
                     product.Gia = newPrice;
                     product.GiaTruocKhiGiamGia = latestPurchasePrice * (1 + (decimal)latestPercentage / 100);
                 }
-
-               
-                
-
             }
         }
-
-
-
-        
-
-
-
-
-
-
         _context.SaveChanges();
-
     }
     public void Cost()
     {

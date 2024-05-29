@@ -1,19 +1,29 @@
 ﻿@model IEnumerable<(TheThao.Models.DonHang Order, List<TheThao.Models.QuanLySerial> Products)>
 
-<form asp-action="Create" method="post" style="margin-top:100px;">
-    @foreach (var orderGroup in Model)
-    {
-        <h3>Đơn hàng: @orderGroup.Order.Id - Ngày tạo: @orderGroup.Order.NgayTao</h3>
-        @foreach (var product in orderGroup.Products)
+<section class="container mt-5" style="margin-top:50px;">
+    <form asp-action="Create" method="post">
+        @foreach (var orderGroup in Model)
         {
-            <div class="row" style="display: flex; align-items: center; margin-bottom: 10px;">
-                <label style="margin-left: 20px;">@product.Serial.MaSanPhamNavigation.Name</label>
-                <label style="margin-left: 20px;">@product.SerialId</label>
-                <img style="margin-left: 20px;" class="how-itemcart1" src="@product.Serial.MaSanPhamNavigation.HinhAnh" />
-                <input type="checkbox" name="selectedProducts" value="@product.SerialId" style="margin-left: 100px;" />
-                <input type="text" name="requests[@orderGroup.Order.Id][@product.SerialId]" placeholder="Nhập yêu cầu" style="margin-left: 20px;" />
+            <div class="mb-4">
+                <h3 class="mb-3">Đơn hàng: @orderGroup.Order.Id - Ngày tạo: @orderGroup.Order.NgayTao</h3>
+                <div class="list-group">
+                    @foreach (var product in orderGroup.Products)
+                    {
+                        <div class="list-group-item d-flex align-items-center">
+                            <img class="img-thumbnail" src="@product.Serial.MaSanPhamNavigation.HinhAnh" alt="@product.Serial.MaSanPhamNavigation.Name" style="width: 100px; height: auto; margin-right: 20px;" />
+                            <div class="flex-grow-1">
+                                <p class="mb-1"><strong>@product.Serial.MaSanPhamNavigation.Name</strong></p>
+                                <p class="mb-1">Serial ID: @product.SerialId</p>
+                            </div>
+                            <div class="ml-auto">
+                                <input type="checkbox" name="selectedProducts" value="@product.SerialId" class="form-check-input" style="margin-right: 20px;" />
+                                <input type="text" name="requests[@orderGroup.Order.Id][@product.SerialId]" placeholder="Nhập yêu cầu" class="form-control" />
+                            </div>
+                        </div>
+                    }
+                </div>
             </div>
         }
-    }
-    <button type="submit">Tạo bảo hành</button>
-</form>
+        <button type="submit" class="btn btn-primary">Tạo bảo hành</button>
+    </form>
+</section>

@@ -1,4 +1,4 @@
-﻿@model List<FavoriteProductViewModel>
+﻿@model List<TheThao.ViewModels.FavoriteProductViewModel>
 
 <section class="container my-5" style="margin-top:50px;">
     <div class="text-center mb-4">
@@ -14,19 +14,15 @@
     else
     {
         <div class="row">
-            @foreach (var favoriteViewModel in Model)
+            @foreach (var favoriteProduct in Model)
             {
-                var product = favoriteViewModel.Product;
-                var isPromotionActive = favoriteViewModel.IsPromotionActive;
-                var promotionDetail = favoriteViewModel.PromotionDetail;
-                <div class="col-sm-6 col-md-4 col-lg-3 p-b-35 isotope-item @product.TheLoaiId">
-                    <!-- Block2 -->
-                    <div class="block2">
-                        @if (isPromotionActive)
+                <div class="col-sm-6 col-md-4 col-lg-3 p-b-35 isotope-item @favoriteProduct.TheLoaiId">
+                    <div class="block2 position-relative">
+                        @if (favoriteProduct.GiaTruocKhiGiamGia.HasValue && favoriteProduct.Gia.HasValue && favoriteProduct.Gia < favoriteProduct.GiaTruocKhiGiamGia)
                         {
-                            <div class="block2-pic hov-img0 label1" data-label1="@promotionDetail.PhanTramKhuyenMai%">
-                                <img src="@Url.Content(product.HinhAnh)" alt="@product.Name">
-                                <a href="@Url.Action("ChiTietSanPham", "SanPhams", new { id = product.Id })" class="block2-btn flex-c-m stext-103 cl2 size-102 bg0 bor2 hov-btn1 p-lr-15 trans-04">
+                            <div class="block2-pic hov-img0 label1" data-label1="Sale">
+                                <img src="@Url.Content(favoriteProduct.HinhAnh)" alt="@favoriteProduct.Name">
+                                <a href="@Url.Action("ChiTietSanPham", "SanPhams", new { id = favoriteProduct.Id })" class="block2-btn flex-c-m stext-103 cl2 size-102 bg0 bor2 hov-btn1 p-lr-15 trans-04">
                                     Quick View
                                 </a>
                             </div>
@@ -34,33 +30,44 @@
                         else
                         {
                             <div class="block2-pic hov-img0">
-                                <img src="@Url.Content(product.HinhAnh)" alt="@product.Name">
-                                <a href="@Url.Action("ChiTietSanPham", "SanPhams", new { id = product.Id })" class="block2-btn flex-c-m stext-103 cl2 size-102 bg0 bor2 hov-btn1 p-lr-15 trans-04">
+                                <img src="@Url.Content(favoriteProduct.HinhAnh)" alt="@favoriteProduct.Name">
+                                <a href="@Url.Action("ChiTietSanPham", "SanPhams", new { id = favoriteProduct.Id })" class="block2-btn flex-c-m stext-103 cl2 size-102 bg0 bor2 hov-btn1 p-lr-15 trans-04">
                                     Quick View
                                 </a>
                             </div>
                         }
+                        <button class="remove-favorite btn btn-outline-danger position-absolute top-0 start-0 translate-middle p-2" data-product-id="@favoriteProduct.Id">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-x">
+                                <line x1="18" y1="6" x2="6" y2="18"></line>
+                                <line x1="6" y1="6" x2="18" y2="18"></line>
+                            </svg>
+                        </button>
                         <div class="block2-txt flex-w flex-t p-t-14">
                             <div class="block2-txt-child1 flex-col-l">
-                                <a href="@Url.Action("ChiTietSanPham", "SanPhams", new { id = product.Id })" class="stext-104 cl4 hov-cl1 trans-04 js-name-b2 p-b-6">
-                                    @product.Name
+                                <a href="@Url.Action("ChiTietSanPham", "SanPhams", new { id = favoriteProduct.Id })" class="stext-104 cl4 hov-cl1 trans-04 js-name-b2 p-b-6">
+                                    @favoriteProduct.Name
                                 </a>
-
-                                @if (isPromotionActive)
+                                @if (favoriteProduct.GiaTruocKhiGiamGia.HasValue && favoriteProduct.Gia.HasValue && favoriteProduct.Gia < favoriteProduct.GiaTruocKhiGiamGia)
                                 {
                                     <!-- Original Price -->
                                     <span class="stext-105 cl3" style="text-decoration: line-through;">
-                                        Price: @string.Format("{0:N0}", product.GiaTruocKhiGiamGia)
+                                        Price: @string.Format("{0:N0}", favoriteProduct.GiaTruocKhiGiamGia)
                                     </span>
                                     <!-- Promotion Price -->
                                     <span class="stext-105 cl3" style="background-color: red; color: yellow; padding: 3px;">
-                                        Promotion Price: @string.Format("{0:N0}", product.Gia)
+                                        Promotion Price: @string.Format("{0:N0}", favoriteProduct.Gia)
                                     </span>
                                 }
                                 else
                                 {
                                     <span class="stext-105 cl3">
-                                        Price: @string.Format("{0:N0}", product.Gia)
+                                        Price: @string.Format("{0:N0}", favoriteProduct.Gia)
+                                    </span>
+                                }
+                                @if (ViewContext.HttpContext.Session.GetString("Role") == "Retailer")
+                                {
+                                    <span class="stext-105 cl3">
+                                        Retailer Price: @string.Format("{0:N0}", favoriteProduct.GiaSi)
                                     </span>
                                 }
                             </div>
@@ -68,6 +75,31 @@
                     </div>
                 </div>
             }
+
+
         </div>
     }
 </section>
+
+@section Scripts {
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $(".remove-favorite").on("click", function () {
+                var productId = $(this).data("product-id");
+
+                $.ajax({
+                    url: '@Url.Action("RemoveFavorite", "Favorite")',
+                    type: 'POST',
+                    data: { productId: productId },
+                    success: function (result) {
+                        location.reload();
+                    },
+                    error: function (xhr, status, error) {
+                        alert('Error removing favorite: ' + error);
+                    }
+                });
+            });
+        });
+    </script>
+}

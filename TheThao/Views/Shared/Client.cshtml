@@ -125,12 +125,25 @@
 					<div class="menu-desktop">
 						<ul class="main-menu">
 							<li class="active-menu">
-								<a href="/Home/Index">Home</a>
-								
+								@if (ViewContext.HttpContext.Session.GetString("UserId") != null)
+								{
+									<a href="/Favorite/ToggleFavorite" >Home </a>
+								}
+								else
+								{
+									<a href="/Home/Index">Home</a>
+								}
 							</li>
 
 							<li>
-								<a href="/Home/Index">Shop</a>
+								@if (ViewContext.HttpContext.Session.GetString("UserId") != null)
+								{
+									<a href="/Favorite/ToggleFavorite">Shop </a>
+								}
+								else
+								{
+									<a href="/Home/Index">Shop</a>
+								}
 							</li>
 
 							<li>
